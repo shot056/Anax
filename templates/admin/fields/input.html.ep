@@ -1,0 +1,84 @@
+% layout 'admin';
+% title '項目登録';
+
+
+  <ul class="breadcrumb">
+    <li><a href="/admin/fields">項目</a><span class="divider">/</span></li>
+    <li class="active">登録</li>
+  </ul>
+
+  % if( exists $params->{id} and defined $params->{id} ) {
+  <form method="POST" name="admin_fields_edit" action="/admin/fields/edit/<%= $params->{id} %>" class="form-horizontal">
+  % } else {
+  <form method="POST" name="admin_fields_add" action="/admin/fields/add" class="form-horizontal">
+  % }
+    <div class="control-group">
+      <label class="control-label" for="field_is_global">&nbsp;</label>
+      <div class="controls">
+        <label class="checkbox"><input type="checkbox" id="field_is_global" name="is_global"<% if( $params->{is_global} ) { %> checked="checked"<% } %> />全体共通にする</label>
+        <span class="help-inline">
+          % if( exists $messages->{is_global} ) {
+          <p class="text-error"><%= decode( $messages->{is_global} ) %></p>
+          % }
+        </span>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="field_is_required">&nbsp;</label>
+      <div class="controls">
+        <label class="checkbox"><input type="checkbox" id="field_is_required" name="is_required"<% if( $params->{is_required} ) { %> checked="checked"<% } %> />必須にする</label>
+        <span class="help-inline">
+          % if( exists $messages->{is_required} ) {
+          <p class="text-error"><%= decode( $messages->{is_required} ) %></p>
+          % }
+        </span>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="field_name">項目名</label>
+      <div class="controls">
+        <input type="text" id="field_name" name="name" placeholder="" value="<%= decode( $params->{name} ) %>" />
+        <span class="help-inline">
+          % if( exists $messages->{name} ) {
+          <p class="text-error"><%= decode( $messages->{name} ) %></p>
+          % }
+        </span>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="field_type">項目種別</label>
+      <div class="controls">
+        <select id="field_type" name="type">
+          % foreach my $f ( @{ field_types() } ) {
+          <option value="<%= $f->{value} %>"<% if( exists $params->{type} and defined $params->{type} and $f->{value} eq $params->{type} ) { %> selected<% } %>><%= decode( $f->{label} ) =%></option>
+          % }
+        </select>
+        <span class="help-inline">
+          % if( exists $messages->{type} ) {
+          <p class="text-error"><%= decode( $messages->{type} ) %></p>
+          % }
+        </span>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="field_default">デフォルト値</label>
+      <div class="controls">
+        <input type="text" id="field_default" name="default" placeholder="" value="<%= decode( $params->{default} ) %>" />
+        <span class="help-inline">
+          % if( exists $messages->{default} ) {
+          <p class="text-error"><%= decode( $messages->{default} ) %></p>
+          % }
+        </span>
+      </div>
+    </div>
+    <div class="form-actions">
+      <a href="<% if( param 'forms_id' ) { %>/admin/forms/view/<%= param 'forms_id' %><% } else { %>/admin/fields<% } %>" class="btn">キャンセル</a>
+      <button type="submit" class="btn btn-primary pull-right">登録</button>
+    </div>
+    % if( param 'forms_id' ) {
+    <input type="hidden" name="forms_id" value="<%= param 'forms_id' %>" />
+    % }
+    % if( exists $params->{id} and $params->{id} =~ /^\d+$/ ) {
+    <input type="hidden" name="id" value="<%= $params->{id} %>" />
+    % }
+  </form>

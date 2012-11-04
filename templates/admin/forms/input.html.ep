@@ -1,0 +1,41 @@
+% layout 'admin';
+% title 'フォーム登録';
+
+  <ul class="breadcrumb">
+    <li><a href="/admin/forms">フォーム</a><span class="divider">/</span></li>
+    <li class="active">登録</li>
+  </ul>
+  % if( exists $params->{id} ) {
+  <form method="POST" name="admin_forms_edit" action="/admin/forms/edit/<%= $params->{id} %>" class="form-horizontal">
+  % } else {
+  <form method="POST" name="admin_forms_add" action="/admin/forms/add" class="form-horizontal">
+  % }
+    <div class="control-group">
+      <label class="control-label" for="field_key">フォームID</label>
+      <div class="controls">
+        <input type="text" id="field_key" name="key" placeholder="myform" value="<%= $params->{key} %>" />
+        <span class="help-inline">
+          フォームのURLとなる文字列を入力してください。
+          % if( exists $messages->{key} ) {
+          <p class="text-error"><%= decode( $messages->{key} ) %></p>
+          % }
+        </span>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="field_name">名称</label>
+      <div class="controls">
+        <input type="text" id="field_name" name="name" placeholder="私の登録フォーム" value="<%= decode( $params->{name} ) %>"  />
+        <span class="help-inline">
+          管理用のフォーム名です。好きな名前をつけてください。
+          % if( exists $messages->{name} ) {
+          <p class="text-error"><%= decode( $messages->{name} ) %></p>
+          % }
+        </span>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">登録</button>
+      <a href="/admin/forms" class="btn">キャンセル</a>
+    </div>
+  </form>

@@ -1,0 +1,30 @@
+% layout 'admin';
+% title '選択肢登録';
+
+
+  <ul class="breadcrumb">
+    <li><a href="/admin/fields">項目</a><span class="divider">/</span></li>
+    <li>選択肢<span class="divider">/</span></li>
+    <li class="active">登録</li>
+  </ul>
+
+  <form method="POST" name="admin_field_options_add" action="/admin/field/<%= stash 'field_id' %>/options/add" class="form-horizontal">
+    <div class="control-group">
+      <label class="control-label" for="field_default">選択肢リスト</label>
+      <div class="controls">
+        <textarea id="field_options" name="options" placeholder="" rows="10"></textarea>
+        <span class="help-inline">
+          % if( exists $messages->{options} ) {
+          <p class="text-error"><%= decode( $messages->{options} ) %></p>
+          % }
+        </span>
+      </div>
+    </div>
+    <div class="form-actions">
+      <a href="/admin/fields/view/<%= param 'field_id' %><% if( param 'forms_id' ) { %>?forms_id=<%= param 'forms_id' %><% } %>" class="btn">キャンセル</a>
+      <button type="submit" class="btn btn-primary pull-right">登録</button>
+    </div>
+    % if( param 'forms_id' ) {
+    <input type="hidden" name="forms_id" value="<%= param 'forms_id' %>" />
+    % }
+  </form>

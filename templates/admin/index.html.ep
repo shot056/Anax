@@ -1,0 +1,7 @@
+% layout 'admin';
+% title 'フォーム一覧';
+
+    <ul class="breadcrumb">
+      <li>ホーム<span class="divider">/</span></li>
+    </ul>
+    
