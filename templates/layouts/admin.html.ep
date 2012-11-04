@@ -23,9 +23,9 @@
 
     <!-- Fav and touch icons -->
     <link rel="shortcut icon" href="/static/ico/favicon.ico">
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/staticico/apple-touch-icon-144-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/staticico/apple-touch-icon-114-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/staticico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/static/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/static/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/static/ico/apple-touch-icon-72-precomposed.png">
     <link rel="apple-touch-icon-precomposed" href="/static/ico/apple-touch-icon-57-precomposed.png">
   </head>
 
@@ -43,8 +43,10 @@
           <div class="nav-collapse collapse">
             <ul class="nav">
               <li<% if( stash->{controller} eq 'Admin' ) { %> class="active"<% } %>><a href="/admin/">ホーム</a></li>
+              <li<% if( stash->{controller} eq 'Admin::Applicants' ) { %> class="active"<% } %>><a href="/admin/applicants">申込</a></li>
               <li<% if( stash->{controller} eq 'Admin::Forms' ) { %> class="active"<% } %>><a href="/admin/forms">フォーム</a></li>
               <li<% if( stash->{controller} eq 'Admin::Fields' ) { %> class="active"<% } %>><a href="/admin/fields">項目</a></li>
+              <li<% if( stash->{controller} eq 'Admin::Products' ) { %> class="active"<% } %>><a href="/admin/products">商品</a></li>
               <li<% if( stash->{controller} eq 'Admin::Applicants' ) { %> class="active"<% } %>><a href="/admin/applicants">申込</a></li>
             </ul>
           </div><!--/.nav-collapse -->

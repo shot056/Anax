@@ -3,6 +3,7 @@ use Mojo::Base 'Mojolicious';
 use Mojo::ByteStream;
 use DateTime::Format::Pg;
 
+use CGI qw/:any/;
 use Data::Dumper;
 
 # This method will run once at server start
@@ -56,6 +57,14 @@ sub startup {
                            return $fields->{array};
                        }
                    } );
+    $self->helper( html_br => sub {
+                       my $self = shift;
+                       my $str  = shift;
+                       my $ret = CGI::escapeHTML( $str );
+                       $ret =~ s/\r\n/\n/g;
+                       $ret =~ s/\n/<br \/>\n/g;
+                       return $ret;
+                   } );
     # Router
     my $r = $self->routes;
     
@@ -94,6 +103,23 @@ sub startup {
 
     $r->route('/admin/field/:field_id/options/add', field_id => qr/\d+/ )->via('GET' )->to( controller => 'Admin::Field::Options', action => 'input' );
     $r->route('/admin/field/:field_id/options/add', field_id => qr/\d+/ )->via('POST')->to( controller => 'Admin::Field::Options', action => 'register' );
+
+    $r->route('/admin/products'                         )->via('GET' )->to( controller => 'Admin::Products', action => 'index' );
+    $r->route('/admin/products/add'                     )->via('GET' )->to( controller => 'Admin::Products', action => 'input' );
+    $r->route('/admin/products/add'                     )->via('POST')->to( controller => 'Admin::Products', action => 'register' );
+    $r->route('/admin/products/edit/:id', id => qr/\d+/ )->via('GET' )->to( controller => 'Admin::Products', action => 'input' );
+    $r->route('/admin/products/edit/:id', id => qr/\d+/ )->via('POST')->to( controller => 'Admin::Products', action => 'register' );
+    $r->route('/admin/products/view/:id', id => qr/\d+/ )->via('GET' )->to( controller => 'Admin::Products', action => 'view' );
+
+    $r->route('/admin/product/:product_id/images/add',         product_id => qr/\d+/                )
+        ->via('GET' )->to( controller => 'Admin::Product::Images', action => 'input' );
+    $r->route('/admin/product/:product_id/images/add',         product_id => qr/\d+/                )
+        ->via('POST')->to( controller => 'Admin::Product::Images', action => 'register' );
+    $r->route('/admin/product/:product_id/images/disable/:id', product_id => qr/\d+/, id => qr/\d+/ )
+        ->via('GET' )->to( controller => 'Admin::Product::Images', action => 'disable' );
+    $r->route('/admin/product/:product_id/images/disable/:id', product_id => qr/\d+/, id => qr/\d+/ )
+        ->via('POST')->to( controller => 'Admin::Product::Images', action => 'do_disable' );
+    
     
     $r->route('/admin/applicants'                        )->via('GET' )->to( controller => 'Admin::Applicants', action => 'index' );
 }

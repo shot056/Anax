@@ -1,9 +1,9 @@
 % layout 'admin';
-% title 'フォーム詳細';
+% title 'フォーム削除';
 
   <ul class="breadcrumb">
     <li><a href="/admin/forms">フォーム</a><span class="divider">/</span></li>
-    <li class="active">詳細<span class="divider">/</span></li>
+    <li class="active">削除<span class="divider">/</span></li>
     <li><%= $hash->{id} %></li>
   </ul>
 

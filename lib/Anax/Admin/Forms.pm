@@ -5,7 +5,6 @@ use warnings;
 use Validator::Custom::Anax;
 
 use Mojo::Base 'Mojolicious::Controller';
-use Mojo::ByteStream 'b';
 
 use DBIx::Simple;
 use SQL::Maker;
@@ -23,8 +22,9 @@ sub index {
     $dbis->begin_work or die $dbis->error;
     my $rslt = $dbis->select( 'forms', ['*'], { is_deleted => 0 } )
         or die $dbis->error;
-    $self->render( template => 'admin/forms/index', datas => $rslt );
-    $dbis->commit;
+    $self->stash( datas => $rslt );
+    $self->render();
+    $dbis->commit or die $dbis->error;
     $dbis->disconnect or die $dbis->error;
 }
 

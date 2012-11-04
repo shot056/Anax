@@ -7,7 +7,7 @@ use Validator::Custom::Anax;
 use Mojo::Base 'Mojolicious::Controller';
 use Anax::Admin::Forms;
 use Tenjin;
-use CGI;
+use CGI qw/:any/;
 
 use DBIx::Simple;
 use SQL::Maker;
