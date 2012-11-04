@@ -63,6 +63,8 @@ sub startup {
 #    $r->get('/')->to('example#welcome');
 
 #    $r->get('/:id')->to('form#input');
+    $r->get('/')->to( controller => 'Home', action => 'index' );
+    
     $r->route('/form/:formkey',          id => qr/\w+/ )->via('GET','POST' )->to( controller => 'Form', action => 'input' );
     $r->route('/form/:formkey/confirm',  id => qr/\w+/ )->via('POST')->to( controller => 'Form', action => 'confirm' );
     $r->route('/form/:formkey/complete', id => qr/\w+/ )->via('POST')->to( controller => 'Form', action => 'complete' );
