@@ -19,7 +19,7 @@ CREATE TABLE forms (
     key TEXT NOT NULL UNIQUE,
     name TEXT NOT NULL,
     is_published BOOLEAN DEFAULT FALSE,
-    date_publishded TIMESTAMP WITH TIME ZONE
+    date_published TIMESTAMP WITH TIME ZONE
 );
 CREATE INDEX forms_is_deleted ON forms ( is_deleted );
 
