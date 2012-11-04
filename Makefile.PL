@@ -10,5 +10,6 @@ WriteMakefile(
                 'DateTime' => '0.77',
                 'DateTime::Format::Pg' => '0.16007',
                 'DBD::Pg' => '2.19.3',
+                'SQL::Abstract' => '1.73',
                }
 );
