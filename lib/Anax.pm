@@ -100,6 +100,8 @@ sub startup {
     $r->route('/admin/fields/view/:id',    id => qr/\d+/ )->via('GET' )->to( controller => 'Admin::Fields', action => 'view' );
     $r->route('/admin/fields/disable/:id', id => qr/\d+/ )->via('GET' )->to( controller => 'Admin::Fields', action => 'disable' );
     $r->route('/admin/fields/disable/:id', id => qr/\d+/ )->via('POSt')->to( controller => 'Admin::Fields', action => 'do_disable' );
+    $r->route('/admin/fields/associate/:form_id', form_id => qr/\d+/ )->via('GET' )->to( controller => 'Admin::Fields', action => 'associate' );
+    $r->route('/admin/fields/associate/:form_id', form_id => qr/\d+/ )->via('POST')->to( controller => 'Admin::Fields', action => 'do_associate' );
 
     $r->route('/admin/field/:field_id/options/add', field_id => qr/\d+/ )->via('GET' )->to( controller => 'Admin::Field::Options', action => 'input' );
     $r->route('/admin/field/:field_id/options/add', field_id => qr/\d+/ )->via('POST')->to( controller => 'Admin::Field::Options', action => 'register' );

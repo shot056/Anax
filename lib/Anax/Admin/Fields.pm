@@ -154,7 +154,7 @@ sub disable {
     }
     $self->stash( hash => $data );
     $self->render( template => 'admin/fields/disable' );
-    $dbis->commit;
+    $dbis->commit or die $dbis->error;
     $dbis->disconnect or die $dbis->error;
 }
 
@@ -177,6 +177,30 @@ sub do_disable {
     $dbis->commit or die $dbis->error;
     $dbis->disconnect or die $dbis->error;
     $self->redirect_to( ( $params->{forms_id} ? 'admin/forms/view/' . $params->{forms_id} :  'admin/fields' ) );
+}
+
+sub associate {
+    my $self     = shift;
+
+    my $dbis = DBIx::Simple->new( @{ $self->app->config->{dsn} } )
+        or die DBIx::Simple->error;
+    $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
+    $dbis->begin_work or die $dbis->error;
+
+    #my $it = $dbis->query( "SELECT * FROM fields WHERE is_delted = FALSE AND is_global = TRUE AND id
+    my $wheres = { is_deleted => 0, is_global => 1 };
+    my $now_used_it = $dbis->select( 'form_fields', [ qw/id fields_id/ ], { is_deleted => 0, forms_id => $self->stash('form_id') } )
+        or die $dbis->error;
+    if( $now_used_it->rows ) {
+        $wheres->{id} = { 'NOT IN' => [ map { $_->{fields_id} } $now_used_it->hashes ] };
+    }
+    $self->app->log->debug( "wheres : \n" . Dumper( $wheres ) );
+    my $it = $dbis->select( 'fields', [ '*' ], $wheres, { order_by => 'sortorder, id' } )
+        or die $dbis->error;
+    $self->stash( datas => $it );
+    $self->render;
+    $dbis->commit or die $dbis->error;
+    $dbis->disconnect or die $dbis->error;
 }
 
 1;

@@ -1,0 +1,35 @@
+% layout 'admin';
+% title '項目追加';
+
+
+  <ul class="breadcrumb">
+    <li><a href="/admin/fields">項目</a><span class="divider">/</span></li>
+    <li class="active">追加</li>
+  </ul>
+
+  <form method="POST" name="admin_fields_associate" action="/admin/fields/associate/<%= stash 'form_id' %>" class="form-horizontal">
+    <table class="table table-striped table-horver">
+      <tr>
+        <th><i class="icon-ok" /></th>
+        <th>項目ID</th>
+        <th>項目名</th>
+        <th>種類</th>
+        <th>デフォルト値</th>
+        <th>必須</th>
+      </tr>
+      % while( my $line = $datas->hash ) {
+      <tr>
+        <td><input type="checkbox" name="field_ids" value="<%= $line->{id} %>" /></td>
+        <td><%= $line->{id} %></td>
+        <td><%= decode( $line->{name} ) %></td>
+        <td><%= decode( field_types( $line->{type} ) ) %></td>
+        <td><%= decode( $line->{default} ) %></td>
+        <td><% if( $line->{is_required} ) { %>必須<% } else { %>----<% } %></td>
+      </tr>
+      % }
+    </table>
+    <div class="form-actions">
+      <a href="/admin/forms/view/<%= stash 'form_id' %>" class="btn">キャンセル</a>
+      <button type="submit" class="btn btn-primary pull-right">登録</button>
+    </div>
+  </form>

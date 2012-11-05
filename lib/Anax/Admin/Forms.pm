@@ -187,9 +187,10 @@ sub change_status {
 }
 
 sub get_form_setting {
-    my $class = shift;
-    my $app   = shift;
+    my $class     = shift;
+    my $app       = shift;
     my $id_or_key = shift;
+    my $is_admin  = shift || 0;
     
     die "id_or_key is missing" unless( defined $id_or_key and length( $id_or_key ) );
     my $dbis = DBIx::Simple->new( @{ $app->config->{dsn} } )
@@ -199,11 +200,16 @@ sub get_form_setting {
 
     my $form;
     if( $id_or_key =~ /^\d+$/) {
-        my $it = $dbis->select('forms', ['*'], { is_deleted => 0, id => $id_or_key, is_published => 1 } ) or die $dbis->error;
+        my $wheres = { is_deleted => 0, id => $id_or_key, is_published => 1 };
+        delete $wheres->{is_published} if( $is_admin );
+        
+        my $it = $dbis->select('forms', ['*'], $wheres ) or die $dbis->error;
         $form = $it->hash if( $it->rows );
     }
     unless( defined $form ) {
-        my $it = $dbis->select('forms', ['*'], { is_deleted => 0, key => $id_or_key, is_published => 1 } ) or die $dbis->error;
+        my $wheres = { is_deleted => 0, key => $id_or_key, is_published => 1 };
+        delete $wheres->{is_published} if( $is_admin );
+        my $it = $dbis->select('forms', ['*'], $wheres ) or die $dbis->error;
         $form = $it->hash if( $it->rows );
     }
     return undef unless( defined $form );

@@ -21,11 +21,12 @@ sub input {
     my $self = shift;
     my $key = $self->stash('formkey');
     
-    my $form_setting = Anax::Admin::Forms->get_form_setting( $self->app, $key );
+    my $params = $self->req->params->to_hash;
+    
+    my $form_setting = Anax::Admin::Forms->get_form_setting( $self->app, $key, $params->{is_admin} );
     #$self->app->log->debug( "settings : \n" . Dumper( $form_setting ) );
     $self->render_not_found unless( defined $form_setting );
     
-    my $params = $self->req->params->to_hash;
     #$self->app->log->debug( "params : \n" . Dumper( $params ) );
 
     my $forms = $self->generate_forms( $form_setting->{field_list}, $params );
@@ -45,12 +46,12 @@ sub confirm {
     my $self = shift;
     my $key = $self->stash('formkey');
     
-    my $form_setting = Anax::Admin::Forms->get_form_setting( $self->app, $key );
-    #$self->app->log->debug( "settings : \n" . Dumper( $form_setting ) );
-    $self->render_not_found unless( defined $form_setting );
-    
     my $params = $self->req->params->to_hash;
     #$self->app->log->debug( "params : \n" . Dumper( $params ) );
+    
+    my $form_setting = Anax::Admin::Forms->get_form_setting( $self->app, $key, $params->{is_admin} );
+    #$self->app->log->debug( "settings : \n" . Dumper( $form_setting ) );
+    $self->render_not_found unless( defined $form_setting );
 
     
     my $datas = { action_base => "/form/$key",
@@ -84,12 +85,12 @@ sub complete {
     my $self = shift;
     my $key = $self->stash('formkey');
     
-    my $form_setting = Anax::Admin::Forms->get_form_setting( $self->app, $key );
-    #$self->app->log->debug( "settings : \n" . Dumper( $form_setting ) );
-    $self->render_not_found unless( defined $form_setting );
-    
     my $params = $self->req->params->to_hash;
     #$self->app->log->debug( "params : \n" . Dumper( $params ) );
+    
+    my $form_setting = Anax::Admin::Forms->get_form_setting( $self->app, $key, $params->{is_admin} );
+    #$self->app->log->debug( "settings : \n" . Dumper( $form_setting ) );
+    $self->render_not_found unless( defined $form_setting );
     
     my $datas = { action_base => "/form/$key",
                   name        => $form_setting->{name},

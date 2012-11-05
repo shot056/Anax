@@ -76,6 +76,9 @@
         <div>
           <button class="btn btn-block btn-primary" type="submit">確認</button>
         </div>
+        <?pl if( $params->{is_admin} ) { ?>
+        <input type="hidden" name="is_admin" value="1" />
+        <?pl } ?>
       </form>
 
     </div> <!-- /container -->

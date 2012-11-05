@@ -1,8 +1,8 @@
-<!DOCTYPE html>
+my $_buf = ""; my $_V;  $_buf .= q`<!DOCTYPE html>
 <html lang="ja">
   <head>
     <meta charset="utf-8">
-    <title>[= $name =]</title>
+    <title>` . escape_xml( $name ) . q`</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -57,36 +57,29 @@
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/static/ico/apple-touch-icon-114-precomposed.png">
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/static/ico/apple-touch-icon-72-precomposed.png">
     <link rel="apple-touch-icon-precomposed" href="/static/ico/apple-touch-icon-57-precomposed.png">
-    <script language="javascript" type="text/javascript">
-      function goBack( f ) {
-         f.action = '[= $action_base =]';
-         f.submit();
-      }
-    </script>
   </head>
 
   <body>
 
     <div class="container">
 
-      <form class="form-input form-horizontal" method="POST" action="[= $action_base =]/complete">
-        <h2 class="form-signin-heading">[= $name =]</h2>
-        <?pl foreach my $f ( @{$field_list} ) { ?>
-        <div class="control-group">
-          <label class="control-label" for="[= $f->{name} =]">[= $f->{desc} =]</label>
+      <form class="form-input form-horizontal" method="POST" action="` . escape_xml( $action_base ) . q`/confirm">
+        <h2 class="form-signin-heading">` . escape_xml( $name ) . q`</h2>
+`;         foreach my $f ( @{$field_list} ) {
+ $_buf .= q`        <div class="control-group">
+          <label class="control-label" for="` . escape_xml( $f->{name} ) . q`">` . escape_xml( $f->{desc} ) . q`</label>
           <div class="controls">
-            [== $forms->{ $f->{name} } =]
+            ` . ( $forms->{ $f->{name} } ) . q`
           </div>
         </div>
-        <?pl } ?>
-        <div>
-          <button class="btn btn-block btn-primary" type="submit">登録</button>
-          <button class="btn btn-block" type="button" onClick="goBack( this.form );">キャンセル</button>
+`;         }
+ $_buf .= q`        <div>
+          <button class="btn btn-block btn-primary" type="submit">確認</button>
         </div>
-        <?pl if( $params->{is_admin} ) { ?>
-        <input type="hidden" name="is_admin" value="1" />
-        <?pl } ?>
-      </form>
+`;         if( $params->{is_admin} ) {
+ $_buf .= q`        <input type="hidden" name="is_admin" value="1" />
+`;         }
+ $_buf .= q`      </form>
 
     </div> <!-- /container -->
 
@@ -100,3 +93,4 @@
   </body>
 
 </html>
+`;  $_buf;
