@@ -37,7 +37,7 @@
           <td><%= date( $line->{date_published} ) %></td>
           <td><a href="/admin/forms/edit/<%= $line->{id} %>">編集</a></td>
           <td><a href="/admin/forms/disable/<%= $line->{id} %>">削除</a></td>
-          <td><a href="/form/<%= $line->{key} %>" target="_blank">表示</a></td>
+          <td><a href="/form/<%= $line->{key} %>?is_admin=1" target="_blank">表示</a></td>
         </tr>
       % }
       </tbody>
