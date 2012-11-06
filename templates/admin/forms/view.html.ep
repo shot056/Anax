@@ -90,8 +90,13 @@
         <td><a href="/admin/fields/view/<%= $line->{id} %>?forms_id=<%= $hash->{id} %>"><%= decode( $line->{name} ) %></a></td>
         <td><%= decode( field_types( $line->{type} ) ) %></td>
         <td><%= decode( $line->{default} ) %></td>
+        % if( $line->{is_global} ) {
+        <td>----</td>
+        <td>----</td>
+        % } else {
         <td><a href="/admin/fields/edit/<%= $line->{id} %>?forms_id=<%= $hash->{id} %>">編集</a></td>
         <td><a href="/admin/fields/disable/<%= $line->{id} %>?forms_id=<%= $hash->{id} %>">削除</a></td>
+        % }
       </tr>
     % }
     </tbody>
