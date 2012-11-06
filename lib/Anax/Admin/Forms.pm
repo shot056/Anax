@@ -78,7 +78,7 @@ sub register {
         my $hash = { key => $params->{key},
                      name => $params->{name},
                      description => $params->{description},
-                     product_description => $params->{product_description},
+                     product_message => $params->{product_message},
                      message_input => $params->{message_input},
                      message_confirm => $params->{message_confirm},
                      message_complete => $params->{message_complete},
