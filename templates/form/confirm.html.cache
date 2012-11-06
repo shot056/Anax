@@ -71,8 +71,8 @@ my $_buf = ""; my $_V;  $_buf .= q`<!DOCTYPE html>
 
       <form class="form-input form-horizontal" method="POST" action="` . escape_xml( $action_base ) . q`/complete">
         <h2 class="form-signin-heading">` . escape_xml( $name ) . q`</h2>
-        <p class="lead">` . ( $description ) . q`</p>
-        <p class="lead">` . ( $message ) . q`</p>
+        <blockquote><p>` . ( $description ) . q`</p></blockquote>
+        <blockquote><p>` . ( $message ) . q`</p></blockquote>
 `;         if( $has_products ) {
  $_buf .= q`        <div class="control-group">
           <label class="control-label" for="field_products">` . escape_xml( $product_message ) . q`</label>

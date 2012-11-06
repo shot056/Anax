@@ -70,8 +70,8 @@ my $_buf = ""; my $_V;  $_buf .= q`<!DOCTYPE html>
     <div class="container">
       <div class="form-input form-horizontal">
         <h2 class="form-signin-heading">` . escape_xml( $name ) . q`</h2>
-        <p class="lead">` . ( $description ) . q`</p>
-        <p class="lead">` . ( $message ) . q`</p>
+        <blockquote><p>` . ( $description ) . q`</p></blockquote>
+        <blockquote><p>` . ( $message ) . q`</p></blockquote>
       </div>
     </div> <!-- /container -->
 
