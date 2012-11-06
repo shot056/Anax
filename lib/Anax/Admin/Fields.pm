@@ -217,31 +217,36 @@ sub do_associate {
     $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
     $dbis->begin_work or die $dbis->error;
     
-    $dbis->update( 'form_fields',
-                   { is_deleted => 1, date_deleted => 'now' },
-                   { forms_id => $form_id } )
+    my $global_fields_it = $dbis->select( 'fields', ['id'], { is_deleted => 0, is_global => 1 } )
         or die $dbis->error;
-    
-    if( exists $params->{field_ids} ) {
-        $params->{field_ids} = [ $params->{field_ids} ]
-            unless( ref( $params->{field_ids} ) eq 'ARRAY' );
+    if( $global_fields_it->rows ) {
+        $dbis->update( 'form_fields',
+                       { is_deleted => 1, date_deleted => 'now' },
+                       { forms_id => $form_id,
+                         fields_id => [ map { $_->{id} } $global_fields_it->hashes ]
+                       } )
+            or die $dbis->error;
         
-        foreach my $field_id ( @{ $params->{field_ids} } ) {
-            my $it = $dbis->select('form_fields', ['id'], { forms_id => $form_id, fields_id => $field_id } )
-                or die $dbis->error;
-            if( $it->rows ) {
-                $dbis->update( 'form_fields',
-                               { is_deleted => 0, date_updated => 'now', date_deleted => undef },
-                               { id => $it->hash->{id} } )
+        if( exists $params->{field_ids} ) {
+            $params->{field_ids} = [ $params->{field_ids} ]
+                unless( ref( $params->{field_ids} ) eq 'ARRAY' );
+            
+            foreach my $field_id ( @{ $params->{field_ids} } ) {
+                my $it = $dbis->select('form_fields', ['id'], { forms_id => $form_id, fields_id => $field_id } )
                     or die $dbis->error;
-            }
-            else {
-                $dbis->insert('form_fields', { forms_id => $form_id, fields_id => $field_id } )
-                    or die $dbis->error;
+                if( $it->rows ) {
+                    $dbis->update( 'form_fields',
+                                   { is_deleted => 0, date_updated => 'now', date_deleted => undef },
+                                   { id => $it->hash->{id} } )
+                        or die $dbis->error;
+                }
+                else {
+                    $dbis->insert('form_fields', { forms_id => $form_id, fields_id => $field_id } )
+                        or die $dbis->error;
+                }
             }
         }
     }
-        
     $dbis->commit or die $dbis->error;
     $dbis->disconnect or die $dbis->error;
     $self->redirect_to( '/admin/forms/view/' . $form_id );

@@ -61,7 +61,7 @@
   <h4>項目一覧</h4>
   <div class="actions">
     <a href="/admin/fields/add?forms_id=<%= $hash->{id} %>" class="btn btn-primary">新規項目追加</a>
-    <a href="/admin/fields/associate/<%= $hash->{id} %>" class="btn btn-info">既存項目追加</a>
+    <a href="/admin/fields/associate/<%= $hash->{id} %>" class="btn btn-info">共通項目関連付け編集</a>
   </div>
   
   <table class="table table-striped table-hover">
