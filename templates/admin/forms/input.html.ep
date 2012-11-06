@@ -34,6 +34,55 @@
         </span>
       </div>
     </div>
+    <div class="control-group">
+      <label class="control-label" for="field_description">フォームの説明</label>
+      <div class="controls">
+        <textarea name="description" rows="6"><%= decode( $params->{description} ) %></textarea>
+        <span class="help-inline">
+          入力画面・確認画面・完了画面 共通で表示されるフォームの説明です。<br />
+          デフォルトフォームではページ上部に表示されます。
+        </span>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="field_message_input">メッセージ：入力画面</label>
+      <div class="controls">
+        <textarea name="message_input" rows="4"><%= decode( $params->{message_input} ) %></textarea>
+        <span class="help-inline">
+          入力画面に表示されるメッセージです。<br />
+          デフォルトフォームではフォームの説明の下に表示されます。
+        </span>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="field_message_confirm">メッセージ：確認画面</label>
+      <div class="controls">
+        <textarea name="message_confirm" rows="4"><%= decode( $params->{message_confirm} ) %></textarea>
+        <span class="help-inline">
+          確認画面に表示されるメッセージです。<br />
+          デフォルトフォームではフォームの説明の下に表示されます。
+        </span>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="field_message_complete">メッセージ：完了画面</label>
+      <div class="controls">
+        <textarea name="message_complete" rows="4"><%= decode( $params->{message_complete} ) %></textarea>
+        <span class="help-inline">
+          完了画面に表示されるメッセージです。<br />
+          デフォルトフォームではフォームの説明の下に表示されます。
+        </span>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="field_name">商品選択の文言</label>
+      <div class="controls">
+        <input type="text" id="field_product_message" name="product_message" placeholder="注文対象" value="<%= decode( $params->{product_message} ) %>"  />
+        <span class="help-inline">
+          商品を関連付けた際にデフォルトフォームで表示される商品用文言です。<br />(日本語がマジカオス)
+        </span>
+      </div>
+    </div>
     <div class="form-actions">
       <button type="submit" class="btn btn-primary">登録</button>
       <a href="/admin/forms" class="btn">キャンセル</a>

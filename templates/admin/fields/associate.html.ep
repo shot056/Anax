@@ -19,7 +19,7 @@
       </tr>
       % while( my $line = $datas->hash ) {
       <tr>
-        <td><input type="checkbox" name="field_ids" value="<%= $line->{id} %>" /></td>
+        <td><input type="checkbox" name="field_ids" value="<%= $line->{id} %>"<% if( exists $used_ids->{ $line->{id} } ) { %> checked="checked"<% } %> /></td>
         <td><%= $line->{id} %></td>
         <td><%= decode( $line->{name} ) %></td>
         <td><%= decode( field_types( $line->{type} ) ) %></td>

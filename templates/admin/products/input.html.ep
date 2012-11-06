@@ -55,4 +55,7 @@
     % if( exists $params->{id} and $params->{id} =~ /^\d+$/ ) {
     <input type="hidden" name="id" value="<%= $params->{id} %>" />
     % }
+    % if( exists $params->{forms_id} and $params->{forms_id} =~ /^\d+$/ ) {
+    <input type="hidden" name="forms_id" value="<%= $params->{forms_id} %>" />
+    % }
   </form>

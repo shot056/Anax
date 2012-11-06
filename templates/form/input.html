@@ -65,6 +65,18 @@
 
       <form class="form-input form-horizontal" method="POST" action="[= $action_base =]/confirm">
         <h2 class="form-signin-heading">[= $name =]</h2>
+        <p class="lead">[== $description =]</p>
+        <p class="lead">[== $message =]</p>
+        <?pl if( $has_products ) { ?>
+        <div class="control-group">
+          <label class="control-label" for="field_products">[= $product_message =]</label>
+          <div class="controls">
+          <?pl foreach my $p ( @{$product_list} ) { ?>
+            <label><input type="checkbox" value="[= $p->{id} =]" name="products">[= $p->{name} =]</label>
+          <?pl } ?>
+          </div>
+        </div>
+        <?pl } ?>
         <?pl foreach my $f ( @{$field_list} ) { ?>
         <div class="control-group">
           <label class="control-label" for="[= $f->{name} =]">[= $f->{desc} =]</label>

@@ -3,10 +3,12 @@ package Anax::Admin::Fields;
 use strict;
 use warnings;
 
+use utf8;
+
 use Validator::Custom::Anax;
 
 use Mojo::Base 'Mojolicious::Controller';
-#use Mojo::ByteStream 'b';
+use Mojo::ByteStream 'b';
 
 use DBIx::Simple;
 use SQL::Maker;
@@ -101,7 +103,7 @@ sub register {
         }
         $dbis->commit or die $dbis->error;
         $dbis->disconnect or die $dbis->error;
-        $self->redirect_to( ( $params->{forms_id} ? 'admin/forms/view/' . $params->{forms_id} :  'admin/fields' ) );
+        $self->redirect_to( ( $params->{forms_id} ? '/admin/forms/view/' . $params->{forms_id} :  '/admin/fields' ) );
     }
 }
 
@@ -180,7 +182,7 @@ sub do_disable {
 }
 
 sub associate {
-    my $self     = shift;
+    my $self = shift;
 
     my $dbis = DBIx::Simple->new( @{ $self->app->config->{dsn} } )
         or die DBIx::Simple->error;
@@ -188,19 +190,61 @@ sub associate {
     $dbis->begin_work or die $dbis->error;
 
     #my $it = $dbis->query( "SELECT * FROM fields WHERE is_delted = FALSE AND is_global = TRUE AND id
-    my $wheres = { is_deleted => 0, is_global => 1 };
     my $now_used_it = $dbis->select( 'form_fields', [ qw/id fields_id/ ], { is_deleted => 0, forms_id => $self->stash('form_id') } )
         or die $dbis->error;
-    if( $now_used_it->rows ) {
-        $wheres->{id} = { 'NOT IN' => [ map { $_->{fields_id} } $now_used_it->hashes ] };
+    my $used_ids = {};
+
+    while( my $line = $now_used_it->hash ) {
+        $used_ids->{ $line->{fields_id} } = 1;
     }
-    $self->app->log->debug( "wheres : \n" . Dumper( $wheres ) );
-    my $it = $dbis->select( 'fields', [ '*' ], $wheres, { order_by => 'sortorder, id' } )
+    my $it = $dbis->select( 'fields', [ '*' ], { is_deleted => 0, is_global => 1 }, { order_by => 'sortorder, id' } )
         or die $dbis->error;
-    $self->stash( datas => $it );
+    $self->stash( datas => $it, used_ids => $used_ids );
     $self->render;
     $dbis->commit or die $dbis->error;
     $dbis->disconnect or die $dbis->error;
+}
+
+sub do_associate {
+    my $self = shift;
+
+    my $form_id = $self->stash('form_id');
+    my $params = $self->req->params->to_hash;
+    $self->app->log->info( "params : " . Dumper( $params ) );
+
+    my $dbis = DBIx::Simple->new( @{ $self->app->config->{dsn} } )
+        or die DBIx::Simple->error;
+    $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
+    $dbis->begin_work or die $dbis->error;
+    
+    $dbis->update( 'form_fields',
+                   { is_deleted => 1, date_deleted => 'now' },
+                   { forms_id => $form_id } )
+        or die $dbis->error;
+    
+    if( exists $params->{field_ids} ) {
+        $params->{field_ids} = [ $params->{field_ids} ]
+            unless( ref( $params->{field_ids} ) eq 'ARRAY' );
+        
+        foreach my $field_id ( @{ $params->{field_ids} } ) {
+            my $it = $dbis->select('form_fields', ['id'], { forms_id => $form_id, fields_id => $field_id } )
+                or die $dbis->error;
+            if( $it->rows ) {
+                $dbis->update( 'form_fields',
+                               { is_deleted => 0, date_updated => 'now', date_deleted => undef },
+                               { id => $it->hash->{id} } )
+                    or die $dbis->error;
+            }
+            else {
+                $dbis->insert('form_fields', { forms_id => $form_id, fields_id => $field_id } )
+                    or die $dbis->error;
+            }
+        }
+    }
+        
+    $dbis->commit or die $dbis->error;
+    $dbis->disconnect or die $dbis->error;
+    $self->redirect_to( '/admin/forms/view/' . $form_id );
 }
 
 1;

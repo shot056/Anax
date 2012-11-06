@@ -9,7 +9,7 @@
 
   <div class="actions">
     <a href="/admin/products" class="btn">一覧へ戻る</a>
-    <a href="/admin/products/edit/<%= $hash->{id} %>"" class="btn btn-primary">編集</a>
+    <a href="/admin/products/edit/<%= $hash->{id} %>" class="btn btn-primary">編集</a>
     <a href="/admin/products/disable/<%= $hash->{id} %>" class="btn btn-danger">削除</a>
   </div>
   

@@ -24,6 +24,21 @@
       <th>フォーム名</th><td><%= decode( $hash->{name} ) %></td>
     </tr>
     <tr>
+      <th>フォームの説明</th><td><%== html_br( decode( $hash->{description} ) ) %></td>
+    </tr>
+    <tr>
+      <th>メッセージ：入力画面</th><td><%== html_br( decode( $hash->{message_input} ) ) %></td>
+    </tr>
+    <tr>
+      <th>メッセージ：確認画面</th><td><%== html_br( decode( $hash->{message_confirm} ) ) %></td>
+    </tr>
+    <tr>
+      <th>メッセージ：完了画面</th><td><%== html_br( decode( $hash->{message_complete} ) ) %></td>
+    </tr>
+    <tr>
+      <th>商品選択の文言</th><td><%= decode( $hash->{product_message} ) %></td>
+    </tr>
+    <tr>
       <th>状態</th><td><% if( $hash->{is_published} ) { %>公開済み<% } else { %>未公開<% } %></td>
     </tr>
   </table>

@@ -1,0 +1,32 @@
+% layout 'admin';
+% title '関連付け商品編集';
+
+
+  <ul class="breadcrumb">
+    <li><a href="/admin/forms">フォーム</a><span class="divider">/</span></li>
+    <li><a href="/admin/forms/view/<%= stash 'form_id' %>">詳細</a><span class="divider">/</span></li>
+    <li class="active">関連付け編集</li>
+  </ul>
+
+  <form method="POST" name="admin_fields_associate" action="/admin/products/associate/<%= stash 'form_id' %>" class="form-horizontal">
+    <table class="table table-striped table-horver">
+      <tr>
+        <th><i class="icon-ok" /></th>
+        <th>商品ID</th>
+        <th>商品名</th>
+        <th>価格</th>
+      </tr>
+      % while( my $line = $datas->hash ) {
+      <tr>
+        <td><input type="checkbox" name="product_ids" value="<%= $line->{id} %>"<% if( exists $used_ids->{ $line->{id} } ) { %> checked="checked"<% } %> /></td>
+        <td><%= $line->{id} %></td>
+        <td><%= decode( $line->{name} ) %></td>
+        <td>￥<%= decode( $line->{price} ) %></td>
+      </tr>
+      % }
+    </table>
+    <div class="form-actions">
+      <a href="/admin/forms/view/<%= stash 'form_id' %>" class="btn">キャンセル</a>
+      <button type="submit" class="btn btn-primary pull-right">登録</button>
+    </div>
+  </form>

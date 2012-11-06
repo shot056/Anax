@@ -6,6 +6,7 @@ use Validator::Custom::Anax;
 
 use Mojo::Base 'Mojolicious::Controller';
 use Anax::Admin::Forms;
+use Anax::Admin::Products;
 use Tenjin;
 use CGI qw/:any/;
 
@@ -22,21 +23,29 @@ sub input {
     my $key = $self->stash('formkey');
     
     my $params = $self->req->params->to_hash;
-    
+
     my $form_setting = Anax::Admin::Forms->get_form_setting( $self->app, $key, $params->{is_admin} );
     #$self->app->log->debug( "settings : \n" . Dumper( $form_setting ) );
     $self->render_not_found unless( defined $form_setting );
+    
+    my $products     = Anax::Admin::Products->get_form_products( $self->app, $form_setting->{id} );
     
     #$self->app->log->debug( "params : \n" . Dumper( $params ) );
 
     my $forms = $self->generate_forms( $form_setting->{field_list}, $params );
     
-    my $datas = { action_base => "/form/$key",
-                  name        => $form_setting->{name},
-                  forms       => $forms,
-                  field_list  => $form_setting->{field_list},
-                  fields      => $form_setting->{fields},
-                  params      => $params
+    my $datas = { action_base     => "/form/$key",
+                  name            => $form_setting->{name} || '',
+                  description     => $self->app->html_br( $form_setting->{description} || '' ),
+                  message         => $self->app->html_br( $form_setting->{messages}->{input} || '' ),
+                  forms           => $forms,
+                  field_list      => $form_setting->{field_list},
+                  fields          => $form_setting->{fields},
+                  product_list    => $products->{list},
+                  products        => $products->{hash},
+                  product_message => $form_setting->{product_message} || '',
+                  has_products    => scalar @{$products->{list}} ? 1 : 0,
+                  params          => $params
                 };
     #$self->app->log->debug( Dumper( $datas ) );
     $self->render( text => $self->render_template( $key, 'input', $datas ) );
@@ -52,13 +61,21 @@ sub confirm {
     my $form_setting = Anax::Admin::Forms->get_form_setting( $self->app, $key, $params->{is_admin} );
     #$self->app->log->debug( "settings : \n" . Dumper( $form_setting ) );
     $self->render_not_found unless( defined $form_setting );
-
     
-    my $datas = { action_base => "/form/$key",
-                  name        => $form_setting->{name},
-                  field_list  => $form_setting->{field_list},
-                  fields      => $form_setting->{fields},
-                  params      => $params
+    my $products     = Anax::Admin::Products->get_form_products( $self->app, $form_setting->{id} );
+    
+    
+    my $datas = { action_base     => "/form/$key",
+                  name            => $form_setting->{name} || '',
+                  description     => $self->app->html_br( $form_setting->{description} || '' ),
+                  message         => $self->app->html_br( $form_setting->{messages}->{confirm} || '' ),
+                  field_list      => $form_setting->{field_list},
+                  fields          => $form_setting->{fields},
+                  product_list    => $products->{list},
+                  products        => $products->{hash},
+                  product_message => $form_setting->{product_message} || '',
+                  has_products    => scalar @{$products->{list}} ? 1 : 0,
+                  params          => $params
                 };
     my $rule = $self->generate_rule( $form_setting->{field_list} );
 
@@ -92,11 +109,19 @@ sub complete {
     #$self->app->log->debug( "settings : \n" . Dumper( $form_setting ) );
     $self->render_not_found unless( defined $form_setting );
     
-    my $datas = { action_base => "/form/$key",
-                  name        => $form_setting->{name},
-                  field_list  => $form_setting->{field_list},
-                  fields      => $form_setting->{fields},
-                  params      => $params
+    my $products     = Anax::Admin::Products->get_form_products( $self->app, $form_setting->{id} );
+    
+    my $datas = { action_base     => "/form/$key",
+                  name            => $form_setting->{name},
+                  description     => $self->app->html_br( $form_setting->{description} || '' ),
+                  message         => $self->app->html_br( $form_setting->{messages}->{complete} || '' ),
+                  field_list      => $form_setting->{field_list},
+                  fields          => $form_setting->{fields},
+                  product_list    => $products->{list},
+                  products        => $products->{hash},
+                  product_message => $form_setting->{product_message} || '',
+                  has_products    => scalar @{$products->{list}} ? 1 : 0,
+                  params          => $params
                 };
     
     my $rule = $self->generate_rule( $form_setting->{field_list} );
@@ -124,6 +149,17 @@ sub complete {
         $dbis->insert('applicant_form', { applicants_id => $applicant_id, forms_id => $form_setting->{id} } )
             or die $dbis->error;
         my $applicant_form_id = $dbis->last_insert_id( undef, 'public', 'applicant_form', 'id' );
+        if( $datas->{has_products} ) {
+            foreach my $product_id ( @{ $params->{products} } ) {
+                $dbis->insert( 'applicant_form_products', { applicants_id => $applicant_id,
+                                                            forms_id => $form_setting->{id},
+                                                            applicant_form_id => $applicant_form_id,
+                                                            products_id => $product_id,
+                                                            number => exists $params->{'product:' . $product_id} ? $params->{'product:' . $product_id} : 1
+                                                          } )
+                    or die $dbis->error;
+            }
+        }
         foreach my $field ( @{ $form_setting->{field_list} } ) {
             next if( $field->{name} eq 'email' );
             my %hash = ( applicant_form_id => $applicant_form_id,

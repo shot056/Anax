@@ -65,7 +65,19 @@ my $_buf = ""; my $_V;  $_buf .= q`<!DOCTYPE html>
 
       <form class="form-input form-horizontal" method="POST" action="` . escape_xml( $action_base ) . q`/confirm">
         <h2 class="form-signin-heading">` . escape_xml( $name ) . q`</h2>
-`;         foreach my $f ( @{$field_list} ) {
+        <p class="lead">` . ( $description ) . q`</p>
+        <p class="lead">` . ( $message ) . q`</p>
+`;         if( $has_products ) {
+ $_buf .= q`        <div class="control-group">
+          <label class="control-label" for="field_products">` . escape_xml( $product_message ) . q`</label>
+          <div class="controls">
+`;           foreach my $p ( @{$product_list} ) {
+ $_buf .= q`            <label><input type="checkbox" value="` . escape_xml( $p->{id} ) . q`" name="products">` . escape_xml( $p->{name} ) . q`</label>
+`;           }
+ $_buf .= q`          </div>
+        </div>
+`;         }
+        foreach my $f ( @{$field_list} ) {
  $_buf .= q`        <div class="control-group">
           <label class="control-label" for="` . escape_xml( $f->{name} ) . q`">` . escape_xml( $f->{desc} ) . q`</label>
           <div class="controls">

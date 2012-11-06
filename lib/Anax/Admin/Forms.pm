@@ -77,6 +77,11 @@ sub register {
         $dbis->begin_work or die $dbis->error;
         my $hash = { key => $params->{key},
                      name => $params->{name},
+                     description => $params->{description},
+                     product_description => $params->{product_description},
+                     message_input => $params->{message_input},
+                     message_confirm => $params->{message_confirm},
+                     message_complete => $params->{message_complete},
 #                     is_published => $params->{is_published}
                    };
         if( defined $id and $id =~ /^\d+$/ ) {
@@ -114,7 +119,12 @@ sub view {
     my $fields_it = $dbis->query( "SELECT f.*, ff.sortorder AS p_sortorder FROM fields AS f, form_fields AS ff WHERE ff.is_deleted = FALSE AND f.is_deleted = FALSE AND ff.fields_id = f.id AND ff.forms_id = ? ORDER BY ff.sortorder,f.sortorder,ff.id,f.id;",
                                   $data->{id} )
         or die $dbis->error;
-    $self->stash( hash => $data, fields => $fields_it );
+
+    my $products_it = $dbis->query( "SELECT p.* FROM products AS p, form_products AS fp WHERE p.is_deleted = FALSE AND fp.is_deleted = FALSE AND fp.products_id = p.id AND fp.forms_id = ? ORDER BY fp.sortorder, fp.id, p.id",
+                                    $data->{id} )
+        or die $dbis->error;
+    
+    $self->stash( hash => $data, fields => $fields_it, products => $products_it );
     $self->render;
     $dbis->commit;
     $dbis->disconnect or die $dbis->error;
@@ -217,6 +227,11 @@ sub get_form_setting {
     my $setting = { id => $form->{id},
                     key => $form->{key},
                     name => Mojo::ByteStream->new( $form->{name} )->decode->to_string,
+                    description => Mojo::ByteStream->new( $form->{description} || '' )->decode->to_string,
+                    product_message => Mojo::ByteStream->new( $form->{product_message} || '' )->decode->to_string,
+                    messages => { input => Mojo::ByteStream->new( $form->{message_input} || '' )->decode->to_string,
+                                  confirm => Mojo::ByteStream->new( $form->{message_confirm} || '' )->decode->to_string,
+                                  complete => Mojo::ByteStream->new( $form->{message_complete} || '' )->decode->to_string },
                     fields => { email =>  { is_required => 1,
                                             desc => Mojo::ByteStream->new( 'メールアドレス' )->decode,
                                             name => 'email',
@@ -250,6 +265,7 @@ sub get_form_setting {
     }
     $dbis->commit;
     $dbis->disconnect or die $dbis->error;
+    $app->log->debug( Dumper( $setting ) );
     return $setting;
 }
 

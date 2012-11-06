@@ -113,6 +113,9 @@ sub startup {
     $r->route('/admin/products/edit/:id', id => qr/\d+/ )->via('POST')->to( controller => 'Admin::Products', action => 'register' );
     $r->route('/admin/products/view/:id', id => qr/\d+/ )->via('GET' )->to( controller => 'Admin::Products', action => 'view' );
 
+    $r->route('/admin/products/associate/:form_id', form_id => qr/\d+/ )->via('GET')->to( controller => 'Admin::Products', action => 'associate' );
+    $r->route('/admin/products/associate/:form_id', form_id => qr/\d+/ )->via('POST')->to( controller => 'Admin::Products', action => 'do_associate' );
+    
     $r->route('/admin/product/:product_id/images/add',         product_id => qr/\d+/                )
         ->via('GET' )->to( controller => 'Admin::Product::Images', action => 'input' );
     $r->route('/admin/product/:product_id/images/add',         product_id => qr/\d+/                )

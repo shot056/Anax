@@ -4,4 +4,10 @@
     <ul class="breadcrumb">
       <li>ホーム<span class="divider">/</span></li>
     </ul>
+    <div class="bs-docs-todo">
+      <pre><%= decode( $todo ) %></pre>
+    </div>
     
+    <div class="bs-docs-changes">
+      <pre><%= decode( $changes ) %></pre>
+    </div>
