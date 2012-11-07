@@ -1,2 +1,2 @@
 #!/bin/sh
-./vendor/perl-deps/bin/starman --port $PORT ./script/anax
+ /usr/bin/env perl ./vendor/perl-deps/bin/starman --port $PORT ./script/anax
