@@ -1,2 +1,2 @@
 #!/bin/sh
-./script/anax daemon -l http://*:$PORT -m production
+./vendor/perl-deps/bin/starman --port $PORT ./script/anax
