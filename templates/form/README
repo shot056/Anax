@@ -1,0 +1,23 @@
+使えるテンプレートタグ一覧
+    
+    タグ                : 説明
+    [= $action_base =] : フォームのPOST先
+    [= $name =]        : フォーム名
+    [= $description =] : フォームの説明
+    [= $message =]     : 各画面でのメッセージ
+
+    [= $products->{商品ID}->{XXXX} =] : XXXX に入れる値により商品の各値が取得できます
+    [= $products->{商品ID}->{id} =]          : 商品ID
+    [= $products->{商品ID}->{name} =]        : 商品名
+    [= $products->{商品ID}->{description} =] : 商品説明
+    [= $products->{商品ID}->{price} =]       : 商品価格
+    
+    
+    [== $forms->{field_項目ID} =]                : 項目IDを"項目ID"に入れると、入力フォーム、hiddenフォームが取得できます
+    [= $fields->{field_項目ID}->{XXXX} =]        : XXXX に入れる値により項目の各値が取得できます
+    [= $fields->{field_項目ID}->{id} =]          : 項目ID
+    [= $fields->{field_項目ID}->{name} =]        : 項目のフォーム名
+    [= $fields->{field_項目ID}->{desc} =]        : 項目名
+    [= $fields->{field_項目ID}->{is_required} =] : 必須かどうか
+
+
