@@ -1,5 +1,56 @@
 {
    "modules" : {
+      "Class::Accessor" : {
+         "dist" : "Class-Accessor-0.34",
+         "mymeta" : {
+            "abstract" : "unknown",
+            "author" : [
+               "Marty Pauley <marty+perl@kasei.com>"
+            ],
+            "dynamic_config" : 0,
+            "generated_by" : "ExtUtils::MakeMaker version 6.42, CPAN::Meta::Converter version 2.120630",
+            "license" : [
+               "perl_5"
+            ],
+            "meta-spec" : {
+               "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+               "version" : "2"
+            },
+            "name" : "Class-Accessor",
+            "prereqs" : {
+               "build" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "0"
+                  }
+               },
+               "runtime" : {
+                  "requires" : {
+                     "base" : "1.01"
+                  }
+               }
+            },
+            "release_status" : "stable",
+            "version" : "0.34"
+         },
+         "name" : "Class::Accessor",
+         "pathname" : "K/KA/KASEI/Class-Accessor-0.34.tar.gz",
+         "provides" : {
+            "Class::Accessor" : {
+               "file" : "Class/Accessor.pm",
+               "version" : "0.34"
+            },
+            "Class::Accessor::Fast" : {
+               "file" : "Class/Accessor/Fast.pm",
+               "version" : "0.34"
+            },
+            "Class::Accessor::Faster" : {
+               "file" : "Class/Accessor/Faster.pm",
+               "version" : "0.34"
+            }
+         },
+         "target" : "Class::Accessor::Fast",
+         "version" : "0.34"
+      },
       "Class::Accessor::Grouped" : {
          "dist" : "Class-Accessor-Grouped-0.10006",
          "mymeta" : {
@@ -361,7 +412,7 @@
          "version" : "1.4"
       },
       "Class::XSAccessor" : {
-         "dist" : "Class-XSAccessor-1.14",
+         "dist" : "Class-XSAccessor-1.16",
          "mymeta" : {
             "abstract" : "Generate fast XS accessors without runtime compilation",
             "author" : [
@@ -408,14 +459,14 @@
                   "url" : "git://github.com/tsee/Class-XSAccessor.git"
                }
             },
-            "version" : "1.14"
+            "version" : "1.16"
          },
          "name" : "Class::XSAccessor",
-         "pathname" : "S/SM/SMUELLER/Class-XSAccessor-1.14.tar.gz",
+         "pathname" : "S/SM/SMUELLER/Class-XSAccessor-1.16.tar.gz",
          "provides" : {
             "Class::XSAccessor" : {
                "file" : "Class/XSAccessor.pm",
-               "version" : "1.14"
+               "version" : "1.16"
             },
             "Class::XSAccessor::Array" : {
                "file" : "Class/XSAccessor/Array.pm",
@@ -423,7 +474,7 @@
             }
          },
          "target" : "Class::XSAccessor",
-         "version" : "1.14"
+         "version" : "1.16"
       },
       "Clone" : {
          "dist" : "Clone-0.31",
@@ -8325,7 +8376,7 @@
          "version" : "6.01"
       },
       "HTTP::Parser::XS" : {
-         "dist" : "HTTP-Parser-XS-0.14",
+         "dist" : "HTTP-Parser-XS-0.15",
          "mymeta" : {
             "abstract" : "a fast, primitive HTTP request parser",
             "author" : [
@@ -8370,21 +8421,21 @@
                   "http://dev.perl.org/licenses/"
                ]
             },
-            "version" : "0.14"
+            "version" : "0.15"
          },
          "name" : "HTTP::Parser::XS",
-         "pathname" : "K/KA/KAZUHO/HTTP-Parser-XS-0.14.tar.gz",
+         "pathname" : "K/KA/KAZUHO/HTTP-Parser-XS-0.15.tar.gz",
          "provides" : {
             "HTTP::Parser::XS" : {
                "file" : "HTTP/Parser/XS.pm",
-               "version" : "0.14"
+               "version" : "0.15"
             },
             "HTTP::Parser::XS::PP" : {
                "file" : "HTTP/Parser/XS/PP.pm"
             }
          },
          "target" : "HTTP::Parser::XS",
-         "version" : "0.14"
+         "version" : "0.15"
       },
       "Hash::Merge" : {
          "dist" : "Hash-Merge-0.12",
@@ -9034,6 +9085,72 @@
          "target" : "List::MoreUtils",
          "version" : "0.33"
       },
+      "MRO::Compat" : {
+         "dist" : "MRO-Compat-0.11",
+         "mymeta" : {
+            "abstract" : "mro::* interface compatibility for Perls < 5.9.5",
+            "author" : [
+               "Brandon L. Black, <blblack@gmail.com>"
+            ],
+            "dynamic_config" : 0,
+            "generated_by" : "Module::Install version 0.91, CPAN::Meta::Converter version 2.120630",
+            "license" : [
+               "perl_5"
+            ],
+            "meta-spec" : {
+               "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+               "version" : "2"
+            },
+            "name" : "MRO-Compat",
+            "no_index" : {
+               "directory" : [
+                  "inc",
+                  "t"
+               ]
+            },
+            "prereqs" : {
+               "build" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "0"
+                  }
+               },
+               "configure" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "6.42"
+                  }
+               },
+               "runtime" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "6.42",
+                     "Test::More" : "0.47"
+                  }
+               }
+            },
+            "provides" : {
+               "MRO::Compat" : {
+                  "file" : "lib/MRO/Compat.pm",
+                  "version" : "0.11"
+               }
+            },
+            "release_status" : "stable",
+            "resources" : {
+               "license" : [
+                  "http://dev.perl.org/licenses/"
+               ]
+            },
+            "version" : "0.11"
+         },
+         "name" : "MRO::Compat",
+         "pathname" : "F/FL/FLORA/MRO-Compat-0.11.tar.gz",
+         "provides" : {
+            "MRO::Compat" : {
+               "file" : "MRO/Compat.pm",
+               "version" : "0.11"
+            }
+         },
+         "target" : "MRO::Compat",
+         "version" : "0.11"
+      },
       "Math::Round" : {
          "dist" : "Math-Round-0.06",
          "mymeta" : {
@@ -9577,6 +9694,77 @@
          },
          "target" : "Mojolicious",
          "version" : "3.54"
+      },
+      "Mojolicious::Plugin::CSRFDefender" : {
+         "dist" : "Mojolicious-Plugin-CSRFDefender-0.0.6",
+         "mymeta" : {
+            "abstract" : "Defend CSRF automatically in Mojolicious Application",
+            "author" : [
+               "Yuki Shibazaki <shibayu36@gmail.com>"
+            ],
+            "dynamic_config" : 0,
+            "generated_by" : "Module::Install version 1.00, CPAN::Meta::Converter version 2.120630",
+            "license" : [
+               "perl_5"
+            ],
+            "meta-spec" : {
+               "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+               "version" : "2"
+            },
+            "name" : "Mojolicious-Plugin-CSRFDefender",
+            "no_index" : {
+               "directory" : [
+                  "inc",
+                  "t",
+                  "xt"
+               ]
+            },
+            "prereqs" : {
+               "build" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "6.42",
+                     "Mojolicious::Lite" : "0",
+                     "Test::Class" : "0",
+                     "Test::Mojo" : "0",
+                     "Test::More" : "0"
+                  }
+               },
+               "configure" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "6.42"
+                  }
+               },
+               "runtime" : {
+                  "requires" : {
+                     "Class::Accessor::Fast" : "0",
+                     "Mojolicious" : "1.43",
+                     "Mojolicious::Lite" : "0",
+                     "Path::Class" : "0",
+                     "String::Random" : "0",
+                     "Test::Class" : "0",
+                     "Test::Mojo" : "0",
+                     "Test::More" : "0"
+                  }
+               }
+            },
+            "release_status" : "stable",
+            "resources" : {
+               "license" : [
+                  "http://dev.perl.org/licenses/"
+               ]
+            },
+            "version" : "0.0.6"
+         },
+         "name" : "Mojolicious::Plugin::CSRFDefender",
+         "pathname" : "S/SH/SHIBAZAKI/Mojolicious-Plugin-CSRFDefender-0.0.6.tar.gz",
+         "provides" : {
+            "Mojolicious::Plugin::CSRFDefender" : {
+               "file" : "Mojolicious/Plugin/CSRFDefender.pm",
+               "version" : "v0.0.6"
+            }
+         },
+         "target" : "Mojolicious::Plugin::CSRFDefender",
+         "version" : "v0.0.6"
       },
       "Net::HTTP" : {
          "dist" : "Net-HTTP-6.03",
@@ -10670,6 +10858,90 @@
          "target" : "Params::Validate",
          "version" : "1.07"
       },
+      "Path::Class" : {
+         "dist" : "Path-Class-0.26",
+         "mymeta" : {
+            "abstract" : "Cross-platform path specification manipulation",
+            "author" : [
+               "Ken Williams <kwilliams@cpan.org>"
+            ],
+            "dynamic_config" : 0,
+            "generated_by" : "Module::Build version 0.3901, CPAN::Meta::Converter version 2.120630",
+            "license" : [
+               "perl_5"
+            ],
+            "meta-spec" : {
+               "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+               "version" : "2"
+            },
+            "name" : "Path-Class",
+            "prereqs" : {
+               "build" : {
+                  "requires" : {
+                     "Module::Build" : "0.3601",
+                     "Test" : "0",
+                     "Test::More" : "0",
+                     "warnings" : "0"
+                  }
+               },
+               "configure" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "6.30",
+                     "Module::Build" : "0.3601"
+                  }
+               },
+               "runtime" : {
+                  "requires" : {
+                     "Carp" : "0",
+                     "Cwd" : "0",
+                     "Exporter" : "0",
+                     "File::Path" : "0",
+                     "File::Spec" : "0.87",
+                     "File::Temp" : "0",
+                     "File::stat" : "0",
+                     "IO::Dir" : "0",
+                     "IO::File" : "0",
+                     "base" : "0",
+                     "overload" : "0",
+                     "strict" : "0"
+                  }
+               }
+            },
+            "release_status" : "stable",
+            "resources" : {
+               "bugtracker" : {
+                  "web" : "http://rt.cpan.org/Public/Dist/Display.html?Name=Path-Class"
+               },
+               "repository" : {
+                  "type" : "git",
+                  "url" : "git://github.com/kenahoo/Path-Class.git"
+               }
+            },
+            "version" : "0.26"
+         },
+         "name" : "Path::Class",
+         "pathname" : "K/KW/KWILLIAMS/Path-Class-0.26.tar.gz",
+         "provides" : {
+            "Path::Class" : {
+               "file" : "Path/Class.pm",
+               "version" : "0.26"
+            },
+            "Path::Class::Dir" : {
+               "file" : "Path/Class/Dir.pm",
+               "version" : "0.26"
+            },
+            "Path::Class::Entity" : {
+               "file" : "Path/Class/Entity.pm",
+               "version" : "0.26"
+            },
+            "Path::Class::File" : {
+               "file" : "Path/Class/File.pm",
+               "version" : "0.26"
+            }
+         },
+         "target" : "Path::Class",
+         "version" : "0.26"
+      },
       "Plack" : {
          "dist" : "Plack-1.0010",
          "mymeta" : {
@@ -11354,6 +11626,55 @@
          "target" : "Stream::Buffered",
          "version" : "0.02"
       },
+      "String::Random" : {
+         "dist" : "String-Random-0.22",
+         "mymeta" : {
+            "abstract" : "Perl module to generate random strings based on a pattern",
+            "author" : [
+               "Steven Pritchard <steve@silug.org>"
+            ],
+            "dynamic_config" : 0,
+            "generated_by" : "Module::Build version 0.3901, CPAN::Meta::Converter version 2.120630",
+            "license" : [
+               "perl_5"
+            ],
+            "meta-spec" : {
+               "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+               "version" : "2"
+            },
+            "name" : "String-Random",
+            "prereqs" : {
+               "runtime" : {
+                  "requires" : {
+                     "Test::More" : "0"
+                  }
+               }
+            },
+            "provides" : {
+               "String::Random" : {
+                  "file" : "lib/String/Random.pm",
+                  "version" : "0.22"
+               }
+            },
+            "release_status" : "stable",
+            "resources" : {
+               "license" : [
+                  "http://dev.perl.org/licenses/"
+               ]
+            },
+            "version" : "0.22"
+         },
+         "name" : "String::Random",
+         "pathname" : "S/ST/STEVE/String-Random-0.22.tar.gz",
+         "provides" : {
+            "String::Random" : {
+               "file" : "String/Random.pm",
+               "version" : "0.22"
+            }
+         },
+         "target" : "String::Random",
+         "version" : "0.22"
+      },
       "Sub::Exporter" : {
          "dist" : "Sub-Exporter-0.984",
          "mymeta" : {
@@ -11959,6 +12280,92 @@
          },
          "target" : "Tenjin",
          "version" : "0.070001"
+      },
+      "Test::Class" : {
+         "dist" : "Test-Class-0.37",
+         "mymeta" : {
+            "abstract" : "Easily create test classes in an xUnit/JUnit style",
+            "author" : [
+               "Adrian Howard <adrianh@quietstars.com>, Curtis \"Ovid\" Poe, <ovid at cpan.org>, Mark Morgan <makk384@gmail.com>."
+            ],
+            "dynamic_config" : 0,
+            "generated_by" : "Module::Build version 0.3901, CPAN::Meta::Converter version 2.120630",
+            "license" : [
+               "perl_5"
+            ],
+            "meta-spec" : {
+               "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+               "version" : "2"
+            },
+            "name" : "Test-Class",
+            "prereqs" : {
+               "build" : {
+                  "requires" : {
+                     "IO::File" : "1.09",
+                     "Test::Exception" : "0.25"
+                  }
+               },
+               "configure" : {
+                  "requires" : {
+                     "Module::Build" : "0.38"
+                  }
+               },
+               "runtime" : {
+                  "requires" : {
+                     "Attribute::Handlers" : "0.77",
+                     "MRO::Compat" : "0.11",
+                     "Storable" : "2.04",
+                     "Test::Builder" : "0.78",
+                     "Test::Builder::Tester" : "1.02",
+                     "Test::More" : "0.78",
+                     "Test::Simple" : "0.78",
+                     "perl" : "5.006001"
+                  }
+               }
+            },
+            "provides" : {
+               "Test::Class" : {
+                  "file" : "lib/Test/Class.pm",
+                  "version" : "0.37"
+               },
+               "Test::Class::Load" : {
+                  "file" : "lib/Test/Class/Load.pm",
+                  "version" : "0.35"
+               },
+               "Test::Class::MethodInfo" : {
+                  "file" : "lib/Test/Class/MethodInfo.pm",
+                  "version" : "0.34"
+               }
+            },
+            "release_status" : "stable",
+            "resources" : {
+               "license" : [
+                  "http://dev.perl.org/licenses/"
+               ],
+               "repository" : {
+                  "url" : "http://github.com/adrianh/test-class/"
+               }
+            },
+            "version" : "0.37"
+         },
+         "name" : "Test::Class",
+         "pathname" : "A/AD/ADIE/Test-Class-0.37.tar.gz",
+         "provides" : {
+            "Test::Class" : {
+               "file" : "Test/Class.pm",
+               "version" : "0.37"
+            },
+            "Test::Class::Load" : {
+               "file" : "Test/Class/Load.pm",
+               "version" : "0.35"
+            },
+            "Test::Class::MethodInfo" : {
+               "file" : "Test/Class/MethodInfo.pm",
+               "version" : "0.34"
+            }
+         },
+         "target" : "Test::Class",
+         "version" : "0.37"
       },
       "Test::Deep" : {
          "dist" : "Test-Deep-0.110",
@@ -13091,7 +13498,7 @@
          "version" : "1.22"
       },
       "Tree::DAG_Node" : {
-         "dist" : "Tree-DAG_Node-1.07",
+         "dist" : "Tree-DAG_Node-1.08",
          "mymeta" : {
             "abstract" : "An N-ary tree",
             "author" : [
@@ -13129,7 +13536,7 @@
             "provides" : {
                "Tree::DAG_Node" : {
                   "file" : "lib/Tree/DAG_Node.pm",
-                  "version" : "1.07"
+                  "version" : "1.08"
                }
             },
             "release_status" : "stable",
@@ -13138,18 +13545,18 @@
                   "http://dev.perl.org/licenses/"
                ]
             },
-            "version" : "1.07"
+            "version" : "1.08"
          },
          "name" : "Tree::DAG_Node",
-         "pathname" : "R/RS/RSAVAGE/Tree-DAG_Node-1.07.tgz",
+         "pathname" : "R/RS/RSAVAGE/Tree-DAG_Node-1.08.tgz",
          "provides" : {
             "Tree::DAG_Node" : {
                "file" : "Tree/DAG_Node.pm",
-               "version" : "1.07"
+               "version" : "1.08"
             }
          },
          "target" : "Tree::DAG_Node",
-         "version" : "1.07"
+         "version" : "1.08"
       },
       "Try::Tiny" : {
          "dist" : "Try-Tiny-0.11",
