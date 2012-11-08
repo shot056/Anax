@@ -29,6 +29,8 @@ sub startup {
     # $self->plugin('PODRenderer');
     $self->plugin('Config');
     $self->plugin('TagHelpers');
+    $self->plugin('CSRFDefender');
+    
     $self->helper( b => sub {
                        my $self = shift;
                        return Mojo::ByteStream->new(@_);
@@ -65,9 +67,28 @@ sub startup {
                        $ret =~ s/\n/<br \/>\n/g;
                        return $ret;
                    } );
+    $self->app->sessions->cookie_name('anax_session');
     # Router
     my $r = $self->routes;
-    
+
+    $r = $r->bridge->to( cb => sub {
+        my $self = shift;
+
+        $self->app->log->info( "++++++++++ Start Request ++++++++++" );
+        $self->app->log->info( "Request: " . $self->req->url->to_string );
+        $self->app->log->info( "Params : \n" . Dumper( $self->req->params->to_hash ) );
+        $self->app->log->info( "Session: \n" . Dumper( $self->session ) );
+        
+        return 1 unless( $self->req->url->to_string =~ m!^/admin! );
+        return 1 if( $self->req->url->to_string eq '/admin/login' );
+        if( $self->session('is_logged_in') ) {
+            return 1;
+        }
+        else {
+            $self->redirect_to( '/admin/login' );
+            return 0;
+        }
+    } );
     # Normal route to controller
 #    $r->get('/')->to('example#welcome');
 
@@ -79,6 +100,10 @@ sub startup {
     $r->route('/form/:formkey/complete', id => qr/\w+/ )->via('POST')->to( controller => 'Form', action => 'complete' );
 
     $r->route('/admin')->via('GET')->to( controller => 'Admin', action => 'index' );
+    
+    $r->route('/admin/login' )->via('GET' )->to( controller => 'Admin', action => 'login' );
+    $r->route('/admin/login' )->via('POST')->to( controller => 'Admin', action => 'do_login' );
+    $r->route('/admin/logout')->via('GET' )->to( controller => 'Admin', action => 'logout' );
     
     $r->route('/admin/forms'                            )->via('GET' )->to( controller => 'Admin::Forms', action => 'index' );
     $r->route('/admin/forms/add'                        )->via('GET' )->to( controller => 'Admin::Forms', action => 'input' );

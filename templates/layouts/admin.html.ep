@@ -44,6 +44,9 @@
               <li<% if( stash->{controller} eq 'Admin::Fields' ) { %> class="active"<% } %>><a href="/admin/fields">項目</a></li>
               <li<% if( stash->{controller} eq 'Admin::Products' ) { %> class="active"<% } %>><a href="/admin/products">商品</a></li>
             </ul>
+            <p class="navbar-text pull-right">
+              <a href="/admin/logout" class="navbar-link">ログアウト</a>
+            </p>
           </div><!--/.nav-collapse -->
         </div>
       </div>
