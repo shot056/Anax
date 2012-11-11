@@ -15,7 +15,7 @@ my $vc = Validator::Custom::Anax->new;
 
 sub input {
     my $self   = shift;
-    my $params = shift;
+    my $params = $self->req->params->to_hash;
     if( my $id = $self->stash('id') ) {
         my $dbis = DBIx::Simple->new( @{ $self->app->config->{dsn} } )
             or die DBIx::Simple->error;

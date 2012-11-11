@@ -47,8 +47,9 @@ sub startup {
     $self->helper( decode => sub {
                        my $self = shift;
                        my $str  = shift;
-                       return '' unless( defined $str ); 
-                       return Mojo::ByteStream->new( $str )->decode;
+                       return '' unless( defined $str and length( $str ) );
+                       my $ret = Mojo::ByteStream->new( $str )->decode;
+                       return length( $ret ) ? $ret : $str;
                    } );
     $self->helper( date => sub {
                        my $self = shift;

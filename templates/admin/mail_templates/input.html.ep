@@ -78,6 +78,9 @@
         <textarea name="body" rows="20"><%= decode( $params->{body} ) %></textarea>
         <span class="help-inline">
           メールの本文を入力してください。
+          % if( exists $messages->{body} ) {
+          <p class="text-error"><%= decode( $messages->{body} ) %></p>
+          % }
         </span>
       </div>
     </div>

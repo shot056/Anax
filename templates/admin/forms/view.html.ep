@@ -163,9 +163,9 @@
       <th colspan="2">本文</th>
     </tr>
     <tr>
-      <td colspan="2"><pre>
-<%= decode( $mail_template->{body} ) %>
-      </pre></td>
+      <td colspan="2">
+<%== html_br( decode( $mail_template->{body} ) ) %>
+      </td>
     </tr>
   </table>
   % }
