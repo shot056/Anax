@@ -176,7 +176,8 @@ sub startup {
         ->via('POST')->to( controller => 'Admin::Product::Images', action => 'do_disable' );
     
     
-    $r->route('/admin/applicants'                        )->via('GET' )->to( controller => 'Admin::Applicants', action => 'index' );
+    $r->route('/admin/applicants'                                                      )->via('GET')->to( controller => 'Admin::Applicants', action => 'index' );
+    $r->route('/admin/applicants/view/:id/:form_id', id => qr/\d+/, form_id => qr/\d+/ )->via('GET')->to( controller => 'Admin::Applicants', action => 'view' );
 }
 
 1;

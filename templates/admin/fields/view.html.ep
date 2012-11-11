@@ -38,9 +38,9 @@
     </tr>
     % }
   </table>
+  % if( grep( $_ eq $hash->{type}, qw/checkbox radio popup select/ ) ) {
   <hr />
 
-  % if( grep( $_ eq $hash->{type}, qw/checkbox radio popup select/ ) ) {
   <div class="actions">
     <a href="/admin/field/<%= $hash->{id} %>/options/add<% if( param 'forms_id' ) { %>?forms_id=<%= param 'forms_id' %><% } %>" class="btn btn-primary">選択肢追加</a>
   </div>

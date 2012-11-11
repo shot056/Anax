@@ -15,8 +15,10 @@
           <th>メールアドレス</th>
           <th>フォーム名</th>
           <th>詳細</th>
+          <!--
           <th>編集</th>
           <th>削除</th>
+          -->
         </tr>
       </thead>
       <tbody>
@@ -27,9 +29,11 @@
           <td><%= date( $line->{date_updated} ) %></td>
           <td><%= decode( $line->{email} ) %></td>
           <td><a href="/admin/forms/view/<%= $line->{form_id} %>"><%= decode( $line->{form_name} ) %></a></td>
-          <td><a href="/admin/applicants/view/<%= $line->{id} %>">詳細</a></td>
-          <td><a href="/admin/applicants/edit/<%= $line->{id} %>">編集</a></td>
-          <td><a href="/admin/applicants/disable/<%= $line->{id} %>">削除</a></td>
+          <td><a href="/admin/applicants/view/<%= $line->{id} %>/<%= $line->{form_id} %>">詳細</a></td>
+          <!--
+          <td><a href="/admin/applicants/edit/<%= $line->{id} %>/<%= $line->{form_id} %>">編集</a></td>
+          <td><a href="/admin/applicants/disable/<%= $line->{id} %>/<%= $line->{form_id} %>">削除</a></td>
+          -->
         </tr>
       % }
       </tbody>

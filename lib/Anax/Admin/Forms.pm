@@ -260,10 +260,12 @@ sub get_form_setting {
             my $options_it = $dbis->select('field_options', ['*'], { is_deleted => 0, fields_id => $fline->{id} }, { order_by => 'sortorder, id' } )
                 or die $dbis->error;
             $field->{options} = [];
+            $field->{options_hash} = {};
             while( my $oline = $options_it->hash ) {
                 my $option = { name => b( $oline->{name} )->decode->to_string,
                                value => $oline->{id} };
                 push( @{ $field->{options} }, $option );
+                $field->{options_hash}->{ $oline->{id} } = b( $oline->{name} )->decode->to_string;
             }
         }
         $setting->{fields}->{ $field->{name} } = $field;

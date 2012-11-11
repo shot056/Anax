@@ -42,9 +42,9 @@
     <input type="hidden" name="forms_id" value="<%= param 'forms_id' %>" />
     % }
   </form>
+  % if( grep( $_ eq $hash->{type}, qw/checkbox radio popup select/ ) ) {
   <hr />
 
-  % if( grep( $_ eq $hash->{type}, qw/checkbox radio popup select/ ) ) {
   <table class="table table-striped table-hover">
     <thead>
       <tr>

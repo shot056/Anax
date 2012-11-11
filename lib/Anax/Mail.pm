@@ -45,6 +45,7 @@ sub sendmail {
     $charset = 'utf8' unless( grep( $charset eq $_, qw/utf8 iso_2022_jp/ ) );
     
     my %header = ( From => $charset eq 'utf8' ? $parts->{from} : Jcode::CP932->new( $parts->{from} )->$charset,
+                   'Return-Path' => $charset eq 'utf8' ? $parts->{from} : Jcode::CP932->new( $parts->{from} )->$charset,
                    To   => $charset eq 'utf8' ? $parts->{to} : Jcode::CP932->new( $parts->{to} )->$charset,
                    'Content-Transfer-Encoding' => '7bit' );
     if( $charset eq 'utf8' ) {
