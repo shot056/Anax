@@ -44,8 +44,8 @@ sub sendmail {
     my $charset = $tmpl->{charset};
     $charset = 'utf8' unless( grep( $charset eq $_, qw/utf8 iso_2022_jp/ ) );
     
-    my %header = ( From => Jcode::CP932->new( $parts->{from} )->$charset,
-                   To   => Jcode::CP932->new( $parts->{to} )->$charset,
+    my %header = ( From => $charset eq 'utf8' ? $parts->{from} : Jcode::CP932->new( $parts->{from} )->$charset,
+                   To   => $charset eq 'utf8' ? $parts->{to} : Jcode::CP932->new( $parts->{to} )->$charset,
                    'Content-Transfer-Encoding' => '7bit' );
     if( $charset eq 'utf8' ) {
         $header{'Content-Type'} = 'text/plain; charset=UTF-8';
@@ -60,7 +60,7 @@ sub sendmail {
     
     {
         my @encoded_subjects;
-        foreach my $splited_str ( Jcode::CP932->new( Jcode::CP932->new( $parts->{subject} )->$charset )->jfold( 20 ) ) {
+        foreach my $splited_str ( Jcode::CP932->new( $charset eq 'utf8' ? $parts->{subject} : Jcode::CP932->new( $parts->{subject} )->$charset )->jfold( 20 ) ) {
             my $str = encode_base64( $splited_str );
             chomp( $str );
             push( @encoded_subjects, $str );
@@ -75,7 +75,7 @@ sub sendmail {
     
     my $email = Email::Simple->create(
         header => [ %header ],
-        body => $parts->{body}
+        body => $charset eq 'utf8' ? $parts->{body} : Jcode::CP932->new( $parts->{body} )->$charset
     );
 #    $email->header_str_set( 'Cc' => Jcode::CP932->new( $parts->{cc} )->$charset )
 #        if( exists $parts->{cc} and defined $parts->{cc} and length( $parts->{cc} ) );
