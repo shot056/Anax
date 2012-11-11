@@ -5,6 +5,7 @@ use warnings;
 use Validator::Custom::Anax;
 
 use Mojo::Base 'Mojolicious::Controller';
+use Mojo::ByteStream 'b';
 use Anax::Mail;
 use Anax::Admin::Forms;
 use Anax::Admin::Products;
@@ -79,11 +80,12 @@ sub confirm {
                   params          => $params
                 };
     my $rule = $self->generate_rule( $form_setting->{field_list} );
-
+    
     my $vresult = $vc->validate( $params, $rule );
     unless( $vresult->is_ok ) {
         $self->stash( missing => 1 ) if( $vresult->has_missing );
-        $self->stash( messages => $vresult->messages_to_hash )
+        $self->stash( messages => $vresult->messages_to_hash );
+        $datas->{messages} = $vresult->messages_to_hash
             if( $vresult->has_invalid );
         
         $datas->{forms} = $self->generate_forms( $form_setting->{field_list}, $params );
@@ -135,7 +137,8 @@ sub complete {
     $self->app->log->debug( Dumper( $datas ) );
     
     my $rule = $self->generate_rule( $form_setting->{field_list} );
-
+    $self->app->log->debug( "rule : \n" . Dumper( $rule ) );
+    
     my $vresult = $vc->validate( $params, $rule );
     unless( $vresult->is_ok ) {
         $self->stash( missing => 1 ) if( $vresult->has_missing );
@@ -194,7 +197,7 @@ sub complete {
         if( $mail_templates_it->rows ) {
             my $id = $mail_templates_it->hash->{id};
             my $mail = Anax::Mail->new( $self->app );
-            $mail->send( $id, $datas );
+            $mail->sendmail( $id, $datas );
         }
         $self->render( text => $self->render_template( $key, 'complete', $datas ) );
         $dbis->commit;
@@ -206,7 +209,23 @@ sub complete {
 sub generate_rule {
     my $self   = shift;
     my $fields = shift;
-    return [];
+    $self->app->log->debug( Dumper( $fields ) );
+
+    my %msgs = ( email => b( '正しいメールアドレスを入力してください。' )->decode->to_string,
+                 integer => b( '半角数字で入力してください。' )->decode->to_string,
+                 ascii => b( '半角英数字で入力してください。' )->decode->to_string );
+    my $rules = [];
+    foreach my $f ( @{ $fields } ) {
+        my $c = [];
+        if( exists $f->{is_required} and defined $f->{is_required} and $f->{is_required} ) {
+            push( @{ $c }, [ 'not_blank', b( '必ず入力してください。' )->decode->to_string ] );
+        }
+        if( exists $f->{error_check} and defined $f->{error_check} and length( $f->{error_check} ) ) {
+            push( @{ $c }, [ $f->{error_check}, $msgs{ $f->{error_check} } ] );
+        }
+        push( @{ $rules }, $f->{name} => $c ) if( scalar @{ $c } );
+    }
+    return $rules;
 }
 
 sub replace_params2value {
@@ -302,8 +321,13 @@ sub generate_forms {
                 $label = join(", ", map { $mopts{'-labels'}->{ $_ } } @{ $mopts{'-default'} } );
             }
         }
+        $self->app->log->debug( Dumper( \%mopts ) );
         if( $is_hidden ) {
-            $fields{ $field->{name} } = $cgi->hidden( -name => $mopts{'-name'}, -value => $mopts{'-default'} ) . CGI::escapeHTML( $label );
+            $fields{ $field->{name} } = $cgi->hidden( -name => $mopts{'-name'}, -value => $mopts{'-default'} );
+            $label = CGI::escapeHTML( $label );
+            $label =~ s/\r\n/\n/g;
+            $label =~ s/\n/<br \/>\n/g;
+            $fields{ $field->{name} } .= $label;
         }
         else {
             $fields{ $field->{name} } = $cgi->$method( %mopts );
