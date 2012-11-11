@@ -1,0 +1,91 @@
+% layout 'admin';
+% title 'メールテンプレート登録';
+
+  <ul class="breadcrumb">
+    <li><a href="/admin/forms">フォーム</a><span class="divider">/</span></li>
+    <li class="active">登録</li>
+  </ul>
+  % if( exists $params->{id} ) {
+  <form method="POST" name="admin_mail_templates_edit" action="/admin/mailtemplates/edit/<%= $params->{id} %>" class="form-horizontal">
+  % } else {
+  <form method="POST" name="admin_mail_templates_add" action="/admin/mailtemplates/add" class="form-horizontal">
+  % }
+    <div class="control-group">
+      <label class="control-label" for="field_from">From</label>
+      <div class="controls">
+        <input type="text" id="field_from" name="from" placeholder="" value="<%= decode( $params->{from} ) %>"" />
+        <span class="help-inline">
+          メールの送信者名を入力してください。
+          % if( exists $messages->{from} ) {
+          <p class="text-error"><%= decode( $messages->{from} ) %></p>
+          % }
+        </span>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="field_to">To</label>
+      <div class="controls">
+        <input type="text" id="field_to" name="to" placeholder="" value="<%= decode( $params->{to} ) %>" />
+        <span class="help-inline">
+          メールの送り先を入力してください。
+          % if( exists $messages->{to} ) {
+          <p class="text-error"><%= decode( $messages->{to} ) %></p>
+          % }
+        </span>
+      </div>
+    </div>
+<!--
+    <div class="control-group">
+      <label class="control-label" for="field_cc">Cc</label>
+      <div class="controls">
+        <input type="text" id="field_cc" name="cc" placeholder="" value="<%= decode( $params->{cc} ) %>" />
+        <span class="help-inline">
+          メールのCcを入力してください。
+          % if( exists $messages->{cc} ) {
+          <p class="text-error"><%= decode( $messages->{cc} ) %></p>
+          % }
+        </span>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="field_bcc">Bcc</label>
+      <div class="controls">
+        <input type="text" id="field_bcc" name="bcc" placeholder="" value="<%= decode( $params->{bcc} ) %>" />
+        <span class="help-inline">
+          メールのBccを入力してください。
+          % if( exists $messages->{bcc} ) {
+          <p class="text-error"><%= decode( $messages->{bcc} ) %></p>
+          % }
+        </span>
+      </div>
+    </div>
+-->
+    <div class="control-group">
+      <label class="control-label" for="field_subject">タイトル</label>
+      <div class="controls">
+        <input type="text" id="field_subject" name="subject" placeholder="" value="<%= decode( $params->{subject} ) %>" />
+        <span class="help-inline">
+          メールのタイトルを入力してください。
+          % if( exists $messages->{subject} ) {
+          <p class="text-error"><%= decode( $messages->{subject} ) %></p>
+          % }
+        </span>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="field_body">本文</label>
+      <div class="controls">
+        <textarea name="body" rows="20"><%= decode( $params->{body} ) %></textarea>
+        <span class="help-inline">
+          メールの本文を入力してください。
+        </span>
+      </div>
+    </div>
+    % if( $params->{forms_id} ) {
+    <input type="hidden" name="forms_id" value="<%= $params->{forms_id} %>" />
+    % }
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">登録</button>
+      <a href="/admin/forms/view/<%= $params->{forms_id} %>" class="btn">キャンセル</a>
+    </div>
+  </form>
