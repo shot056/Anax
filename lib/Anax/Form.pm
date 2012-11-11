@@ -134,7 +134,7 @@ sub complete {
         $datas->{mail_from} = sprintf('%s+%s@%s', $b, $key, $a );
     }
     
-    $self->app->log->info( Dumper( $datas ) );
+    $self->app->log->debug( Dumper( $datas ) );
     
     my $rule = $self->generate_rule( $form_setting->{field_list} );
     $self->app->log->debug( "rule : \n" . Dumper( $rule ) );

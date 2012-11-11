@@ -75,13 +75,14 @@ sub sendmail {
     
     my $email = Email::Simple->create(
         header => [ %header ],
-        body => Jcode::CP932->new( $parts->{body} )->utf8
+        body => Jcode::CP932->new( $parts->{body} )->$charset
     );
 #    $email->header_str_set( 'Cc' => Jcode::CP932->new( $parts->{cc} )->$charset )
 #        if( exists $parts->{cc} and defined $parts->{cc} and length( $parts->{cc} ) );
 #    $email->header_str_set( 'Bcc' => Jcode::CP932->new( $parts->{bcc} )->$charset )
 #        if( exists $parts->{bcc} and defined $parts->{bcc} and length( $parts->{bcc} ) );
-    
+    $email->header_set( 'X-AnaxWebForm-Key' => $data->{key} )
+        if( exists $data->{key} );
     my $sender = Email::Send->new(
         {   mailer      => 'Gmail',
             mailer_args => [
@@ -90,7 +91,7 @@ sub sendmail {
             ]
         }
     );
-    $self->app->log->debug( Dumper( { email => $email, sender => $sender } ) );
+    $self->app->log->info( Dumper( { email => $email, sender => $sender } ) );
     $sender->send( $email );
     return 1;
 }
