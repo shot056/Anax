@@ -1,5 +1,116 @@
 {
    "modules" : {
+      "Authen::SASL" : {
+         "dist" : "Authen-SASL-2.16",
+         "mymeta" : {
+            "abstract" : "SASL Authentication framework",
+            "author" : [
+               "Graham Barr <gbarr@pobox.com>"
+            ],
+            "dynamic_config" : 0,
+            "generated_by" : "Module::Install version 0.95, CPAN::Meta::Converter version 2.120630",
+            "license" : [
+               "perl_5"
+            ],
+            "meta-spec" : {
+               "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+               "version" : "2"
+            },
+            "name" : "Authen-SASL",
+            "no_index" : {
+               "directory" : [
+                  "inc",
+                  "t"
+               ]
+            },
+            "prereqs" : {
+               "build" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "6.42",
+                     "Test::More" : "0"
+                  }
+               },
+               "configure" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "6.42"
+                  }
+               },
+               "runtime" : {
+                  "recommends" : {
+                     "GSSAPI" : "0"
+                  },
+                  "requires" : {
+                     "Digest::HMAC_MD5" : "0",
+                     "Digest::MD5" : "0",
+                     "perl" : "5.005"
+                  }
+               }
+            },
+            "release_status" : "stable",
+            "resources" : {
+               "license" : [
+                  "http://dev.perl.org/licenses/"
+               ],
+               "repository" : {
+                  "url" : "http://github.com/gbarr/perl-authen-sasl"
+               }
+            },
+            "version" : "2.16"
+         },
+         "name" : "Authen::SASL",
+         "pathname" : "G/GB/GBARR/Authen-SASL-2.16.tar.gz",
+         "provides" : {
+            "Authen::SASL" : {
+               "file" : "Authen/SASL.pm",
+               "version" : "2.16"
+            },
+            "Authen::SASL::CRAM_MD5" : {
+               "file" : "Authen/SASL/CRAM_MD5.pm",
+               "version" : "2.14"
+            },
+            "Authen::SASL::EXTERNAL" : {
+               "file" : "Authen/SASL/EXTERNAL.pm",
+               "version" : "2.14"
+            },
+            "Authen::SASL::Perl" : {
+               "file" : "Authen/SASL/Perl.pm",
+               "version" : "2.14"
+            },
+            "Authen::SASL::Perl::ANONYMOUS" : {
+               "file" : "Authen/SASL/Perl/ANONYMOUS.pm",
+               "version" : "2.14"
+            },
+            "Authen::SASL::Perl::CRAM_MD5" : {
+               "file" : "Authen/SASL/Perl/CRAM_MD5.pm",
+               "version" : "2.14"
+            },
+            "Authen::SASL::Perl::DIGEST_MD5" : {
+               "file" : "Authen/SASL/Perl/DIGEST_MD5.pm",
+               "version" : "2.14"
+            },
+            "Authen::SASL::Perl::EXTERNAL" : {
+               "file" : "Authen/SASL/Perl/EXTERNAL.pm",
+               "version" : "2.14"
+            },
+            "Authen::SASL::Perl::GSSAPI" : {
+               "file" : "Authen/SASL/Perl/GSSAPI.pm",
+               "version" : "0.05"
+            },
+            "Authen::SASL::Perl::LOGIN" : {
+               "file" : "Authen/SASL/Perl/LOGIN.pm",
+               "version" : "2.14"
+            },
+            "Authen::SASL::Perl::Layer" : {
+               "file" : "Authen/SASL/Perl.pm"
+            },
+            "Authen::SASL::Perl::PLAIN" : {
+               "file" : "Authen/SASL/Perl/PLAIN.pm",
+               "version" : "2.14"
+            }
+         },
+         "target" : "Authen::SASL",
+         "version" : "2.16"
+      },
       "Class::Accessor" : {
          "dist" : "Class-Accessor-0.34",
          "mymeta" : {
@@ -50,78 +161,6 @@
          },
          "target" : "Class::Accessor::Fast",
          "version" : "0.34"
-      },
-      "Class::Accessor::Grouped" : {
-         "dist" : "Class-Accessor-Grouped-0.10006",
-         "mymeta" : {
-            "abstract" : "Lets you build groups of accessors",
-            "author" : [
-               "Matt S. Trout <mst@shadowcatsystems.co.uk>"
-            ],
-            "dynamic_config" : 0,
-            "generated_by" : "Module::Install version 1.04, CPAN::Meta::Converter version 2.120630",
-            "license" : [
-               "perl_5"
-            ],
-            "meta-spec" : {
-               "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
-               "version" : "2"
-            },
-            "name" : "Class-Accessor-Grouped",
-            "no_index" : {
-               "directory" : [
-                  "inc",
-                  "t"
-               ]
-            },
-            "prereqs" : {
-               "build" : {
-                  "requires" : {
-                     "ExtUtils::MakeMaker" : "6.6302",
-                     "Test::Exception" : "0.31",
-                     "Test::More" : "0.94"
-                  }
-               },
-               "configure" : {
-                  "requires" : {
-                     "ExtUtils::MakeMaker" : "6.62"
-                  }
-               },
-               "runtime" : {
-                  "requires" : {
-                     "Carp" : "0",
-                     "Class::Inspector" : "0",
-                     "Class::XSAccessor" : "1.13",
-                     "Scalar::Util" : "0",
-                     "Sub::Name" : "0.05",
-                     "Test::Exception" : "0.31",
-                     "Test::More" : "0.94",
-                     "perl" : "5.006002"
-                  }
-               }
-            },
-            "release_status" : "stable",
-            "resources" : {
-               "license" : [
-                  "http://dev.perl.org/licenses/"
-               ],
-               "repository" : {
-                  "type" : "git",
-                  "url" : "git://git.shadowcat.co.uk/p5sagit/Class-Accessor-Grouped.git"
-               }
-            },
-            "version" : "0.10006"
-         },
-         "name" : "Class::Accessor::Grouped",
-         "pathname" : "C/CL/CLACO/Class-Accessor-Grouped-0.10006.tar.gz",
-         "provides" : {
-            "Class::Accessor::Grouped" : {
-               "file" : "Class/Accessor/Grouped.pm",
-               "version" : "0.10006"
-            }
-         },
-         "target" : "Class::Accessor::Grouped",
-         "version" : "0.10006"
       },
       "Class::Accessor::Lite" : {
          "dist" : "Class-Accessor-Lite-0.05",
@@ -412,7 +451,7 @@
          "version" : "1.4"
       },
       "Class::XSAccessor" : {
-         "dist" : "Class-XSAccessor-1.16",
+         "dist" : "Class-XSAccessor-1.14",
          "mymeta" : {
             "abstract" : "Generate fast XS accessors without runtime compilation",
             "author" : [
@@ -459,14 +498,14 @@
                   "url" : "git://github.com/tsee/Class-XSAccessor.git"
                }
             },
-            "version" : "1.16"
+            "version" : "1.14"
          },
          "name" : "Class::XSAccessor",
-         "pathname" : "S/SM/SMUELLER/Class-XSAccessor-1.16.tar.gz",
+         "pathname" : "S/SM/SMUELLER/Class-XSAccessor-1.14.tar.gz",
          "provides" : {
             "Class::XSAccessor" : {
                "file" : "Class/XSAccessor.pm",
-               "version" : "1.16"
+               "version" : "1.14"
             },
             "Class::XSAccessor::Array" : {
                "file" : "Class/XSAccessor/Array.pm",
@@ -474,7 +513,7 @@
             }
          },
          "target" : "Class::XSAccessor",
-         "version" : "1.16"
+         "version" : "1.14"
       },
       "Clone" : {
          "dist" : "Clone-0.31",
@@ -6967,6 +7006,70 @@
          "target" : "Devel::StackTrace::AsHTML",
          "version" : "0.11"
       },
+      "Digest::HMAC" : {
+         "dist" : "Digest-HMAC-1.03",
+         "mymeta" : {
+            "abstract" : "Keyed-Hashing for Message Authentication",
+            "author" : [
+               "Gisle Aas <gisle@activestate.com>"
+            ],
+            "dynamic_config" : 0,
+            "generated_by" : "ExtUtils::MakeMaker version 6.57_05, CPAN::Meta::Converter version 2.120630",
+            "license" : [
+               "perl_5"
+            ],
+            "meta-spec" : {
+               "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+               "version" : "2"
+            },
+            "name" : "Digest-HMAC",
+            "no_index" : {
+               "directory" : [
+                  "t",
+                  "inc"
+               ]
+            },
+            "prereqs" : {
+               "build" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "0"
+                  }
+               },
+               "configure" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "0"
+                  }
+               },
+               "runtime" : {
+                  "requires" : {
+                     "Digest::MD5" : "2",
+                     "Digest::SHA" : "1",
+                     "perl" : "5.004"
+                  }
+               }
+            },
+            "release_status" : "stable",
+            "version" : "1.03"
+         },
+         "name" : "Digest::HMAC",
+         "pathname" : "G/GA/GAAS/Digest-HMAC-1.03.tar.gz",
+         "provides" : {
+            "Digest::HMAC" : {
+               "file" : "Digest/HMAC.pm",
+               "version" : "1.03"
+            },
+            "Digest::HMAC_MD5" : {
+               "file" : "Digest/HMAC_MD5.pm",
+               "version" : "1.01"
+            },
+            "Digest::HMAC_SHA1" : {
+               "file" : "Digest/HMAC_SHA1.pm",
+               "version" : "1.03"
+            }
+         },
+         "target" : "Digest::HMAC_MD5",
+         "version" : "1.03"
+      },
       "Dist::CheckConflicts" : {
          "dist" : "Dist-CheckConflicts-0.02",
          "mymeta" : {
@@ -7220,6 +7323,342 @@
          },
          "target" : "Dist::CheckConflicts",
          "version" : "0.02"
+      },
+      "Email::Address" : {
+         "dist" : "Email-Address-1.896",
+         "mymeta" : {
+            "abstract" : "RFC 2822 Address Parsing",
+            "author" : [
+               "Casey West <casey@geeknest.com>"
+            ],
+            "dynamic_config" : 0,
+            "generated_by" : "ExtUtils::MakeMaker version 6.6302, CPAN::Meta::Converter version 2.120921, CPAN::Meta::Converter version 2.120630",
+            "license" : [
+               "perl_5"
+            ],
+            "meta-spec" : {
+               "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+               "version" : "2"
+            },
+            "name" : "Email-Address",
+            "no_index" : {
+               "directory" : [
+                  "t",
+                  "inc"
+               ]
+            },
+            "prereqs" : {
+               "build" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "0"
+                  }
+               },
+               "configure" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "0"
+                  }
+               },
+               "runtime" : {
+                  "requires" : {
+                     "Test::More" : "0.47"
+                  }
+               }
+            },
+            "release_status" : "stable",
+            "version" : "1.896"
+         },
+         "name" : "Email::Address",
+         "pathname" : "R/RJ/RJBS/Email-Address-1.896.tar.gz",
+         "provides" : {
+            "Email::Address" : {
+               "file" : "Email/Address.pm",
+               "version" : "1.896"
+            }
+         },
+         "target" : "Email::Address",
+         "version" : "1.896"
+      },
+      "Email::Date::Format" : {
+         "dist" : "Email-Date-Format-1.002",
+         "mymeta" : {
+            "abstract" : "produce RFC 8822 date strings",
+            "author" : [
+               "Ricardo SIGNES <rjbs@cpan.org>"
+            ],
+            "dynamic_config" : 0,
+            "generated_by" : "ExtUtils::MakeMaker version 6.36_01, CPAN::Meta::Converter version 2.120630",
+            "license" : [
+               "perl_5"
+            ],
+            "meta-spec" : {
+               "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+               "version" : "2"
+            },
+            "name" : "Email-Date-Format",
+            "prereqs" : {
+               "build" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "0"
+                  }
+               },
+               "runtime" : {
+                  "requires" : {
+                     "Test::More" : "0.47",
+                     "Time::Local" : "0.000"
+                  }
+               }
+            },
+            "release_status" : "stable",
+            "version" : "1.002"
+         },
+         "name" : "Email::Date::Format",
+         "pathname" : "R/RJ/RJBS/Email-Date-Format-1.002.tar.gz",
+         "provides" : {
+            "Email::Date::Format" : {
+               "file" : "Email/Date/Format.pm",
+               "version" : "1.002"
+            }
+         },
+         "target" : "Email::Date::Format",
+         "version" : "1.002"
+      },
+      "Email::Send" : {
+         "dist" : "Email-Send-2.198",
+         "mymeta" : {
+            "abstract" : "Simply Sending Email",
+            "author" : [
+               "Casey West <casey@geeknest.com>"
+            ],
+            "dynamic_config" : 0,
+            "generated_by" : "ExtUtils::MakeMaker version 6.50, CPAN::Meta::Converter version 2.120630",
+            "license" : [
+               "perl_5"
+            ],
+            "meta-spec" : {
+               "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+               "version" : "2"
+            },
+            "name" : "Email-Send",
+            "no_index" : {
+               "directory" : [
+                  "t",
+                  "inc"
+               ]
+            },
+            "prereqs" : {
+               "build" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "0"
+                  }
+               },
+               "configure" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "0"
+                  }
+               },
+               "runtime" : {
+                  "requires" : {
+                     "Email::Address" : "1.80",
+                     "Email::Simple" : "1.92",
+                     "File::Spec" : "0",
+                     "Module::Pluggable" : "2.97",
+                     "Return::Value" : "1.28",
+                     "Scalar::Util" : "1.02",
+                     "Symbol" : "0.00",
+                     "Test::More" : "0.47"
+                  }
+               }
+            },
+            "release_status" : "stable",
+            "version" : "2.198"
+         },
+         "name" : "Email::Send",
+         "pathname" : "R/RJ/RJBS/Email-Send-2.198.tar.gz",
+         "provides" : {
+            "Email::Send" : {
+               "file" : "Email/Send.pm",
+               "version" : "2.198"
+            },
+            "Email::Send::NNTP" : {
+               "file" : "Email/Send/NNTP.pm",
+               "version" : "2.198"
+            },
+            "Email::Send::Qmail" : {
+               "file" : "Email/Send/Qmail.pm",
+               "version" : "2.198"
+            },
+            "Email::Send::SMTP" : {
+               "file" : "Email/Send/SMTP.pm",
+               "version" : "2.198"
+            },
+            "Email::Send::Sendmail" : {
+               "file" : "Email/Send/Sendmail.pm",
+               "version" : "2.198"
+            },
+            "Email::Send::Test" : {
+               "file" : "Email/Send/Test.pm",
+               "version" : "2.198"
+            }
+         },
+         "target" : "Email::Send",
+         "version" : "2.198"
+      },
+      "Email::Send::Gmail" : {
+         "dist" : "Email-Send-Gmail-0.33",
+         "mymeta" : {
+            "abstract" : "Send Messages using Gmail",
+            "author" : [
+               "Leon Brocard <acme@astray.com>"
+            ],
+            "dynamic_config" : 0,
+            "generated_by" : "ExtUtils::MakeMaker version 6.44, CPAN::Meta::Converter version 2.120630",
+            "license" : [
+               "perl_5"
+            ],
+            "meta-spec" : {
+               "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+               "version" : "2"
+            },
+            "name" : "Email-Send-Gmail",
+            "prereqs" : {
+               "build" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "0"
+                  }
+               },
+               "runtime" : {
+                  "requires" : {
+                     "Authen::SASL" : "0",
+                     "Email::Address" : "0",
+                     "Email::Send" : "0",
+                     "Net::SMTP::SSL" : "0"
+                  }
+               }
+            },
+            "release_status" : "stable",
+            "version" : "0.33"
+         },
+         "name" : "Email::Send::Gmail",
+         "pathname" : "L/LB/LBROCARD/Email-Send-Gmail-0.33.tar.gz",
+         "provides" : {
+            "Email::Send::Gmail" : {
+               "file" : "Email/Send/Gmail.pm",
+               "version" : "0.33"
+            }
+         },
+         "target" : "Email::Send::Gmail",
+         "version" : "0.33"
+      },
+      "Email::Simple" : {
+         "dist" : "Email-Simple-2.102",
+         "mymeta" : {
+            "abstract" : "unknown",
+            "author" : [
+               "unknown"
+            ],
+            "dynamic_config" : 0,
+            "generated_by" : "ExtUtils::MakeMaker version 6.6302, CPAN::Meta::Converter version 2.120921, CPAN::Meta::Converter version 2.120630",
+            "license" : [
+               "perl_5"
+            ],
+            "meta-spec" : {
+               "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+               "version" : "2"
+            },
+            "name" : "Email-Simple",
+            "no_index" : {
+               "directory" : [
+                  "t",
+                  "inc"
+               ]
+            },
+            "prereqs" : {
+               "build" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "0"
+                  }
+               },
+               "configure" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "0"
+                  }
+               },
+               "runtime" : {
+                  "requires" : {
+                     "Email::Date::Format" : "0",
+                     "Test::More" : "0.47"
+                  }
+               }
+            },
+            "release_status" : "stable",
+            "resources" : {
+               "x_Repository" : "http://github.com/rjbs/email-simple"
+            },
+            "version" : "2.102"
+         },
+         "name" : "Email::Simple",
+         "pathname" : "R/RJ/RJBS/Email-Simple-2.102.tar.gz",
+         "provides" : {
+            "Email::Simple" : {
+               "file" : "Email/Simple.pm",
+               "version" : "2.102"
+            },
+            "Email::Simple::Creator" : {
+               "file" : "Email/Simple/Creator.pm",
+               "version" : "2.102"
+            },
+            "Email::Simple::Header" : {
+               "file" : "Email/Simple/Header.pm",
+               "version" : "2.102"
+            }
+         },
+         "target" : "Email::Simple",
+         "version" : "2.102"
+      },
+      "Encode::EUCJPMS" : {
+         "dist" : "Encode-EUCJPMS-0.07",
+         "mymeta" : {
+            "abstract" : "unknown",
+            "author" : [
+               "unknown"
+            ],
+            "dynamic_config" : 0,
+            "generated_by" : "ExtUtils::MakeMaker version 6.30, CPAN::Meta::Converter version 2.120630",
+            "license" : [
+               "unknown"
+            ],
+            "meta-spec" : {
+               "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+               "version" : "2"
+            },
+            "name" : "Encode-EUCJPMS",
+            "prereqs" : {
+               "build" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "0"
+                  }
+               },
+               "runtime" : {
+                  "requires" : {
+                     "Encode" : "1.41"
+                  }
+               }
+            },
+            "release_status" : "stable",
+            "version" : "0.07",
+            "x_installdirs" : "site",
+            "x_version_from" : "EUCJPMS.pm"
+         },
+         "name" : "Encode::EUCJPMS",
+         "pathname" : "N/NA/NARUSE/Encode-EUCJPMS-0.07.tar.gz",
+         "provides" : {
+            "Encode::EUCJPMS" : {
+               "file" : "Encode/EUCJPMS.pm",
+               "version" : "0.07"
+            }
+         },
+         "target" : "Encode::EUCJPMS",
+         "version" : "0.07"
       },
       "Encode::Locale" : {
          "dist" : "Encode-Locale-1.03",
@@ -8800,6 +9239,173 @@
          "target" : "IO::HTML",
          "version" : "0.04"
       },
+      "IO::Socket::SSL" : {
+         "dist" : "IO-Socket-SSL-1.77",
+         "mymeta" : {
+            "abstract" : "Nearly transparent SSL encapsulation for IO::Socket::INET.",
+            "author" : [
+               "Steffen Ullrich & Peter Behroozi & Marko Asplund"
+            ],
+            "dynamic_config" : 0,
+            "generated_by" : "ExtUtils::MakeMaker version 6.57_05, CPAN::Meta::Converter version 2.120630",
+            "license" : [
+               "perl_5"
+            ],
+            "meta-spec" : {
+               "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+               "version" : "2"
+            },
+            "name" : "IO-Socket-SSL",
+            "no_index" : {
+               "directory" : [
+                  "t",
+                  "inc"
+               ]
+            },
+            "prereqs" : {
+               "build" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "0"
+                  }
+               },
+               "configure" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "0"
+                  }
+               },
+               "runtime" : {
+                  "requires" : {
+                     "Net::SSLeay" : "1.21",
+                     "Scalar::Util" : "0"
+                  }
+               }
+            },
+            "release_status" : "stable",
+            "version" : "1.77"
+         },
+         "name" : "IO::Socket::SSL",
+         "pathname" : "S/SU/SULLR/IO-Socket-SSL-1.77.tar.gz",
+         "provides" : {
+            "IO::Socket::SSL" : {
+               "file" : "IO/Socket/SSL.pm",
+               "version" : "1.77"
+            },
+            "IO::Socket::SSL::SSL_Context" : {
+               "file" : "IO/Socket/SSL.pm"
+            },
+            "IO::Socket::SSL::SSL_HANDLE" : {
+               "file" : "IO/Socket/SSL.pm"
+            },
+            "IO::Socket::SSL::Session_Cache" : {
+               "file" : "IO/Socket/SSL.pm"
+            }
+         },
+         "target" : "IO::Socket::SSL",
+         "version" : "1.77"
+      },
+      "Jcode" : {
+         "dist" : "Jcode-2.07",
+         "mymeta" : {
+            "abstract" : "Japanese Charset Handler",
+            "author" : [
+               "Dan Kogai <dankogai@dan.co.jp>"
+            ],
+            "dynamic_config" : 0,
+            "generated_by" : "ExtUtils::MakeMaker version 6.42, CPAN::Meta::Converter version 2.120630",
+            "license" : [
+               "unknown"
+            ],
+            "meta-spec" : {
+               "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+               "version" : "2"
+            },
+            "name" : "Jcode",
+            "prereqs" : {
+               "build" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "0"
+                  }
+               },
+               "runtime" : {
+                  "requires" : {
+                     "MIME::Base64" : "2.1"
+                  }
+               }
+            },
+            "release_status" : "stable",
+            "version" : "2.07"
+         },
+         "name" : "Jcode",
+         "pathname" : "D/DA/DANKOGAI/Jcode-2.07.tar.gz",
+         "provides" : {
+            "Jcode" : {
+               "file" : "Jcode.pm",
+               "version" : "2.07"
+            }
+         },
+         "target" : "Jcode",
+         "version" : "2.07"
+      },
+      "Jcode::CP932" : {
+         "dist" : "Jcode-CP932-0.08",
+         "mymeta" : {
+            "abstract" : "CP932æºæ ã«ããJcode",
+            "author" : [
+               "ASAKURA Takuji <asakura.takuji+cpan@gmail.com>"
+            ],
+            "dynamic_config" : 0,
+            "generated_by" : "ExtUtils::MakeMaker version 6.6302, CPAN::Meta::Converter version 2.120630",
+            "license" : [
+               "unknown"
+            ],
+            "meta-spec" : {
+               "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+               "version" : "2"
+            },
+            "name" : "Jcode-CP932",
+            "no_index" : {
+               "directory" : [
+                  "t",
+                  "inc"
+               ]
+            },
+            "prereqs" : {
+               "build" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "0"
+                  }
+               },
+               "configure" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "0"
+                  }
+               },
+               "runtime" : {
+                  "requires" : {
+                     "B::Deparse" : "0",
+                     "Encode::EUCJPMS" : "0.07",
+                     "Jcode" : "2",
+                     "Test::More" : "0"
+                  }
+               }
+            },
+            "release_status" : "stable",
+            "version" : "0.08"
+         },
+         "name" : "Jcode::CP932",
+         "pathname" : "A/AS/ASAKURA/Jcode-CP932-0.08.tar.gz",
+         "provides" : {
+            "Jcode::CP932" : {
+               "file" : "Jcode/CP932.pm",
+               "version" : "0.08"
+            },
+            "Jcode::CP932::H2Z" : {
+               "file" : "Jcode/CP932/H2Z.pm"
+            }
+         },
+         "target" : "Jcode::CP932",
+         "version" : "0.08"
+      },
       "LWP" : {
          "dist" : "libwww-perl-6.04",
          "mymeta" : {
@@ -9844,6 +10450,133 @@
          },
          "target" : "Net::HTTP",
          "version" : "6.03"
+      },
+      "Net::SMTP::SSL" : {
+         "dist" : "Net-SMTP-SSL-1.01",
+         "mymeta" : {
+            "abstract" : "SSL support for Net::SMTP",
+            "author" : [
+               "Casey West <casey@geeknest.com>"
+            ],
+            "dynamic_config" : 0,
+            "generated_by" : "ExtUtils::MakeMaker version 6.6302, CPAN::Meta::Converter version 2.120630",
+            "license" : [
+               "unknown"
+            ],
+            "meta-spec" : {
+               "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+               "version" : "2"
+            },
+            "name" : "Net-SMTP-SSL",
+            "no_index" : {
+               "directory" : [
+                  "t",
+                  "inc"
+               ]
+            },
+            "prereqs" : {
+               "build" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "0"
+                  }
+               },
+               "configure" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "0"
+                  }
+               },
+               "runtime" : {
+                  "requires" : {
+                     "IO::Socket::SSL" : "0",
+                     "Net::SMTP" : "0",
+                     "Test::More" : "0.47"
+                  }
+               }
+            },
+            "release_status" : "stable",
+            "version" : "1.01"
+         },
+         "name" : "Net::SMTP::SSL",
+         "pathname" : "C/CW/CWEST/Net-SMTP-SSL-1.01.tar.gz",
+         "provides" : {
+            "Net::SMTP::SSL" : {
+               "file" : "Net/SMTP/SSL.pm",
+               "version" : "1.01"
+            }
+         },
+         "target" : "Net::SMTP::SSL",
+         "version" : "1.01"
+      },
+      "Net::SSLeay" : {
+         "dist" : "Net-SSLeay-1.49",
+         "mymeta" : {
+            "abstract" : "Perl extension for using OpenSSL",
+            "author" : [
+               "Maintained by Mike McCauley and Florian Ragwitz since November 2005"
+            ],
+            "dynamic_config" : 0,
+            "generated_by" : "Module::Install version 1.06, CPAN::Meta::Converter version 2.120630",
+            "license" : [
+               "unknown"
+            ],
+            "meta-spec" : {
+               "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+               "version" : "2"
+            },
+            "name" : "Net-SSLeay",
+            "no_index" : {
+               "directory" : [
+                  "examples",
+                  "ext",
+                  "helper_script",
+                  "inc",
+                  "t"
+               ]
+            },
+            "prereqs" : {
+               "build" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "6.36"
+                  }
+               },
+               "configure" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "6.36"
+                  }
+               },
+               "runtime" : {
+                  "requires" : {
+                     "MIME::Base64" : "0",
+                     "Test::More" : "0.60_01",
+                     "perl" : "5.005"
+                  }
+               }
+            },
+            "release_status" : "stable",
+            "resources" : {
+               "bugtracker" : {
+                  "web" : "https://rt.cpan.org/Public/Dist/Display.html?Name=net-ssleay"
+               },
+               "repository" : {
+                  "url" : "http://svn.debian.org/wsvn/net-ssleay"
+               }
+            },
+            "version" : "1.49"
+         },
+         "name" : "Net::SSLeay",
+         "pathname" : "M/MI/MIKEM/Net-SSLeay-1.49.tar.gz",
+         "provides" : {
+            "Net::SSLeay" : {
+               "file" : "Net/SSLeay.pm",
+               "version" : "1.49"
+            },
+            "Net::SSLeay::Handle" : {
+               "file" : "Net/SSLeay/Handle.pm",
+               "version" : "0.61"
+            }
+         },
+         "target" : "Net::SSLeay",
+         "version" : "1.49"
       },
       "Net::Server" : {
          "dist" : "Net-Server-2.006",
@@ -11251,6 +11984,60 @@
          },
          "target" : "Plack",
          "version" : "1.0010"
+      },
+      "Return::Value" : {
+         "dist" : "Return-Value-1.666001",
+         "mymeta" : {
+            "abstract" : "Polymorphic Return Values",
+            "author" : [
+               "Casey West <casey@geeknest.com>"
+            ],
+            "dynamic_config" : 0,
+            "generated_by" : "ExtUtils::MakeMaker version 6.50, CPAN::Meta::Converter version 2.120630",
+            "license" : [
+               "perl_5"
+            ],
+            "meta-spec" : {
+               "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+               "version" : "2"
+            },
+            "name" : "Return-Value",
+            "no_index" : {
+               "directory" : [
+                  "t",
+                  "inc"
+               ]
+            },
+            "prereqs" : {
+               "build" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "0"
+                  }
+               },
+               "configure" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "0"
+                  }
+               },
+               "runtime" : {
+                  "requires" : {
+                     "Test::More" : "0.47"
+                  }
+               }
+            },
+            "release_status" : "stable",
+            "version" : "1.666001"
+         },
+         "name" : "Return::Value",
+         "pathname" : "R/RJ/RJBS/Return-Value-1.666001.tar.gz",
+         "provides" : {
+            "Return::Value" : {
+               "file" : "Return/Value.pm",
+               "version" : "1.666001"
+            }
+         },
+         "target" : "Return::Value",
+         "version" : "1.666001"
       },
       "SQL::Abstract" : {
          "dist" : "SQL-Abstract-1.73",
@@ -13498,7 +14285,7 @@
          "version" : "1.22"
       },
       "Tree::DAG_Node" : {
-         "dist" : "Tree-DAG_Node-1.08",
+         "dist" : "Tree-DAG_Node-1.07",
          "mymeta" : {
             "abstract" : "An N-ary tree",
             "author" : [
@@ -13536,7 +14323,7 @@
             "provides" : {
                "Tree::DAG_Node" : {
                   "file" : "lib/Tree/DAG_Node.pm",
-                  "version" : "1.08"
+                  "version" : "1.07"
                }
             },
             "release_status" : "stable",
@@ -13545,18 +14332,18 @@
                   "http://dev.perl.org/licenses/"
                ]
             },
-            "version" : "1.08"
+            "version" : "1.07"
          },
          "name" : "Tree::DAG_Node",
-         "pathname" : "R/RS/RSAVAGE/Tree-DAG_Node-1.08.tgz",
+         "pathname" : "R/RS/RSAVAGE/Tree-DAG_Node-1.07.tgz",
          "provides" : {
             "Tree::DAG_Node" : {
                "file" : "Tree/DAG_Node.pm",
-               "version" : "1.08"
+               "version" : "1.07"
             }
          },
          "target" : "Tree::DAG_Node",
-         "version" : "1.08"
+         "version" : "1.07"
       },
       "Try::Tiny" : {
          "dist" : "Try-Tiny-0.11",

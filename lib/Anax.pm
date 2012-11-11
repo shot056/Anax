@@ -131,6 +131,11 @@ sub startup {
     $r->route('/admin/field/:field_id/options/add', field_id => qr/\d+/ )->via('GET' )->to( controller => 'Admin::Field::Options', action => 'input' );
     $r->route('/admin/field/:field_id/options/add', field_id => qr/\d+/ )->via('POST')->to( controller => 'Admin::Field::Options', action => 'register' );
 
+    $r->route('/admin/mailtemplates/add'                     )->via('GET' )->to( controller => 'Admin::MailTemplates', action => 'input' );
+    $r->route('/admin/mailtemplates/add'                     )->via('POST')->to( controller => 'Admin::MailTemplates', action => 'register' );
+    $r->route('/admin/mailtemplates/edit/:id', id => qr/\d+/ )->via('GET' )->to( controller => 'Admin::MailTemplates', action => 'input' );
+    $r->route('/admin/mailtemplates/edit/:id', id => qr/\d+/ )->via('POST')->to( controller => 'Admin::MailTemplates', action => 'register' );
+    
     $r->route('/admin/products'                         )->via('GET' )->to( controller => 'Admin::Products', action => 'index' );
     $r->route('/admin/products/add'                     )->via('GET' )->to( controller => 'Admin::Products', action => 'input' );
     $r->route('/admin/products/add'                     )->via('POST')->to( controller => 'Admin::Products', action => 'register' );

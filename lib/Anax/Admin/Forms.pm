@@ -10,6 +10,7 @@ use DBIx::Simple;
 use SQL::Maker;
 
 use Data::Dumper;
+use Mojo::ByteStream 'b';
 
 my $vc = Validator::Custom::Anax->new;
 
@@ -52,7 +53,6 @@ sub register {
     my $id   = $self->stash('id');
 
     my $params = $self->req->params->to_hash;
-    $self->app->log->info( "params : " . Dumper( $params ) );
     my $rule = [
                 name => [ [ 'not_blank', '必ず入力してください' ],
                         ],
@@ -124,7 +124,12 @@ sub view {
                                     $data->{id} )
         or die $dbis->error;
     
-    $self->stash( hash => $data, fields => $fields_it, products => $products_it );
+    my $mail_template = undef;
+    my $mail_templates_it = $dbis->select( 'mail_templates', ['*'], { is_deleted => 0, forms_id => $id } )
+        or die $dbis->error;
+    $mail_template = $mail_templates_it->hash if( $mail_templates_it->rows );
+    
+    $self->stash( hash => $data, fields => $fields_it, products => $products_it, mail_template => $mail_template );
     $self->render;
     $dbis->commit;
     $dbis->disconnect or die $dbis->error;
@@ -226,14 +231,14 @@ sub get_form_setting {
     
     my $setting = { id => $form->{id},
                     key => $form->{key},
-                    name => Mojo::ByteStream->new( $form->{name} )->decode->to_string,
-                    description => Mojo::ByteStream->new( $form->{description} || '' )->decode->to_string,
-                    product_message => Mojo::ByteStream->new( $form->{product_message} || '' )->decode->to_string,
-                    messages => { input => Mojo::ByteStream->new( $form->{message_input} || '' )->decode->to_string,
-                                  confirm => Mojo::ByteStream->new( $form->{message_confirm} || '' )->decode->to_string,
-                                  complete => Mojo::ByteStream->new( $form->{message_complete} || '' )->decode->to_string },
+                    name => b( $form->{name} )->decode->to_string,
+                    description => b( $form->{description} || '' )->decode->to_string,
+                    product_message => b( $form->{product_message} || '' )->decode->to_string,
+                    messages => { input => b( $form->{message_input} || '' )->decode->to_string,
+                                  confirm => b( $form->{message_confirm} || '' )->decode->to_string,
+                                  complete => b( $form->{message_complete} || '' )->decode->to_string },
                     fields => { email =>  { is_required => 1,
-                                            desc => Mojo::ByteStream->new( 'メールアドレス' )->decode,
+                                            desc => b( 'メールアドレス' )->decode->to_string,
                                             name => 'email',
                                             type => 'textfield',
                                             error_check => 'email' }
@@ -246,7 +251,7 @@ sub get_form_setting {
     while( my $fline = $fields_it->hash ) {
         my $field = { id   => $fline->{id},
                       name => "field_" . $fline->{id},
-                      desc => Mojo::ByteStream->new( $fline->{name} )->decode->to_string,
+                      desc => b( $fline->{name} )->decode->to_string,
                       type => $fline->{type},
                       is_required => $fline->{is_required},
                       error_check => $fline->{error_check} };
@@ -255,7 +260,7 @@ sub get_form_setting {
                 or die $dbis->error;
             $field->{options} = [];
             while( my $oline = $options_it->hash ) {
-                my $option = { name => Mojo::ByteStream->new( $oline->{name} )->decode->to_string,
+                my $option = { name => b( $oline->{name} )->decode->to_string,
                                value => $oline->{id} };
                 push( @{ $field->{options} }, $option );
             }
@@ -265,7 +270,7 @@ sub get_form_setting {
     }
     $dbis->commit;
     $dbis->disconnect or die $dbis->error;
-    $app->log->debug( Dumper( $setting ) );
+    #$app->log->debug( Dumper( $setting ) );
     return $setting;
 }
 

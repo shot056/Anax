@@ -65,9 +65,9 @@
 
       <form class="form-signin" action="/admin/login" method="post">
         <h2 class="form-signin-heading">Anax Web Form</h2>
-        <?pl if( stash 'failure' ) { ?>
+        % if( stash 'failure' ) {
         <p class="text-error">ログインID もしくはパスワードが違います。</p>
-        <?pl } ?>
+        % }
         <input type="text" class="input-block-level" placeholder="Login ID" name="login_id" />
         <input type="password" class="input-block-level" placeholder="Password" name="password" />
         <button class="btn btn-large btn-primary" type="submit">ログイン</button>

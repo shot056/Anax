@@ -5,6 +5,7 @@ use warnings;
 use Validator::Custom::Anax;
 
 use Mojo::Base 'Mojolicious::Controller';
+use Anax::Mail;
 use Anax::Admin::Forms;
 use Anax::Admin::Products;
 use Tenjin;
@@ -110,8 +111,9 @@ sub complete {
     $self->render_not_found unless( defined $form_setting );
     
     my $products     = Anax::Admin::Products->get_form_products( $self->app, $form_setting->{id} );
-    
+
     my $datas = { action_base     => "/form/$key",
+                  key             => $key,
                   name            => $form_setting->{name},
                   description     => $self->app->html_br( $form_setting->{description} || '' ),
                   message         => $self->app->html_br( $form_setting->{messages}->{complete} || '' ),
@@ -123,6 +125,14 @@ sub complete {
                   has_products    => scalar @{$products->{list}} ? 1 : 0,
                   params          => $params
                 };
+    $datas->{values} = $self->replace_params2value( $form_setting, $products, $params );
+
+    {
+        my ($b,$a) = split/\@/, $self->app->config->{gmail}->{username};
+        $datas->{mail_from} = sprintf('%s+%s@%s', $b, $key, $a );
+    }
+    
+    $self->app->log->debug( Dumper( $datas ) );
     
     my $rule = $self->generate_rule( $form_setting->{field_list} );
 
@@ -133,7 +143,6 @@ sub complete {
             if( $vresult->has_invalid );
         
         $datas->{forms} = $self->generate_forms( $form_setting->{field_list}, $params );
-        
         #$self->app->log->debug( Dumper( $datas ) );
         
         $self->render( text => $self->render_template( $key, 'input', $datas ) );
@@ -149,6 +158,7 @@ sub complete {
         $dbis->insert('applicant_form', { applicants_id => $applicant_id, forms_id => $form_setting->{id} } )
             or die $dbis->error;
         my $applicant_form_id = $dbis->last_insert_id( undef, 'public', 'applicant_form', 'id' );
+        
         if( $datas->{has_products} ) {
             foreach my $product_id ( @{ $params->{products} } ) {
                 $dbis->insert( 'applicant_form_products', { applicants_id => $applicant_id,
@@ -179,6 +189,13 @@ sub complete {
                 }
             }
         }
+        my $mail_templates_it = $dbis->select('mail_templates', ['id'], { is_deleted => 0, forms_id => $form_setting->{id} } )
+            or die $dbis->error;
+        if( $mail_templates_it->rows ) {
+            my $id = $mail_templates_it->hash->{id};
+            my $mail = Anax::Mail->new( $self->app );
+            $mail->send( $id, $datas );
+        }
         $self->render( text => $self->render_template( $key, 'complete', $datas ) );
         $dbis->commit;
         $dbis->disconnect or die $dbis->error;
@@ -190,6 +207,49 @@ sub generate_rule {
     my $self   = shift;
     my $fields = shift;
     return [];
+}
+
+sub replace_params2value {
+    my $self         = shift;
+    my $form_setting = shift;
+    my $products     = shift;
+    my $params       = shift;
+
+    my $ret = {};
+    
+    foreach my $key ( keys( %{$params} ) ) {
+        if( $key =~ /^field_\d+$/ and !( $form_setting->{fields}->{$key}->{type} =~ /^text/ ) ) {
+            if( $form_setting->{fields}->{$key}->{type} eq 'radio' ) {
+                foreach my $opts ( grep( $_->{value} == $params->{$key}, @{ $form_setting->{fields}->{$key}->{options} } ) ) {
+                    $ret->{$key} = $opts->{name};
+                }
+            }
+            else {
+                my $vals = $params->{$key};
+                $vals = [ $vals ] unless( ref( $vals ) eq 'ARRAY' );
+                my $arys = [];
+                foreach my $val ( @{ $vals } ) {
+                    foreach my $opts ( grep( $_->{value} == $val, @{ $form_setting->{fields}->{$key}->{options} } ) ) {
+                        push( @{ $arys }, $opts->{name} );
+                    }
+                }
+                $ret->{$key} = $arys;
+            }
+        }
+        elsif( $key eq 'products' ) {
+            my $prods = $params->{$key};
+            $prods = [ $prods ] unless( ref( $prods ) eq 'ARRAY' );
+            my $arys = [];
+            foreach my $prod ( @{ $prods } ) {
+                push( @{ $arys }, $products->{hash}->{$prod}->{name} );
+            }
+            $ret->{$key} = $arys;
+        }
+        else {
+            $ret->{ $key } = $params->{$key};
+        }
+    }
+    return $ret;
 }
 
 sub generate_forms {

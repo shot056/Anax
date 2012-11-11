@@ -1,6 +1,10 @@
 package Anax::Admin;
 
+use strict;
+use warnings;
+
 use Mojo::Base 'Mojolicious::Controller';
+use Data::Dumper;
 
 sub index {
     my $self = shift;
@@ -14,7 +18,6 @@ sub index {
 
 sub login {
     my $self = shift;
-
     $self->render;
 }
 
