@@ -31,7 +31,7 @@ sub new {
     return $self;
 }
 
-sub send {
+sub sendmail {
     my $self = shift;
     my $id   = shift;
     my $data = shift;

@@ -18,7 +18,7 @@
       }
 
       .form-input {
-        max-width: 400px;
+        max-width: 600px;
         padding: 19px 29px 29px;
         margin: 0 auto 20px;
         background-color: #fff;
@@ -82,6 +82,11 @@
           <label class="control-label" for="[= $f->{name} =]">[= $f->{desc} =]</label>
           <div class="controls">
             [== $forms->{ $f->{name} } =]
+            <span class="help-inline">
+              <?pl if( exists $messages->{ $f->{name} } ) { ?>
+              <p class="text-error">[= $messages->{ $f->{name} } =]</p>
+              <?pl } ?>
+            </span>
           </div>
         </div>
         <?pl } ?>

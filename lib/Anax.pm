@@ -22,6 +22,15 @@ sub startup {
     foreach my $f ( @{ $fields->{array} } ) {
         $fields->{hash}->{ $f->{value} } = $f->{label};
     }
+    my $error_checks = { hash => {},
+                         array => [
+                                   { value => '',        label => 'なし' },
+                                   { value => 'integer', label => '半角数字' },
+                                   { value => 'ascii',   label => '半角英数字' }
+                                  ] };
+    foreach my $e ( @{ $error_checks->{array} } ) {
+        $error_checks->{hash}->{ $e->{value} } = $e->{label};
+    }
     
     $self->secret('oJQFCAli%gfbORcj');
     
@@ -57,6 +66,16 @@ sub startup {
                        }
                        else {
                            return $fields->{array};
+                       }
+                   } );
+    $self->helper( error_checks => sub {
+                       my $self = shift;
+                       my $key  = shift;
+                       if( defined $key ) {
+                           return $error_checks->{hash}->{$key} || 'ERROR';
+                       }
+                       else {
+                           return $error_checks->{array};
                        }
                    } );
     $self->helper( html_br => sub {

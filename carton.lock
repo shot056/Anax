@@ -7615,6 +7615,68 @@
          "target" : "Email::Simple",
          "version" : "2.102"
       },
+      "Email::Valid" : {
+         "dist" : "Email-Valid-0.190",
+         "mymeta" : {
+            "abstract" : "unknown",
+            "author" : [
+               "unknown"
+            ],
+            "dynamic_config" : 0,
+            "generated_by" : "ExtUtils::MakeMaker version 6.62, CPAN::Meta::Converter version 2.120351, CPAN::Meta::Converter version 2.120630",
+            "license" : [
+               "perl_5"
+            ],
+            "meta-spec" : {
+               "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+               "version" : "2"
+            },
+            "name" : "Email-Valid",
+            "no_index" : {
+               "directory" : [
+                  "t",
+                  "inc"
+               ]
+            },
+            "prereqs" : {
+               "build" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "0"
+                  }
+               },
+               "configure" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "0"
+                  }
+               },
+               "runtime" : {
+                  "requires" : {
+                     "Mail::Address" : "0",
+                     "Scalar::Util" : "0",
+                     "Test::More" : "0",
+                     "perl" : "5.006"
+                  }
+               }
+            },
+            "release_status" : "stable",
+            "resources" : {
+               "repository" : {
+                  "url" : "http://github.com/rjbs/email-valid"
+               }
+            },
+            "version" : "0.190"
+         },
+         "name" : "Email::Valid",
+         "pathname" : "R/RJ/RJBS/Email-Valid-0.190.tar.gz",
+         "provides" : {
+            "Email::Valid" : {
+               "file" : "Email/Valid.pm",
+               "version" : "0.190"
+            }
+         },
+         "target" : "Email::Valid",
+         "version" : "0.190"
+      },
       "Encode::EUCJPMS" : {
          "dist" : "Encode-EUCJPMS-0.07",
          "mymeta" : {
@@ -9756,6 +9818,146 @@
          },
          "target" : "MRO::Compat",
          "version" : "0.11"
+      },
+      "Mail" : {
+         "dist" : "MailTools-2.11",
+         "mymeta" : {
+            "abstract" : "Various e-mail related modules",
+            "author" : [
+               "Mark Overmeer <perl@overmeer.net>"
+            ],
+            "dynamic_config" : 0,
+            "generated_by" : "ExtUtils::MakeMaker version 6.6302, CPAN::Meta::Converter version 2.120921, CPAN::Meta::Converter version 2.120630",
+            "license" : [
+               "perl_5"
+            ],
+            "meta-spec" : {
+               "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+               "version" : "2"
+            },
+            "name" : "MailTools",
+            "no_index" : {
+               "directory" : [
+                  "t",
+                  "inc"
+               ]
+            },
+            "prereqs" : {
+               "build" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "0"
+                  }
+               },
+               "configure" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "0"
+                  }
+               },
+               "runtime" : {
+                  "requires" : {
+                     "Date::Format" : "0",
+                     "Date::Parse" : "0",
+                     "IO::Handle" : "0",
+                     "Net::Domain" : "1.05",
+                     "Net::SMTP" : "1.03",
+                     "Test::More" : "0"
+                  }
+               }
+            },
+            "release_status" : "stable",
+            "version" : "2.11"
+         },
+         "name" : "Mail",
+         "pathname" : "M/MA/MARKOV/MailTools-2.11.tar.gz",
+         "provides" : {
+            "Mail" : {},
+            "Mail::Address" : {
+               "file" : "Mail/Address.pm",
+               "version" : "2.11"
+            },
+            "Mail::Cap" : {
+               "file" : "Mail/Cap.pm",
+               "version" : "2.11"
+            },
+            "Mail::Field" : {
+               "file" : "Mail/Field.pm",
+               "version" : "2.11"
+            },
+            "Mail::Field::AddrList" : {
+               "file" : "Mail/Field/AddrList.pm",
+               "version" : "2.11"
+            },
+            "Mail::Field::Date" : {
+               "file" : "Mail/Field/Date.pm",
+               "version" : "2.11"
+            },
+            "Mail::Field::Generic" : {
+               "file" : "Mail/Field/Generic.pm",
+               "version" : "2.11"
+            },
+            "Mail::Filter" : {
+               "file" : "Mail/Filter.pm",
+               "version" : "2.11"
+            },
+            "Mail::Header" : {
+               "file" : "Mail/Header.pm",
+               "version" : "2.11"
+            },
+            "Mail::Internet" : {
+               "file" : "Mail/Internet.pm",
+               "version" : "2.11"
+            },
+            "Mail::Mailer" : {
+               "file" : "Mail/Mailer.pm",
+               "version" : "2.11"
+            },
+            "Mail::Mailer::qmail" : {
+               "file" : "Mail/Mailer/qmail.pm",
+               "version" : "2.11"
+            },
+            "Mail::Mailer::rfc822" : {
+               "file" : "Mail/Mailer/rfc822.pm",
+               "version" : "2.11"
+            },
+            "Mail::Mailer::sendmail" : {
+               "file" : "Mail/Mailer/sendmail.pm",
+               "version" : "2.11"
+            },
+            "Mail::Mailer::smtp" : {
+               "file" : "Mail/Mailer/smtp.pm",
+               "version" : "2.11"
+            },
+            "Mail::Mailer::smtp::pipe" : {
+               "file" : "Mail/Mailer/smtp.pm",
+               "version" : "2.11"
+            },
+            "Mail::Mailer::smtps" : {
+               "file" : "Mail/Mailer/smtps.pm",
+               "version" : "2.11"
+            },
+            "Mail::Mailer::smtps::pipe" : {
+               "file" : "Mail/Mailer/smtps.pm",
+               "version" : "2.11"
+            },
+            "Mail::Mailer::testfile" : {
+               "file" : "Mail/Mailer/testfile.pm",
+               "version" : "2.11"
+            },
+            "Mail::Mailer::testfile::pipe" : {
+               "file" : "Mail/Mailer/testfile.pm",
+               "version" : "2.11"
+            },
+            "Mail::Send" : {
+               "file" : "Mail/Send.pm",
+               "version" : "2.11"
+            },
+            "Mail::Util" : {
+               "file" : "Mail/Util.pm",
+               "version" : "2.11"
+            }
+         },
+         "target" : "Mail::Address",
+         "version" : "2.11"
       },
       "Math::Round" : {
          "dist" : "Math-Round-0.06",
@@ -14283,6 +14485,207 @@
          },
          "target" : "Tie::IxHash",
          "version" : "1.22"
+      },
+      "TimeDate" : {
+         "dist" : "TimeDate-1.20",
+         "mymeta" : {
+            "abstract" : "unknown",
+            "author" : [
+               "Graham Barr <gbarr@pobox.com>"
+            ],
+            "dynamic_config" : 0,
+            "generated_by" : "ExtUtils::MakeMaker version 6.48, CPAN::Meta::Converter version 2.120630",
+            "license" : [
+               "perl_5"
+            ],
+            "meta-spec" : {
+               "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+               "version" : "2"
+            },
+            "name" : "TimeDate",
+            "no_index" : {
+               "directory" : [
+                  "t",
+                  "inc"
+               ]
+            },
+            "prereqs" : {
+               "build" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "0"
+                  }
+               },
+               "configure" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "0"
+                  }
+               },
+               "runtime" : {
+                  "requires" : {}
+               }
+            },
+            "release_status" : "stable",
+            "resources" : {
+               "repository" : {
+                  "url" : "http://github.com/gbarr/perl-TimeDate"
+               }
+            },
+            "version" : "1.20"
+         },
+         "name" : "TimeDate",
+         "pathname" : "G/GB/GBARR/TimeDate-1.20.tar.gz",
+         "provides" : {
+            "Date::Format" : {
+               "file" : "Date/Format.pm",
+               "version" : "2.24"
+            },
+            "Date::Format::Generic" : {
+               "file" : "Date/Format.pm"
+            },
+            "Date::Language" : {
+               "file" : "Date/Language.pm",
+               "version" : "1.10"
+            },
+            "Date::Language::Afar" : {
+               "file" : "Date/Language/Afar.pm",
+               "version" : "0.99"
+            },
+            "Date::Language::Amharic" : {
+               "file" : "Date/Language/Amharic.pm",
+               "version" : "1.00"
+            },
+            "Date::Language::Austrian" : {
+               "file" : "Date/Language/Austrian.pm",
+               "version" : "1.01"
+            },
+            "Date::Language::Brazilian" : {
+               "file" : "Date/Language/Brazilian.pm",
+               "version" : "1.01"
+            },
+            "Date::Language::Chinese" : {
+               "file" : "Date/Language/Chinese.pm",
+               "version" : "1.00"
+            },
+            "Date::Language::Chinese_GB" : {
+               "file" : "Date/Language/Chinese_GB.pm",
+               "version" : "1.01"
+            },
+            "Date::Language::Czech" : {
+               "file" : "Date/Language/Czech.pm",
+               "version" : "1.01"
+            },
+            "Date::Language::Danish" : {
+               "file" : "Date/Language/Danish.pm",
+               "version" : "1.01"
+            },
+            "Date::Language::Dutch" : {
+               "file" : "Date/Language/Dutch.pm",
+               "version" : "1.02"
+            },
+            "Date::Language::English" : {
+               "file" : "Date/Language/English.pm",
+               "version" : "1.01"
+            },
+            "Date::Language::Finnish" : {
+               "file" : "Date/Language/Finnish.pm",
+               "version" : "1.01"
+            },
+            "Date::Language::French" : {
+               "file" : "Date/Language/French.pm",
+               "version" : "1.04"
+            },
+            "Date::Language::Gedeo" : {
+               "file" : "Date/Language/Gedeo.pm",
+               "version" : "0.99"
+            },
+            "Date::Language::German" : {
+               "file" : "Date/Language/German.pm",
+               "version" : "1.02"
+            },
+            "Date::Language::Greek" : {
+               "file" : "Date/Language/Greek.pm",
+               "version" : "1.00"
+            },
+            "Date::Language::Hungarian" : {
+               "file" : "Date/Language/Hungarian.pm",
+               "version" : "1.01"
+            },
+            "Date::Language::Icelandic" : {
+               "file" : "Date/Language/Icelandic.pm",
+               "version" : "1.01"
+            },
+            "Date::Language::Italian" : {
+               "file" : "Date/Language/Italian.pm",
+               "version" : "1.01"
+            },
+            "Date::Language::Norwegian" : {
+               "file" : "Date/Language/Norwegian.pm",
+               "version" : "1.01"
+            },
+            "Date::Language::Oromo" : {
+               "file" : "Date/Language/Oromo.pm",
+               "version" : "0.99"
+            },
+            "Date::Language::Romanian" : {
+               "file" : "Date/Language/Romanian.pm",
+               "version" : "1.01"
+            },
+            "Date::Language::Russian" : {
+               "file" : "Date/Language/Russian.pm",
+               "version" : "1.01"
+            },
+            "Date::Language::Russian_cp1251" : {
+               "file" : "Date/Language/Russian_cp1251.pm",
+               "version" : "1.01"
+            },
+            "Date::Language::Russian_koi8r" : {
+               "file" : "Date/Language/Russian_koi8r.pm",
+               "version" : "1.01"
+            },
+            "Date::Language::Sidama" : {
+               "file" : "Date/Language/Sidama.pm",
+               "version" : "0.99"
+            },
+            "Date::Language::Somali" : {
+               "file" : "Date/Language/Somali.pm",
+               "version" : "0.99"
+            },
+            "Date::Language::Spanish" : {
+               "file" : "Date/Language/Spanish.pm",
+               "version" : "1.00"
+            },
+            "Date::Language::Swedish" : {
+               "file" : "Date/Language/Swedish.pm",
+               "version" : "1.01"
+            },
+            "Date::Language::Tigrinya" : {
+               "file" : "Date/Language/Tigrinya.pm",
+               "version" : "1.00"
+            },
+            "Date::Language::TigrinyaEritrean" : {
+               "file" : "Date/Language/TigrinyaEritrean.pm",
+               "version" : "1.00"
+            },
+            "Date::Language::TigrinyaEthiopian" : {
+               "file" : "Date/Language/TigrinyaEthiopian.pm",
+               "version" : "1.00"
+            },
+            "Date::Language::Turkish" : {
+               "file" : "Date/Language/Turkish.pm",
+               "version" : "1.0"
+            },
+            "Date::Parse" : {
+               "file" : "Date/Parse.pm",
+               "version" : "2.30"
+            },
+            "Time::Zone" : {
+               "file" : "Time/Zone.pm",
+               "version" : "2.24"
+            },
+            "TimeDate" : {}
+         },
+         "target" : "Date::Format",
+         "version" : "1.20"
       },
       "Tree::DAG_Node" : {
          "dist" : "Tree-DAG_Node-1.07",

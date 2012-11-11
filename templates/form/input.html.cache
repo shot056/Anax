@@ -18,7 +18,7 @@ my $_buf = ""; my $_V;  $_buf .= q`<!DOCTYPE html>
       }
 
       .form-input {
-        max-width: 400px;
+        max-width: 600px;
         padding: 19px 29px 29px;
         margin: 0 auto 20px;
         background-color: #fff;
@@ -82,6 +82,11 @@ my $_buf = ""; my $_V;  $_buf .= q`<!DOCTYPE html>
           <label class="control-label" for="` . escape_xml( $f->{name} ) . q`">` . escape_xml( $f->{desc} ) . q`</label>
           <div class="controls">
             ` . ( $forms->{ $f->{name} } ) . q`
+            <span class="help-inline">
+`;               if( exists $messages->{ $f->{name} } ) {
+ $_buf .= q`              <p class="text-error">` . escape_xml( $messages->{ $f->{name} } ) . q`</p>
+`;               }
+ $_buf .= q`            </span>
           </div>
         </div>
 `;         }
