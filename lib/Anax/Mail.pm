@@ -75,7 +75,7 @@ sub sendmail {
     
     my $email = Email::Simple->create(
         header => [ %header ],
-        body => Jcode::CP932->new( $parts->{body} )->$charset
+        body => $parts->{body}
     );
 #    $email->header_str_set( 'Cc' => Jcode::CP932->new( $parts->{cc} )->$charset )
 #        if( exists $parts->{cc} and defined $parts->{cc} and length( $parts->{cc} ) );
