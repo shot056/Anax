@@ -93,7 +93,7 @@ my $_buf = ""; my $_V;  $_buf .= q`<!DOCTYPE html>
 `;         }
  $_buf .= q`        <div>
           <button class="btn btn-block btn-primary" type="submit">登録</button>
-          <button class="btn btn-block" type="button" onClick="goBack( this.form );">キャンセル</button>
+          <button class="btn btn-block" type="button" onClick="goBack( this.form );">戻る</button>
         </div>
 `;         if( $params->{is_admin} ) {
  $_buf .= q`        <input type="hidden" name="is_admin" value="1" />
