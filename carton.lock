@@ -162,6 +162,78 @@
          "target" : "Class::Accessor::Fast",
          "version" : "0.34"
       },
+      "Class::Accessor::Grouped" : {
+         "dist" : "Class-Accessor-Grouped-0.10006",
+         "mymeta" : {
+            "abstract" : "Lets you build groups of accessors",
+            "author" : [
+               "Matt S. Trout <mst@shadowcatsystems.co.uk>"
+            ],
+            "dynamic_config" : 0,
+            "generated_by" : "Module::Install version 1.04, CPAN::Meta::Converter version 2.120630",
+            "license" : [
+               "perl_5"
+            ],
+            "meta-spec" : {
+               "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+               "version" : "2"
+            },
+            "name" : "Class-Accessor-Grouped",
+            "no_index" : {
+               "directory" : [
+                  "inc",
+                  "t"
+               ]
+            },
+            "prereqs" : {
+               "build" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "6.6302",
+                     "Test::Exception" : "0.31",
+                     "Test::More" : "0.94"
+                  }
+               },
+               "configure" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "6.62"
+                  }
+               },
+               "runtime" : {
+                  "requires" : {
+                     "Carp" : "0",
+                     "Class::Inspector" : "0",
+                     "Class::XSAccessor" : "1.13",
+                     "Scalar::Util" : "0",
+                     "Sub::Name" : "0.05",
+                     "Test::Exception" : "0.31",
+                     "Test::More" : "0.94",
+                     "perl" : "5.006002"
+                  }
+               }
+            },
+            "release_status" : "stable",
+            "resources" : {
+               "license" : [
+                  "http://dev.perl.org/licenses/"
+               ],
+               "repository" : {
+                  "type" : "git",
+                  "url" : "git://git.shadowcat.co.uk/p5sagit/Class-Accessor-Grouped.git"
+               }
+            },
+            "version" : "0.10006"
+         },
+         "name" : "Class::Accessor::Grouped",
+         "pathname" : "C/CL/CLACO/Class-Accessor-Grouped-0.10006.tar.gz",
+         "provides" : {
+            "Class::Accessor::Grouped" : {
+               "file" : "Class/Accessor/Grouped.pm",
+               "version" : "0.10006"
+            }
+         },
+         "target" : "Class::Accessor::Grouped",
+         "version" : "0.10006"
+      },
       "Class::Accessor::Lite" : {
          "dist" : "Class-Accessor-Lite-0.05",
          "mymeta" : {
@@ -451,7 +523,7 @@
          "version" : "1.4"
       },
       "Class::XSAccessor" : {
-         "dist" : "Class-XSAccessor-1.14",
+         "dist" : "Class-XSAccessor-1.16",
          "mymeta" : {
             "abstract" : "Generate fast XS accessors without runtime compilation",
             "author" : [
@@ -498,14 +570,14 @@
                   "url" : "git://github.com/tsee/Class-XSAccessor.git"
                }
             },
-            "version" : "1.14"
+            "version" : "1.16"
          },
          "name" : "Class::XSAccessor",
-         "pathname" : "S/SM/SMUELLER/Class-XSAccessor-1.14.tar.gz",
+         "pathname" : "S/SM/SMUELLER/Class-XSAccessor-1.16.tar.gz",
          "provides" : {
             "Class::XSAccessor" : {
                "file" : "Class/XSAccessor.pm",
-               "version" : "1.14"
+               "version" : "1.16"
             },
             "Class::XSAccessor::Array" : {
                "file" : "Class/XSAccessor/Array.pm",
@@ -513,7 +585,7 @@
             }
          },
          "target" : "Class::XSAccessor",
-         "version" : "1.14"
+         "version" : "1.16"
       },
       "Clone" : {
          "dist" : "Clone-0.31",
@@ -7652,6 +7724,7 @@
                "runtime" : {
                   "requires" : {
                      "Mail::Address" : "0",
+                     "Net::DNS" : "0",
                      "Scalar::Util" : "0",
                      "Test::More" : "0",
                      "perl" : "5.006"
@@ -10573,6 +10646,301 @@
          },
          "target" : "Mojolicious::Plugin::CSRFDefender",
          "version" : "v0.0.6"
+      },
+      "Net::DNS" : {
+         "dist" : "Net-DNS-0.68",
+         "mymeta" : {
+            "abstract" : "Perl DNS resolver module",
+            "author" : [
+               "Olaf Kolkman <olaf@net-dns.org>"
+            ],
+            "dynamic_config" : 0,
+            "generated_by" : "ExtUtils::MakeMaker version 6.56, CPAN::Meta::Converter version 2.120630",
+            "license" : [
+               "perl_5"
+            ],
+            "meta-spec" : {
+               "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+               "version" : "2"
+            },
+            "name" : "Net-DNS",
+            "no_index" : {
+               "directory" : [
+                  "t",
+                  "inc"
+               ]
+            },
+            "prereqs" : {
+               "build" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "0"
+                  }
+               },
+               "configure" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "0"
+                  }
+               },
+               "runtime" : {
+                  "requires" : {
+                     "Digest::HMAC_MD5" : "1",
+                     "Digest::MD5" : "2.12",
+                     "Digest::SHA" : "5.23",
+                     "IO::Socket" : "0",
+                     "MIME::Base64" : "2.11",
+                     "Test::More" : "0.18"
+                  }
+               }
+            },
+            "release_status" : "stable",
+            "version" : "0.68"
+         },
+         "name" : "Net::DNS",
+         "pathname" : "O/OL/OLAF/Net-DNS-0.68.tar.gz",
+         "provides" : {
+            "Net::DNS" : {
+               "file" : "Net/DNS.pm",
+               "version" : "0.68"
+            },
+            "Net::DNS::Domain" : {
+               "file" : "Net/DNS/Domain.pm",
+               "version" : "964"
+            },
+            "Net::DNS::DomainName" : {
+               "file" : "Net/DNS/DomainName.pm",
+               "version" : "964"
+            },
+            "Net::DNS::DomainName1035" : {
+               "file" : "Net/DNS/DomainName.pm"
+            },
+            "Net::DNS::DomainName2535" : {
+               "file" : "Net/DNS/DomainName.pm"
+            },
+            "Net::DNS::Header" : {
+               "file" : "Net/DNS/Header.pm",
+               "version" : "968"
+            },
+            "Net::DNS::Mailbox" : {
+               "file" : "Net/DNS/Mailbox.pm",
+               "version" : "970"
+            },
+            "Net::DNS::Mailbox1035" : {
+               "file" : "Net/DNS/Mailbox.pm"
+            },
+            "Net::DNS::Mailbox2535" : {
+               "file" : "Net/DNS/Mailbox.pm"
+            },
+            "Net::DNS::Nameserver" : {
+               "file" : "Net/DNS/Nameserver.pm",
+               "version" : "970"
+            },
+            "Net::DNS::Packet" : {
+               "file" : "Net/DNS/Packet.pm",
+               "version" : "969"
+            },
+            "Net::DNS::Question" : {
+               "file" : "Net/DNS/Question.pm",
+               "version" : "971"
+            },
+            "Net::DNS::RR" : {
+               "file" : "Net/DNS/RR.pm",
+               "version" : "969"
+            },
+            "Net::DNS::RR::A" : {
+               "file" : "Net/DNS/RR/A.pm",
+               "version" : "932"
+            },
+            "Net::DNS::RR::AAAA" : {
+               "file" : "Net/DNS/RR/AAAA.pm",
+               "version" : "932"
+            },
+            "Net::DNS::RR::AFSDB" : {
+               "file" : "Net/DNS/RR/AFSDB.pm",
+               "version" : "932"
+            },
+            "Net::DNS::RR::APL" : {
+               "file" : "Net/DNS/RR/APL.pm",
+               "version" : "684"
+            },
+            "Net::DNS::RR::APL::ApItem" : {
+               "file" : "Net/DNS/RR/APL/ApItem.pm",
+               "version" : "684"
+            },
+            "Net::DNS::RR::CERT" : {
+               "file" : "Net/DNS/RR/CERT.pm",
+               "version" : "932"
+            },
+            "Net::DNS::RR::CNAME" : {
+               "file" : "Net/DNS/RR/CNAME.pm",
+               "version" : "932"
+            },
+            "Net::DNS::RR::DHCID" : {
+               "file" : "Net/DNS/RR/DHCID.pm",
+               "version" : "718"
+            },
+            "Net::DNS::RR::DNAME" : {
+               "file" : "Net/DNS/RR/DNAME.pm",
+               "version" : "932"
+            },
+            "Net::DNS::RR::EID" : {
+               "file" : "Net/DNS/RR/EID.pm",
+               "version" : "932"
+            },
+            "Net::DNS::RR::HINFO" : {
+               "file" : "Net/DNS/RR/HINFO.pm",
+               "version" : "932"
+            },
+            "Net::DNS::RR::HIP" : {
+               "file" : "Net/DNS/RR/HIP.pm",
+               "version" : "718"
+            },
+            "Net::DNS::RR::IPSECKEY" : {
+               "file" : "Net/DNS/RR/IPSECKEY.pm",
+               "version" : "932"
+            },
+            "Net::DNS::RR::ISDN" : {
+               "file" : "Net/DNS/RR/ISDN.pm",
+               "version" : "932"
+            },
+            "Net::DNS::RR::KX" : {
+               "file" : "Net/DNS/RR/KX.pm",
+               "version" : "684"
+            },
+            "Net::DNS::RR::LOC" : {
+               "file" : "Net/DNS/RR/LOC.pm",
+               "version" : "932"
+            },
+            "Net::DNS::RR::MB" : {
+               "file" : "Net/DNS/RR/MB.pm",
+               "version" : "932"
+            },
+            "Net::DNS::RR::MG" : {
+               "file" : "Net/DNS/RR/MG.pm",
+               "version" : "932"
+            },
+            "Net::DNS::RR::MINFO" : {
+               "file" : "Net/DNS/RR/MINFO.pm",
+               "version" : "932"
+            },
+            "Net::DNS::RR::MR" : {
+               "file" : "Net/DNS/RR/MR.pm",
+               "version" : "932"
+            },
+            "Net::DNS::RR::MX" : {
+               "file" : "Net/DNS/RR/MX.pm",
+               "version" : "932"
+            },
+            "Net::DNS::RR::NAPTR" : {
+               "file" : "Net/DNS/RR/NAPTR.pm",
+               "version" : "932"
+            },
+            "Net::DNS::RR::NIMLOC" : {
+               "file" : "Net/DNS/RR/NIMLOC.pm",
+               "version" : "932"
+            },
+            "Net::DNS::RR::NS" : {
+               "file" : "Net/DNS/RR/NS.pm",
+               "version" : "932"
+            },
+            "Net::DNS::RR::NSAP" : {
+               "file" : "Net/DNS/RR/NSAP.pm",
+               "version" : "932"
+            },
+            "Net::DNS::RR::NULL" : {
+               "file" : "Net/DNS/RR/NULL.pm",
+               "version" : "932"
+            },
+            "Net::DNS::RR::OPT" : {
+               "file" : "Net/DNS/RR/OPT.pm",
+               "version" : "932"
+            },
+            "Net::DNS::RR::PTR" : {
+               "file" : "Net/DNS/RR/PTR.pm",
+               "version" : "966"
+            },
+            "Net::DNS::RR::PX" : {
+               "file" : "Net/DNS/RR/PX.pm",
+               "version" : "932"
+            },
+            "Net::DNS::RR::RP" : {
+               "file" : "Net/DNS/RR/RP.pm",
+               "version" : "932"
+            },
+            "Net::DNS::RR::RT" : {
+               "file" : "Net/DNS/RR/RT.pm",
+               "version" : "932"
+            },
+            "Net::DNS::RR::SOA" : {
+               "file" : "Net/DNS/RR/SOA.pm",
+               "version" : "932"
+            },
+            "Net::DNS::RR::SPF" : {
+               "file" : "Net/DNS/RR/SPF.pm",
+               "version" : "932"
+            },
+            "Net::DNS::RR::SRV" : {
+               "file" : "Net/DNS/RR/SRV.pm",
+               "version" : "932"
+            },
+            "Net::DNS::RR::SSHFP" : {
+               "file" : "Net/DNS/RR/SSHFP.pm",
+               "version" : "932"
+            },
+            "Net::DNS::RR::TKEY" : {
+               "file" : "Net/DNS/RR/TKEY.pm",
+               "version" : "932"
+            },
+            "Net::DNS::RR::TSIG" : {
+               "file" : "Net/DNS/RR/TSIG.pm",
+               "version" : "932"
+            },
+            "Net::DNS::RR::TXT" : {
+               "file" : "Net/DNS/RR/TXT.pm",
+               "version" : "932"
+            },
+            "Net::DNS::RR::Unknown" : {
+               "file" : "Net/DNS/RR/Unknown.pm",
+               "version" : "932"
+            },
+            "Net::DNS::RR::X25" : {
+               "file" : "Net/DNS/RR/X25.pm",
+               "version" : "932"
+            },
+            "Net::DNS::Resolver" : {
+               "file" : "Net/DNS/Resolver.pm",
+               "version" : "955"
+            },
+            "Net::DNS::Resolver::Base" : {
+               "file" : "Net/DNS/Resolver/Base.pm",
+               "version" : "932"
+            },
+            "Net::DNS::Resolver::Cygwin" : {
+               "file" : "Net/DNS/Resolver/Cygwin.pm",
+               "version" : "932"
+            },
+            "Net::DNS::Resolver::Recurse" : {
+               "file" : "Net/DNS/Resolver/Recurse.pm",
+               "version" : "932"
+            },
+            "Net::DNS::Resolver::UNIX" : {
+               "file" : "Net/DNS/Resolver/UNIX.pm",
+               "version" : "932"
+            },
+            "Net::DNS::Resolver::Win32" : {
+               "file" : "Net/DNS/Resolver/Win32.pm",
+               "version" : "932"
+            },
+            "Net::DNS::Text" : {
+               "file" : "Net/DNS/Text.pm",
+               "version" : "965"
+            },
+            "Net::DNS::Update" : {
+               "file" : "Net/DNS/Update.pm",
+               "version" : "970"
+            }
+         },
+         "target" : "Net::DNS",
+         "version" : "0.68"
       },
       "Net::HTTP" : {
          "dist" : "Net-HTTP-6.03",
@@ -14688,7 +15056,7 @@
          "version" : "1.20"
       },
       "Tree::DAG_Node" : {
-         "dist" : "Tree-DAG_Node-1.07",
+         "dist" : "Tree-DAG_Node-1.08",
          "mymeta" : {
             "abstract" : "An N-ary tree",
             "author" : [
@@ -14726,7 +15094,7 @@
             "provides" : {
                "Tree::DAG_Node" : {
                   "file" : "lib/Tree/DAG_Node.pm",
-                  "version" : "1.07"
+                  "version" : "1.08"
                }
             },
             "release_status" : "stable",
@@ -14735,18 +15103,18 @@
                   "http://dev.perl.org/licenses/"
                ]
             },
-            "version" : "1.07"
+            "version" : "1.08"
          },
          "name" : "Tree::DAG_Node",
-         "pathname" : "R/RS/RSAVAGE/Tree-DAG_Node-1.07.tgz",
+         "pathname" : "R/RS/RSAVAGE/Tree-DAG_Node-1.08.tgz",
          "provides" : {
             "Tree::DAG_Node" : {
                "file" : "Tree/DAG_Node.pm",
-               "version" : "1.07"
+               "version" : "1.08"
             }
          },
          "target" : "Tree::DAG_Node",
-         "version" : "1.07"
+         "version" : "1.08"
       },
       "Try::Tiny" : {
          "dist" : "Try-Tiny-0.11",
