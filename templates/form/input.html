@@ -72,7 +72,7 @@
           <label class="control-label" for="field_products">[= $product_message =]</label>
           <div class="controls">
           <?pl foreach my $p ( @{$product_list} ) { ?>
-            <label><input type="checkbox" value="[= $p->{id} =]" name="products">[= $p->{name} =]</label>
+            <label><input type="checkbox" value="[= $p->{id} =]" name="products"<?pl if( grep( $_ eq $p->{id}, @{ $params->{products} } ) ) { ?> checked="checked"<?pl } ?>>[= $p->{name} =]</label>
           <?pl } ?>
           </div>
         </div>

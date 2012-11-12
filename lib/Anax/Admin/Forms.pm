@@ -253,7 +253,7 @@ sub get_form_setting {
                       name => "field_" . $fline->{id},
                       desc => b( $fline->{name} )->decode->to_string,
                       type => $fline->{type},
-                      default => $fline->{default} || undef,
+                      default => b( $fline->{default} )->decode->to_string || undef,
                       is_required => $fline->{is_required},
                       error_check => $fline->{error_check} };
         if( grep( $_ eq $fline->{type}, qw/checkbox radio popup select/ ) ) {

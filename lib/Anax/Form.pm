@@ -26,6 +26,9 @@ sub input {
     
     my $params = $self->req->params->to_hash;
 
+    $params->{products} = [ $params->{products} ]
+        if( exists $params->{products} and defined $params->{products} and ref( $params->{products} ) ne 'ARRAY' );
+    
     my $form_setting = Anax::Admin::Forms->get_form_setting( $self->app, $key, $params->{is_admin} );
     #$self->app->log->debug( "settings : \n" . Dumper( $form_setting ) );
     $self->render_not_found unless( defined $form_setting );
@@ -58,6 +61,9 @@ sub confirm {
     my $key = $self->stash('formkey');
     
     my $params = $self->req->params->to_hash;
+    $params->{products} = [ $params->{products} ]
+        if( exists $params->{products} and defined $params->{products} and ref( $params->{products} ) ne 'ARRAY' );
+    
     #$self->app->log->debug( "params : \n" . Dumper( $params ) );
     
     my $form_setting = Anax::Admin::Forms->get_form_setting( $self->app, $key, $params->{is_admin} );
@@ -106,6 +112,9 @@ sub complete {
     my $key = $self->stash('formkey');
     
     my $params = $self->req->params->to_hash;
+    $params->{products} = [ $params->{products} ]
+        if( exists $params->{products} and defined $params->{products} and ref( $params->{products} ) ne 'ARRAY' );
+    
     #$self->app->log->debug( "params : \n" . Dumper( $params ) );
     
     my $form_setting = Anax::Admin::Forms->get_form_setting( $self->app, $key, $params->{is_admin} );
@@ -128,7 +137,7 @@ sub complete {
                   params          => $params
                 };
     $datas->{values} = $self->replace_params2value( $form_setting, $products, $params );
-
+    $self->app->log->debug( "values : \n" . Dumper( $datas->{values} ) );
     {
         my ($b,$a) = split/\@/, $self->app->config->{gmail}->{username};
         $datas->{mail_from} = sprintf('%s+%s@%s', $b, $key, $a );
@@ -179,6 +188,8 @@ sub complete {
                          applicants_id => $applicant_id,
                          forms_id => $form_setting->{id},
                          fields_id => $field->{id} );
+            next unless( exists $params->{ $field->{name} } );
+            $self->app->log->debug( "\$params->{ \$field->{name} } : $field->{name} : \n" . Dumper( $params->{ $field->{name} } ) );
             if( $field->{type} =~ /^text/ ) {
                 $dbis->insert('applicant_data', { %hash, text => $params->{ $field->{name} } } )
                     or die $dbis->error;
@@ -209,7 +220,7 @@ sub complete {
 sub generate_rule {
     my $self   = shift;
     my $fields = shift;
-    $self->app->log->debug( Dumper( $fields ) );
+    #$self->app->log->debug( Dumper( $fields ) );
 
     my %msgs = ( email => b( '正しいメールアドレスを入力してください。' )->decode->to_string,
                  integer => b( '半角数字で入力してください。' )->decode->to_string,
@@ -252,7 +263,7 @@ sub replace_params2value {
                         push( @{ $arys }, $opts->{name} );
                     }
                 }
-                $ret->{$key} = $arys;
+                $ret->{$key} = join(', ', @{ $arys } );;
             }
         }
         elsif( $key eq 'products' ) {
@@ -284,6 +295,7 @@ sub generate_forms {
                       -default => $params->{ $field->{name} } || $field->{default} || undef );
         my $label = '';
         my $method;
+        next if( $is_hidden and !( exists $params->{ $field->{name} } ) );
         if( $field->{type} eq 'hidden' ) {
             $method = 'hidden';
             $mopts{'-value'} = $mopts{'-default'};
@@ -321,7 +333,7 @@ sub generate_forms {
                 $label = join(", ", map { $mopts{'-labels'}->{ $_ } } @{ $mopts{'-default'} } );
             }
         }
-        $self->app->log->debug( Dumper( \%mopts ) );
+        #$self->app->log->debug( Dumper( \%mopts ) );
         if( $is_hidden ) {
             $fields{ $field->{name} } = $cgi->hidden( -name => $mopts{'-name'}, -value => $mopts{'-default'} );
             $label = CGI::escapeHTML( $label );

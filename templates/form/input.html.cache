@@ -72,7 +72,7 @@ my $_buf = ""; my $_V;  $_buf .= q`<!DOCTYPE html>
           <label class="control-label" for="field_products">` . escape_xml( $product_message ) . q`</label>
           <div class="controls">
 `;           foreach my $p ( @{$product_list} ) {
- $_buf .= q`            <label><input type="checkbox" value="` . escape_xml( $p->{id} ) . q`" name="products">` . escape_xml( $p->{name} ) . q`</label>
+ $_buf .= q`            <label><input type="checkbox" value="` . escape_xml( $p->{id} ) . q`" name="products"`; if( grep( $_ eq $p->{id}, @{ $params->{products} } ) ) { $_buf .= q` checked="checked"`; } $_buf .= q`>` . escape_xml( $p->{name} ) . q`</label>
 `;           }
  $_buf .= q`          </div>
         </div>

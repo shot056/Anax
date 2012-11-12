@@ -220,7 +220,7 @@ sub get_form_products {
         
         push( @{ $products->{list} }, $products->{hash}->{ $line->{id} } );
     }
-    $app->log->debug( Dumper( $products ) );
+    #$app->log->debug( Dumper( $products ) );
     return $products;
 }
 
