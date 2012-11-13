@@ -50,7 +50,8 @@ sub input {
                   products        => $products->{hash},
                   product_message => $form_setting->{product_message} || '',
                   has_products    => scalar @{$products->{list}} ? 1 : 0,
-                  params          => $params
+                  params          => $params,
+                  mail_from       => $self->app->config->{gmail}->{username}
                 };
     #$self->app->log->debug( Dumper( $datas ) );
     $self->render( text => $self->render_template( $key, 'input', $datas ) );
@@ -83,7 +84,8 @@ sub confirm {
                   products        => $products->{hash},
                   product_message => $form_setting->{product_message} || '',
                   has_products    => scalar @{$products->{list}} ? 1 : 0,
-                  params          => $params
+                  params          => $params,
+                  mail_from       => $self->app->config->{gmail}->{username}
                 };
     my $rule = $self->generate_rule( $form_setting->{field_list} );
     
@@ -134,14 +136,11 @@ sub complete {
                   products        => $products->{hash},
                   product_message => $form_setting->{product_message} || '',
                   has_products    => scalar @{$products->{list}} ? 1 : 0,
-                  params          => $params
+                  params          => $params,
+                  mail_from       => $self->app->config->{gmail}->{username}
                 };
     $datas->{values} = $self->replace_params2value( $form_setting, $products, $params );
     $self->app->log->debug( "values : \n" . Dumper( $datas->{values} ) );
-    {
-        my ($b,$a) = split/\@/, $self->app->config->{gmail}->{username};
-        $datas->{mail_from} = sprintf('%s+%s@%s', $b, $key, $a );
-    }
     
     $self->app->log->debug( Dumper( $datas ) );
     
