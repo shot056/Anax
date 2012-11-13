@@ -62,7 +62,7 @@
       <th><%= $field->{desc} %></th>
       <td>
 % if( $field->{type} =~ /^text/ ) {
-<%= html_br( decode( $datas->{ $field->{id} } ) ) %>
+<%== html_br( decode( $datas->{ $field->{id} } ) ) %>
 % } else {
 % foreach my $pid ( @{ $datas->{ $field->{id} } } ) {
 <%= $field->{options_hash}->{ $pid } %><br />
