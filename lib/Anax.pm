@@ -3,7 +3,6 @@ use Mojo::Base 'Mojolicious';
 use Mojo::ByteStream;
 use DateTime::Format::Pg;
 
-use CGI qw/:any/;
 use Data::Dumper;
 
 # This method will run once at server start
@@ -82,7 +81,7 @@ sub startup {
     $self->helper( html_br => sub {
                        my $self = shift;
                        my $str  = shift;
-                       my $ret = CGI::escapeHTML( $str );
+                       my $ret = Mojo::ByteStream->new( $str )->html_escape;
                        $ret =~ s/\r\n/\n/g;
                        $ret =~ s/\n/<br \/>\n/g;
                        return $ret;
