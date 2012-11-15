@@ -14,7 +14,7 @@ WriteMakefile(
                 'Starman' => '0.3003',
                 'Mojolicious::Plugin::CSRFDefender' => '0.0.6',
                 'Jcode::CP932' => '0.08',
-                'Email::Send::Gmail' => '0.33',
+                'Email::Send::SMTP::TLS' => '0.04',
                 'Email::Simple' => '2.102',
                 'Email::Valid' => '0.190'
                }

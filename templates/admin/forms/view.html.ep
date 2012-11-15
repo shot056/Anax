@@ -148,14 +148,12 @@
     <tr>
       <th>To</th><td><%= decode( $mail_template->{to} ) %></td>
     </tr>
-<!--
     <tr>
       <th>Cc</th><td><%= decode( $mail_template->{cc} ) %></td>
     </tr>
     <tr>
       <th>Bcc</th><td><%= decode( $mail_template->{bcc} ) %></td>
     </tr>
-    -->
     <tr>
       <th>タイトル</th><td><%= decode( $mail_template->{subject} ) %></td>
     </tr>

@@ -15,7 +15,6 @@ use SQL::Maker;
 
 use Data::Dumper;
 use Jcode::CP932;
-use MIME::Base64;
 use Mojo::ByteStream 'b';
 
 sub new {
@@ -36,66 +35,77 @@ sub sendmail {
     my $id   = shift;
     my $data = shift;
 
-    my $tmpl = $self->load( $id );
-    $self->app->log->debug( Dumper( { tmpl => $tmpl } ) );
+    my $tmpl = $self->load($id);
+    #$self->app->log->debug( Dumper( { tmpl => $tmpl } ) );
     my $parts = $self->render( $id, $tmpl, $data );
-    $self->app->log->debug( Dumper( { parts => $parts } ) );
+    #$self->app->log->debug( Dumper( { parts => $parts } ) );
 
     my $charset = $tmpl->{charset};
-    $charset = 'utf8' unless( grep( $charset eq $_, qw/utf8 iso_2022_jp/ ) );
-    
-    my %header = ( From => $charset eq 'utf8' ? $parts->{from} : Jcode::CP932->new( $parts->{from} )->$charset,
-#                   'Return-Path' => $charset eq 'utf8' ? $parts->{from} : Jcode::CP932->new( $parts->{from} )->$charset,
-                   To   => $charset eq 'utf8' ? $parts->{to} : Jcode::CP932->new( $parts->{to} )->$charset,
-                   'Content-Transfer-Encoding' => '7bit' );
-    if( $charset eq 'utf8' ) {
+    $charset = 'utf8' unless ( grep( $charset eq $_, qw/utf8 iso_2022_jp/ ) );
+
+    my %header = (
+          From => $charset eq 'utf8' ? $parts->{from} : Jcode::CP932->new( $parts->{from} )->$charset,
+          To => $charset eq 'utf8' ? $parts->{to} : Jcode::CP932->new( $parts->{to} )->$charset,
+          'Content-Transfer-Encoding' => 'base64'
+    );
+    if ( $charset eq 'utf8' ) {
         $header{'Content-Type'} = 'text/plain; charset=UTF-8';
     }
     else {
         $header{'Content-Type'} = 'text/plain; charset=ISO-2022-JP';
     }
-    # $header{'Cc'} = [ Jcode::CP932->new( $parts->{cc} )->$charset ]
-    #     if( exists $parts->{cc} and defined $parts->{cc} and length( $parts->{cc} ) );
-    # push( @{ $header{'Bcc'} }, Jcode::CP932->new( $parts->{bcc} )->$charset )
-    #     if( exists $parts->{bcc} and defined $parts->{bcc} and length( $parts->{bcc} ) );
-    
+    $header{'X-AnaxWebForm-Key'} = $data->{key} if ( exists $data->{key} );
+    $header{'Cc'} = Jcode::CP932->new( $parts->{cc} )->$charset
+      if (  exists $parts->{cc}
+        and defined $parts->{cc}
+        and length( $parts->{cc} ) );
     {
         my @encoded_subjects;
-        foreach my $splited_str ( Jcode::CP932->new( $charset eq 'utf8' ? $parts->{subject} : Jcode::CP932->new( $parts->{subject} )->$charset )->jfold( 20 ) ) {
-            my $str = encode_base64( $splited_str );
-            chomp( $str );
+        foreach my $splited_str ( Jcode::CP932->new( $charset eq 'utf8' ? $parts->{subject} : Jcode::CP932->new( $parts->{subject} )->$charset )->jfold(20) ) {
+            my $str = b( $splited_str )->b64_encode;
+            chomp($str);
             push( @encoded_subjects, $str );
         }
-        $header{Subject} = join("\n",
-                                map { sprintf('=?%s?B?%s?=',
-                                              ( $charset eq 'utf8' ? 'UTF-8' : 'ISO-2022-JP' ),
-                                              $_ ) } @encoded_subjects );
+        $header{Subject} = join( "\n", map { sprintf( '=?%s?B?%s?=', ( $charset eq 'utf8' ? 'UTF-8' : 'ISO-2022-JP' ), $_ ) } @encoded_subjects );
     }
     $parts->{body} =~ s/\r\n/\n/g;
     $parts->{body} =~ s/\r/\n/g;
+
+    my $mail_body = b( $charset eq 'utf8' ? $parts->{body} : Jcode::CP932->new( $parts->{body} )->$charset )->encode->b64_encode;
     
     my $email = Email::Simple->create(
         header => [ %header ],
-        body => $charset eq 'utf8' ? $parts->{body} : Jcode::CP932->new( $parts->{body} )->$charset
+        body   => $mail_body
     );
-#    $email->header_str_set( 'Cc' => Jcode::CP932->new( $parts->{cc} )->$charset )
-#        if( exists $parts->{cc} and defined $parts->{cc} and length( $parts->{cc} ) );
-#    $email->header_str_set( 'Bcc' => Jcode::CP932->new( $parts->{bcc} )->$charset )
-#        if( exists $parts->{bcc} and defined $parts->{bcc} and length( $parts->{bcc} ) );
-    $email->header_set( 'X-AnaxWebForm-Key' => $data->{key} )
-        if( exists $data->{key} );
-    my $sender = Email::Send->new(
-        {   mailer      => 'Gmail',
-            mailer_args => [
-                username => $self->username,
-                password => $self->password
-            ]
+    $self->app->log->info( "\n" . $email->as_string );
+    my $sender = Email::Send->new( {
+        mailer      => 'SMTP::TLS',
+        mailer_args => [
+            Host     => 'smtp.gmail.com',
+            Port     => 587,
+            User     => $self->username,
+            Password => $self->password
+        ]
+    } );
+    $self->app->log->info( "+++++ Sending Email To: $parts->{to} Cc: $parts->{cc}" );
+    $sender->send($email);
+
+    if ( exists $parts->{bcc} and defined $parts->{bcc} and length( $parts->{bcc} ) ) {
+        foreach my $bcc ( split /, /, Jcode::CP932->new( $parts->{bcc} )->$charset ) {
+            my %tmp_header = %header;
+            delete $tmp_header{'To'};
+            delete $tmp_header{'Cc'};
+            $tmp_header{'Bcc'} = $bcc;
+            $self->app->log->info( "+++++ Sending Email Bcc: $bcc" );
+            $sender->send( Email::Simple->create(
+                header => [ %tmp_header ],
+                body   => $mail_body
+            ) );
         }
-    );
-    $self->app->log->info( Dumper( { email => $email, sender => $sender } ) );
-    $sender->send( $email );
+    }
     return 1;
 }
+
 
 sub render {
     my $self = shift;
