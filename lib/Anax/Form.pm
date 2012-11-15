@@ -188,7 +188,7 @@ sub complete {
                          forms_id => $form_setting->{id},
                          fields_id => $field->{id} );
             next unless( exists $params->{ $field->{name} } );
-            $self->app->log->debug( "\$params->{ \$field->{name} } : $field->{name} : \n" . Dumper( $params->{ $field->{name} } ) );
+            #$self->app->log->debug( "\$params->{ \$field->{name} } : $field->{name} : \n" . Dumper( $params->{ $field->{name} } ) );
             if( $field->{type} =~ /^text/ ) {
                 $dbis->insert('applicant_data', { %hash, text => $params->{ $field->{name} } } )
                     or die $dbis->error;
