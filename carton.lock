@@ -7621,6 +7621,64 @@
          "target" : "Email::Send::Gmail",
          "version" : "0.33"
       },
+      "Email::Send::SMTP::TLS" : {
+         "dist" : "Email-Send-SMTP-TLS-0.04",
+         "mymeta" : {
+            "abstract" : "Send Email using Net::SMTP::TLS (esp. Gmail)",
+            "author" : [
+               "Fayland Lam <fayland@gmail.com>"
+            ],
+            "dynamic_config" : 0,
+            "generated_by" : "Module::Build version 0.3901, CPAN::Meta::Converter version 2.120630",
+            "license" : [
+               "perl_5"
+            ],
+            "meta-spec" : {
+               "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+               "version" : "2"
+            },
+            "name" : "Email-Send-SMTP-TLS",
+            "prereqs" : {
+               "build" : {
+                  "requires" : {
+                     "Email::Address" : "0",
+                     "Email::Send" : "0",
+                     "Net::SMTP::TLS::ButMaintained" : "0",
+                     "Return::Value" : "0",
+                     "Test::More" : "0"
+                  }
+               },
+               "configure" : {
+                  "requires" : {
+                     "Module::Build" : "0.36"
+                  }
+               }
+            },
+            "provides" : {
+               "Email::Send::SMTP::TLS" : {
+                  "file" : "lib/Email/Send/SMTP/TLS.pm",
+                  "version" : "0.04"
+               }
+            },
+            "release_status" : "stable",
+            "resources" : {
+               "license" : [
+                  "http://dev.perl.org/licenses/"
+               ]
+            },
+            "version" : "0.04"
+         },
+         "name" : "Email::Send::SMTP::TLS",
+         "pathname" : "F/FA/FAYLAND/Email-Send-SMTP-TLS-0.04.tar.gz",
+         "provides" : {
+            "Email::Send::SMTP::TLS" : {
+               "file" : "Email/Send/SMTP/TLS.pm",
+               "version" : "0.04"
+            }
+         },
+         "target" : "Email::Send::SMTP::TLS",
+         "version" : "0.04"
+      },
       "Email::Simple" : {
          "dist" : "Email-Simple-2.102",
          "mymeta" : {
@@ -11076,6 +11134,64 @@
          },
          "target" : "Net::SMTP::SSL",
          "version" : "1.01"
+      },
+      "Net::SMTP::TLS::ButMaintained" : {
+         "dist" : "Net-SMTP-TLS-ButMaintained-0.20",
+         "mymeta" : {
+            "abstract" : "An SMTP client supporting TLS and AUTH",
+            "author" : [
+               "Alexander Christian Westholm <awestholm at verizon dawt net>",
+               "Fayland Lam <fayland@gmail.com>"
+            ],
+            "dynamic_config" : 0,
+            "generated_by" : "Dist::Zilla version 4.300016, CPAN::Meta::Converter version 2.120921, CPAN::Meta::Converter version 2.120630",
+            "license" : [
+               "perl_5"
+            ],
+            "meta-spec" : {
+               "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+               "version" : "2"
+            },
+            "name" : "Net-SMTP-TLS-ButMaintained",
+            "prereqs" : {
+               "build" : {
+                  "requires" : {}
+               },
+               "configure" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "6.30"
+                  }
+               },
+               "runtime" : {
+                  "requires" : {
+                     "Digest::HMAC_MD5" : "0",
+                     "IO::Socket::INET" : "0",
+                     "IO::Socket::SSL" : "1.76",
+                     "MIME::Base64" : "0",
+                     "Net::Cmd" : "0",
+                     "Net::SSLeay" : "0"
+                  }
+               }
+            },
+            "release_status" : "stable",
+            "resources" : {
+               "repository" : {
+                  "type" : "git",
+                  "url" : "git://github.com/fayland/Net-SMTP-TLS.git"
+               }
+            },
+            "version" : "0.20"
+         },
+         "name" : "Net::SMTP::TLS::ButMaintained",
+         "pathname" : "F/FA/FAYLAND/Net-SMTP-TLS-ButMaintained-0.20.tar.gz",
+         "provides" : {
+            "Net::SMTP::TLS::ButMaintained" : {
+               "file" : "Net/SMTP/TLS/ButMaintained.pm",
+               "version" : "0.20"
+            }
+         },
+         "target" : "Net::SMTP::TLS::ButMaintained",
+         "version" : "0.20"
       },
       "Net::SSLeay" : {
          "dist" : "Net-SSLeay-1.49",
