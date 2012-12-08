@@ -23,19 +23,35 @@ sub index {
     $dbis->begin_work or die $dbis->error;
     $dbis->query( "SET timezone TO 'Asia/Tokyo';" ) or die $dbis->error;
     {
-        my $forms_rslt = $dbis->query( "SELECT id, name FROM forms WHERE is_deleted = FALSE ORDER BY id" )
+        my $forms_rslt = $dbis->query( "SELECT * FROM forms WHERE is_deleted = FALSE ORDER BY id" )
             or die $dbis->error;
         my $values = [];
         my $labels = {};
+        my $datas  = {};
         while( my $line = $forms_rslt->hash ) {
             $labels->{$line->{id}} = $line->{name};
             push( @{ $values }, $line->{id} );
+            $datas->{ $line->{id} } = $line;
         }
-        $self->stash( forms => { values => $values, labels => $labels } );
+        $self->stash( forms => { values => $values, labels => $labels, datas => $datas } );
+    }
+    {
+        my $products_rslt = $dbis->query( "SELECT * FROM products WHERE is_deleted = FALSE ORDER BY id" )
+            or die $dbis->error;
+        my $values = [];
+        my $labels = {};
+        my $datas  = {};
+        while( my $line = $products_rslt->hash ) {
+            push( @{ $values }, $line->{id} );
+            $labels->{ $line->{id} } = $line->{name};
+            $datas->{ $line->{id} } = $line;
+        }
+        $self->stash( products => { values => $values, labels => $labels, datas => $datas } );
     }
     my $stmt = SQL::Maker::Select->new;
     $stmt->{new_line} = ' ';
     $stmt->add_select( join( ', ', qw/a.id a.email a.date_created a.date_updated af.forms_id/,
+                             'af.id AS af_id',
                              'af.date_created AS af_date_created',
                              'af.date_updated AS af_date_updated' ) );
     $stmt->add_join( [ 'applicants', 'a' ] => { type => 'inner',
@@ -54,10 +70,32 @@ sub index {
     $stmt->add_order_by('a.date_created' => 'DESC' );
     
     # "SELECT a.id, a.email, a.date_created, a.date_updated, af.forms_id, af.date_created AS af_date_created, af.date_updated AS af_date_updated FROM applicants AS a, applicant_form AS af WHERE a.is_deleted = FALSE AND a.id=af.applicants_id ORDER BY date_created DESC;"
-    $self->app->log->debug( "[SQL] " . $stmt->as_sql . "; ( " . join(", ", $stmt->bind ) . " ) " );
+    $self->app->log->debug( "[SQL] " . $stmt->as_sql . "; ( " . join(", ", $stmt->bind ) . " )" );
     my $rslt = $dbis->query( $stmt->as_sql, $stmt->bind )
         or die $dbis->error;
-
+    
+    {
+        my $afp_stmt = SQL::Maker::Select->new;
+        $afp_stmt->{new_line} = ' ';
+        $afp_stmt->add_select( "products_id, SUM( number ) AS numbers" );
+        $afp_stmt->add_from( "applicant_form_products" );
+        $afp_stmt->add_where( "is_deleted" => 0 );
+        $stmt->{select} = [];
+        $stmt->{select_map} = {};
+        $stmt->{select_map_reverse} = {};
+        $stmt->add_select('a.id');
+        my $stmt_sql = "( " . $stmt->as_sql . " )";
+        $afp_stmt->add_where( "applicants_id" => { IN => \$stmt_sql } );
+        $afp_stmt->add_group_by( "products_id" );
+        $self->app->log->debug( "[SQL] " . $afp_stmt->as_sql . "; ( " . join(", ", $afp_stmt->bind, $stmt->bind ) . " )" );
+        my $pn_rslt = $dbis->query( $afp_stmt->as_sql, $afp_stmt->bind, $stmt->bind )
+            or die $dbis->error;
+        my $product_numbers = {};
+        while( my $line = $pn_rslt->hash ) {
+            $product_numbers->{ $line->{products_id} } = $line->{numbers};
+        }
+        $self->stash( product_numbers => $product_numbers );
+    }
     $self->render( template => 'admin/applicants/index', datas => $rslt );
     $dbis->commit;
     $dbis->disconnect or die $dbis->error;
