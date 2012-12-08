@@ -14,13 +14,50 @@ use Data::Dumper;
 
 sub index {
     my $self = shift;
-    
+
+    my $params = $self->req->params->to_hash;
+
     my $dbis = DBIx::Simple->new( @{ $self->app->config->{dsn} } )
         or die DBIx::Simple->error;
     $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
     $dbis->begin_work or die $dbis->error;
-    my $rslt = $dbis->query( "SELECT a.id, a.email, a.date_created, a.date_updated, f.id AS form_id, f.name AS form_name, af.date_created AS af_date_created, af.date_updated AS af_date_updated  FROM applicants AS a, forms AS f, applicant_form AS af WHERE a.is_deleted = FALSE AND a.id=af.applicants_id AND f.id=af.forms_id ORDER BY date_created DESC;" )
+    $dbis->query( "SET timezone TO 'Asia/Tokyo';" ) or die $dbis->error;
+    {
+        my $forms_rslt = $dbis->query( "SELECT id, name FROM forms WHERE is_deleted = FALSE ORDER BY id" )
+            or die $dbis->error;
+        my $values = [];
+        my $labels = {};
+        while( my $line = $forms_rslt->hash ) {
+            $labels->{$line->{id}} = $line->{name};
+            push( @{ $values }, $line->{id} );
+        }
+        $self->stash( forms => { values => $values, labels => $labels } );
+    }
+    my $stmt = SQL::Maker::Select->new;
+    $stmt->{new_line} = ' ';
+    $stmt->add_select( join( ', ', qw/a.id a.email a.date_created a.date_updated af.forms_id/,
+                             'af.date_created AS af_date_created',
+                             'af.date_updated AS af_date_updated' ) );
+    $stmt->add_join( [ 'applicants', 'a' ] => { type => 'inner',
+                                                table => 'applicant_form',
+                                                alias => 'af',
+                                                condition => 'a.id = af.applicants_id' } );
+    $stmt->add_where( 'a.is_deleted' => 0 );
+    $stmt->add_where( 'af.is_deleted' => 0 );
+    
+    $stmt->add_where( 'af.forms_id' => $params->{forms_id} )
+        if( exists $params->{forms_id} );
+    $stmt->add_where( 'af.date_created' => { '>=' => $params->{date_created_from} } )
+        if( exists $params->{date_created_from} and length( $params->{date_created_from} ) and $params->{date_created_from} =~ /^\d{4}-\d{1,2}-\d{1,2}$/ );
+    $stmt->add_where( 'af.date_created' => { '<=' => $params->{date_created_to} } )
+        if( exists $params->{date_created_to} and length( $params->{date_created_to} ) and $params->{date_created_to} =~ /^\d{4}-\d{1,2}-\d{1,2}$/ );
+    $stmt->add_order_by('a.date_created' => 'DESC' );
+    
+    # "SELECT a.id, a.email, a.date_created, a.date_updated, af.forms_id, af.date_created AS af_date_created, af.date_updated AS af_date_updated FROM applicants AS a, applicant_form AS af WHERE a.is_deleted = FALSE AND a.id=af.applicants_id ORDER BY date_created DESC;"
+    $self->app->log->debug( "[SQL] " . $stmt->as_sql . "; ( " . join(", ", $stmt->bind ) . " ) " );
+    my $rslt = $dbis->query( $stmt->as_sql, $stmt->bind )
         or die $dbis->error;
+
     $self->render( template => 'admin/applicants/index', datas => $rslt );
     $dbis->commit;
     $dbis->disconnect or die $dbis->error;

@@ -49,7 +49,7 @@
       </div>
     </div>
     <div class="form-actions">
-      <a href="<% if( param 'forms_id' ) { %>/admin/forms/view/<%= param 'forms_id' %><% } else { %>/admin/fields<% } %>" class="btn">キャンセル</a>
+      <a href="<% if( param 'forms_id' ) { %>/admin/forms/view/<%= param 'forms_id' %><% } else { %>/admin/products<% } %>" class="btn">キャンセル</a>
       <button type="submit" class="btn btn-primary pull-right">登録</button>
     </div>
     % if( exists $params->{id} and $params->{id} =~ /^\d+$/ ) {

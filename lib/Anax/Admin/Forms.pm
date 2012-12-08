@@ -10,9 +10,15 @@ use DBIx::Simple;
 use SQL::Maker;
 
 use Data::Dumper;
-use Mojo::ByteStream 'b';
+use Mojo::ByteStream;
 
 my $vc = Validator::Custom::Anax->new;
+
+sub b {
+    my $str = shift;
+    $str = '' unless( defined $str );
+    return Mojo::ByteStream->new( $str );
+}
 
 sub index {
     my $self = shift;
@@ -255,6 +261,7 @@ sub get_form_setting {
                       type => $fline->{type},
                       default => b( $fline->{default} )->decode->to_string || undef,
                       is_required => $fline->{is_required},
+                      is_global   => $fline->{is_global},
                       error_check => $fline->{error_check} };
         if( grep( $_ eq $fline->{type}, qw/checkbox radio popup select/ ) ) {
             my $options_it = $dbis->select('field_options', ['*'], { is_deleted => 0, fields_id => $fline->{id} }, { order_by => 'sortorder, id' } )

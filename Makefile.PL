@@ -16,6 +16,7 @@ WriteMakefile(
                 'Jcode::CP932' => '0.08',
                 'Email::Send::SMTP::TLS' => '0.04',
                 'Email::Simple' => '2.102',
-                'Email::Valid' => '0.190'
+                'Email::Valid' => '0.190',
+                'Data::Visitor' => '0.28'
                }
 );

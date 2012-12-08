@@ -1,17 +1,58 @@
 % layout 'admin';
 % title '申込一覧';
-
+    <script language="javascript" type="application/javascript">
+      <!--
+$(function() {
+    $("#date_created_from").datepicker( {
+        changeMonth: true,
+        showOn: "button",
+        dateFormat: "yy-mm-dd",
+        onClose: function( selectedDate ) {
+            $("#date_created_to").datepicker( "option","minDate", selectedDate );
+        }
+    } );
+    $("#date_created_to").datepicker( {
+        changeMonth: true,
+        showOn: "button",
+        dateFormat: "yy-mm-dd",
+        onClose: function( selectedDate ) {
+            $("#date_created_from").datepicker( "option", "maxDate", selectedDate );
+        }
+    } );
+} );
+      //-->
+    </script>
     <ul class="breadcrumb">
       <li>申込<span class="divider">/</span></li>
       <li>一覧</li>
     </ul>
-    
+    <form method="GET" name="admin_forms_applicant_index" action="/admin/applicants" class="form-search">
+      <table class="table table-striped table-hover">
+        <tr>
+          <th>フォーム</th>
+          <td>
+            <%== cgi('checkbox_group', { -name => 'forms_id', -values => $forms->{values}, -labels => $forms->{labels}, -default => [ param('forms_id') ] } ) %>
+          </td>
+        </tr>
+        <tr>
+          <th>登録日時</th>
+          <td>
+            <%== cgi('textfield', { -name => 'date_created_from', -id => "date_created_from", -value => param('date_created_from') || '' } ) %>
+            -
+            <%== cgi('textfield', { -name => 'date_created_to', -id => "date_created_to", -value => param('date_created_to') || '' } ) %>
+          </td>
+        </tr>
+      </table>
+      <div class="btn-group">
+        <input type="submit" name="btn_search" value="検索" class="btn btn-primary" />
+      </div>
+    </form>
     <table class="table table-striped table-hover">
       <thead>
         <tr>
           <th>申込ID</th>
           <th>登録日時</th>
-          <th>更新日時</th>
+          <!--<th>更新日時</th>-->
           <th>メールアドレス</th>
           <th>フォーム名</th>
           <th>詳細</th>
@@ -26,13 +67,13 @@
         <tr>
           <td><%= $line->{id} %></td>
           <td><%= date( $line->{date_created} ) %></td>
-          <td><%= date( $line->{date_updated} ) %></td>
+          <!--<td><%= date( $line->{date_updated} ) %></td>-->
           <td><%= decode( $line->{email} ) %></td>
-          <td><a href="/admin/forms/view/<%= $line->{form_id} %>"><%= decode( $line->{form_name} ) %></a></td>
-          <td><a href="/admin/applicants/view/<%= $line->{id} %>/<%= $line->{form_id} %>">詳細</a></td>
+          <td><a href="/admin/forms/view/<%= $line->{forms_id} %>"><%= decode( $forms->{labels}->{ $line->{forms_id} } ) %></a></td>
+          <td><a href="/admin/applicants/view/<%= $line->{id} %>/<%= $line->{forms_id} %>">詳細</a></td>
           <!--
-          <td><a href="/admin/applicants/edit/<%= $line->{id} %>/<%= $line->{form_id} %>">編集</a></td>
-          <td><a href="/admin/applicants/disable/<%= $line->{id} %>/<%= $line->{form_id} %>">削除</a></td>
+          <td><a href="/admin/applicants/edit/<%= $line->{id} %>/<%= $line->{forms_id} %>">編集</a></td>
+          <td><a href="/admin/applicants/disable/<%= $line->{id} %>/<%= $line->{forms_id} %>">削除</a></td>
           -->
         </tr>
       % }

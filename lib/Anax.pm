@@ -1,9 +1,16 @@
 package Anax;
+
+use strict;
+use warnings;
+
 use Mojo::Base 'Mojolicious';
 use Mojo::ByteStream;
 use DateTime::Format::Pg;
+use CGI qw/:any/;
+use Data::Visitor::Callback;
 
 use Data::Dumper;
+
 
 # This method will run once at server start
 sub startup {
@@ -36,12 +43,14 @@ sub startup {
     # Documentation browser under "/perldoc"
     # $self->plugin('PODRenderer');
     $self->plugin('Config');
-    $self->plugin('TagHelpers');
+    #$self->plugin('TagHelpers');
     $self->plugin('CSRFDefender');
-    
+
     $self->helper( b => sub {
                        my $self = shift;
-                       return Mojo::ByteStream->new(@_);
+                       my $str  = shift;
+                       $str = '' unless( defined $str );
+                       return Mojo::ByteStream->new( $str );
                    } );
     $self->helper( decode => sub {
                        my $self = shift;
@@ -50,11 +59,20 @@ sub startup {
                        my $ret = Mojo::ByteStream->new( $str )->decode;
                        return length( $ret ) ? $ret : $str;
                    } );
+    my $v_decode = Data::Visitor::Callback->new(
+                                                scalar => sub {},
+                                                plain_value => sub {
+                                                    my $str = shift;
+                                                    my $ret = &{$self->renderer->helpers->{decode}}( $self, $_ );
+                                                    return "$ret";
+                                                }
+                                               );
     $self->helper( date => sub {
                        my $self = shift;
                        my $date = shift;
                        return '----' unless( defined $date and length( $date ) );
                        my $dt = DateTime::Format::Pg->parse_timestamp_with_time_zone( $date );
+                       $dt->set_time_zone( 'Asia/Tokyo' );
                        return sprintf('%04d-%02d-%02d %02d:%02d',
                                       $dt->year, $dt->month, $dt->day, $dt->hour, $dt->minute );
                    } );
@@ -81,11 +99,25 @@ sub startup {
     $self->helper( html_br => sub {
                        my $self = shift;
                        my $str  = shift;
+                       return '' unless( defined $str and length( $str ) );
                        my $ret = Mojo::ByteStream->new( $str )->html_escape;
                        $ret =~ s/\r\n/\n/g;
                        $ret =~ s/\n/<br \/>\n/g;
                        return $ret;
                    } );
+    $self->helper( cgi => sub {
+                      my $self    = shift;
+                      my $method  = shift;
+                      my $options = shift;
+                      
+                      unless( defined $self->stash( '__cgi_object' ) ) {
+                          $self->stash( '__cgi_object', CGI->new );
+                      }
+                      return '' unless( $self->stash( '__cgi_object' )->can( $method ) );
+                      my $opts = $v_decode->visit( $options );
+                      return $self->stash( '__cgi_object' )->$method( %{ $opts } );
+                  } );
+    
     $self->app->sessions->cookie_name('anax_session');
     # Router
     my $r = $self->routes;
