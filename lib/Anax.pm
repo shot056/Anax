@@ -32,7 +32,8 @@ sub startup {
                          array => [
                                    { value => '',        label => 'なし' },
                                    { value => 'integer', label => '半角数字' },
-                                   { value => 'ascii',   label => '半角英数字' }
+                                   { value => 'ascii',   label => '半角英数字' },
+                                   { value => 'email',   label => 'メールアドレス' }
                                   ] };
     foreach my $e ( @{ $error_checks->{array} } ) {
         $error_checks->{hash}->{ $e->{value} } = $e->{label};
@@ -125,7 +126,7 @@ sub startup {
     $r = $r->bridge->to( cb => sub {
         my $self = shift;
 
-        $self->app->log->info( "++++++++++ Start Request ++++++++++" );
+        $self->app->log->info( "++++++++++++++++++++ Start Request ++++++++++++++++++++" );
         $self->app->log->info( "Request: " . $self->req->url->to_string );
         $self->app->log->info( "Params : \n" . Dumper( $self->req->params->to_hash ) );
         $self->app->log->info( "Session: \n" . Dumper( $self->session ) );

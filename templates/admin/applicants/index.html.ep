@@ -77,7 +77,7 @@ $(function() {
           <th>申込ID</th>
           <th>登録日時</th>
           <!--<th>更新日時</th>-->
-          <th>メールアドレス</th>
+          <!--<th>メールアドレス</th>-->
           <th>フォーム名</th>
           <th>詳細</th>
           <!--
@@ -92,7 +92,7 @@ $(function() {
           <td><%= $line->{id} %></td>
           <td><%= date( $line->{date_created} ) %></td>
           <!--<td><%= date( $line->{date_updated} ) %></td>-->
-          <td><%= decode( $line->{email} ) %></td>
+          <!--<td><%= decode( $line->{email} ) %></td>-->
           <td><a href="/admin/forms/view/<%= $line->{forms_id} %>"><%= decode( $forms->{labels}->{ $line->{forms_id} } ) %></a></td>
           <td><a href="/admin/applicants/view/<%= $line->{id} %>/<%= $line->{forms_id} %>">詳細</a></td>
           <!--

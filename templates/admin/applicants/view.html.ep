@@ -27,9 +27,11 @@
       <th>更新日時</th><td><%= date( $hash->{date_updated} ) %></td>
     </tr>
     -->
+    <!--
     <tr>
       <th>メールアドレス</th><td><%= decode( $hash->{email} ) %></td>
     </tr>
+    -->
   </table>
   <hr />
 

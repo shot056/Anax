@@ -1,15 +1,3 @@
-CREATE TABLE system_settings (
-    id SERIAL NOT NULL PRIMARY KEY,
-    is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
-    date_created TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT ('now'::TEXT)::TIMESTAMP WITH TIME ZONE,
-    date_updated TIMESTAMP WITH TIME ZONE,
-    date_deleted TIMESTAMP WITH TIME ZONE,
-    name TEXT NOT NULL,
-    data TEXT
-);
-CREATE INDEX idx_system_settings_is_deleted ON system_settings ( is_deleted );
-CREATE INDEX idx_system_settings_name ON system_settings ( name );
-
 CREATE TABLE forms (
     id SERIAL PRIMARY KEY NOT NULL,
     is_deleted BOOLEAN NOT NULL DEFAULT FALSE,

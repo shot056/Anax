@@ -243,13 +243,16 @@ sub get_form_setting {
                     messages => { input => b( $form->{message_input} || '' )->decode->to_string,
                                   confirm => b( $form->{message_confirm} || '' )->decode->to_string,
                                   complete => b( $form->{message_complete} || '' )->decode->to_string },
-                    fields => { email =>  { is_required => 1,
-                                            desc => b( 'メールアドレス' )->decode->to_string,
-                                            name => 'email',
-                                            type => 'textfield',
-                                            error_check => 'email' }
+                    fields => {
+#                               email =>  { is_required => 1,
+#                                           desc => b( 'メールアドレス' )->decode->to_string,
+#                                           name => 'email',
+#                                           type => 'textfield',
+#                                           error_check => 'email' }
                               } };
-    $setting->{field_list} = [ $setting->{fields}->{email} ];
+    $setting->{field_list} = [
+#                              $setting->{fields}->{email}
+                             ];
     
     my $fields_it = $dbis->query( "SELECT f.*, ff.sortorder AS p_sortorder FROM fields AS f, form_fields AS ff WHERE ff.is_deleted = FALSE AND f.is_deleted = FALSE AND ff.fields_id = f.id AND ff.forms_id = ? ORDER BY ff.sortorder, f.sortorder, ff.id, f.id;",
                                   $form->{id} )

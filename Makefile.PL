@@ -17,6 +17,7 @@ WriteMakefile(
                 'Email::Send::SMTP::TLS' => '0.04',
                 'Email::Simple' => '2.102',
                 'Email::Valid' => '0.190',
-                'Data::Visitor' => '0.28'
+                'Data::Visitor' => '0.28',
+                'File::Find::Iterator' => '0.4'
                }
 );
