@@ -6,7 +6,6 @@ use warnings;
 use base 'Class::Accessor::Fast';
 
 use Email::Send;
-use Email::Send::Gmail;
 use Email::Simple::Creator;
 use Tenjin;
 use Tenjin::Template;
