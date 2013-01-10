@@ -64,6 +64,7 @@ sub main {
 
     my $dbis = DBIx::Simple->new( @{$dsn} )
         or die "can not connect to $dsn->[0] : " . DBIx::Simple->error;
+    print BOLD GREEN "Update Database : $dsn->[0]\n";
     $dbis->begin_work or die $dbis->error;
 
     check_system_setting_table( $dbis );
