@@ -1,12 +1,13 @@
 package Anax::Mail;
 
+BEGIN {
+    $Return::Value::NO_CLUCK = 1;
+};
+
 use strict;
 use warnings;
 
 use base 'Class::Accessor::Fast';
-BEGIN {
-    Return::Value::NO_CLUCK = 1;
-}
 use Email::Send;
 use Email::Simple::Creator;
 use Tenjin;
