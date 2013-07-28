@@ -1,7 +1,6 @@
 % layout 'admin';
 % title '申込一覧';
     <script language="javascript" type="application/javascript">
-      <!--
 $(function() {
     $("#date_created_from").datepicker( {
         changeMonth: true,
@@ -19,6 +18,12 @@ $(function() {
             $("#date_created_from").datepicker( "option", "maxDate", selectedDate );
         }
     } );
+    $("#btn_sendmail").click( function() {
+      var old_action = $("#form_admin_forms_applicant_index").attr("action");
+      $("#form_admin_forms_applicant_index").attr("action", "/admin/mailwizard/select");
+      $("#form_admin_forms_applicant_index").submit();
+      $("#form_admin_forms_applicant_index").attr("action", old_action );
+    } );
 } );
       //-->
     </script>
@@ -26,7 +31,7 @@ $(function() {
       <li>申込<span class="divider">/</span></li>
       <li>一覧</li>
     </ul>
-    <form method="GET" name="admin_forms_applicant_index" action="/admin/applicants" class="form-search">
+    <form id="form_admin_forms_applicant_index" method="POST" name="admin_forms_applicant_index" action="/admin/applicants" class="form-search">
       <table class="table table-striped table-hover">
         <tr>
           <th>フォーム</th>
@@ -44,7 +49,8 @@ $(function() {
         </tr>
       </table>
       <div class="btn-group">
-        <input type="submit" name="btn_search" value="検索" class="btn btn-primary" />
+        <input type="submit" id="btn_search" name="btn_search" value="検索" class="btn btn-primary" />
+        <input type="button" id="btn_sendmail" name="btn_sendmail" value="検索結果に対してメールを送る" class="btn" />
       </div>
     </form>
     <div class="accordion" id="products-numbers">
