@@ -172,7 +172,7 @@ sub startup {
     $r->route('/admin/fields'                            )->via('GET' )->to( controller => 'Admin::Fields', action => 'index' );
     $r->route('/admin/fields/add'                        )->via('GET' )->to( controller => 'Admin::Fields', action => 'input' );
     $r->route('/admin/fields/add'                        )->via('POST')->to( controller => 'Admin::Fields', action => 'register' );
-    $r->route('/admin/fields/edit/:id',    id => qr/\d+/ )->via('GET' )->to( controller => 'Admin::Fields', action => 'input' );
+    $r->route('/admin/fields/edit/:id',    id => qr/[0-9]+/ )->via('GET' )->to( controller => 'Admin::Fields', action => 'input' );
     $r->route('/admin/fields/edit/:id',    id => qr/\d+/ )->via('POSt')->to( controller => 'Admin::Fields', action => 'register' );
     $r->route('/admin/fields/view/:id',    id => qr/\d+/ )->via('GET' )->to( controller => 'Admin::Fields', action => 'view' );
     $r->route('/admin/fields/disable/:id', id => qr/\d+/ )->via('GET' )->to( controller => 'Admin::Fields', action => 'disable' );
@@ -207,9 +207,16 @@ sub startup {
     $r->route('/admin/product/:product_id/images/disable/:id', product_id => qr/\d+/, id => qr/\d+/ )
         ->via('POST')->to( controller => 'Admin::Product::Images', action => 'do_disable' );
     
+    $r->route('/admin/mailwizard/select'   )->via('POST')->to( controller => 'Admin::MailWizard', action => 'select_target' );
+    $r->route('/admin/mailwizard/template' )->via('POST')->to( controller => 'Admin::MailWizard', action => 'template_input' );
+    $r->route('/admin/mailwizard/confirm'  )->via('POST')->to( controller => 'Admin::MailWizard', action => 'confirm' );
+    $r->route('/admin/mailwizard/send'     )->via('POST')->to( controller => 'Admin::MailWizard', action => 'send_mail' );
     
-    $r->route('/admin/applicants'                                                      )->via('GET')->to( controller => 'Admin::Applicants', action => 'index' );
-    $r->route('/admin/applicants/view/:id/:form_id', id => qr/\d+/, form_id => qr/\d+/ )->via('GET')->to( controller => 'Admin::Applicants', action => 'view' );
+    $r->route('/admin/applicants'                                                      )->via('GET' )->to( controller => 'Admin::Applicants', action => 'index' );
+    $r->route('/admin/applicants'                                                      )->via('POST')->to( controller => 'Admin::Applicants', action => 'index' );
+    $r->route('/admin/applicants/view/:id/:form_id', id => qr/\d+/, form_id => qr/\d+/ )->via('GET' )->to( controller => 'Admin::Applicants', action => 'view' );
+
+
 }
 
 1;

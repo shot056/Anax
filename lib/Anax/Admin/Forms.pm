@@ -212,12 +212,17 @@ sub get_form_setting {
     my $app       = shift;
     my $id_or_key = shift;
     my $is_admin  = shift || 0;
+    my $dbis      = shift;
     
     die "id_or_key is missing" unless( defined $id_or_key and length( $id_or_key ) );
-    my $dbis = DBIx::Simple->new( @{ $app->config->{dsn} } )
-        or die DBIx::Simple->error;
-    $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
-    $dbis->begin_work or die $dbis->error;
+    my $dbis_is_not_defined;
+    unless( defined $dbis ) {
+        $dbis_is_not_defined = 1;
+        $dbis = DBIx::Simple->new( @{ $app->config->{dsn} } )
+            or die DBIx::Simple->error;
+        $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
+        $dbis->begin_work or die $dbis->error;
+    }
 
     my $form;
     if( $id_or_key =~ /^\d+$/) {
@@ -258,33 +263,94 @@ sub get_form_setting {
                                   $form->{id} )
         or die $dbis->error;
     while( my $fline = $fields_it->hash ) {
-        my $field = { id   => $fline->{id},
-                      name => "field_" . $fline->{id},
-                      desc => b( $fline->{name} )->decode->to_string,
-                      type => $fline->{type},
-                      default => b( $fline->{default} )->decode->to_string || undef,
-                      is_required => $fline->{is_required},
-                      is_global   => $fline->{is_global},
-                      error_check => $fline->{error_check} };
-        if( grep( $_ eq $fline->{type}, qw/checkbox radio popup select/ ) ) {
-            my $options_it = $dbis->select('field_options', ['*'], { is_deleted => 0, fields_id => $fline->{id} }, { order_by => 'sortorder, id' } )
-                or die $dbis->error;
-            $field->{options} = [];
-            $field->{options_hash} = {};
-            while( my $oline = $options_it->hash ) {
-                my $option = { name => b( $oline->{name} )->decode->to_string,
-                               value => $oline->{id} };
-                push( @{ $field->{options} }, $option );
-                $field->{options_hash}->{ $oline->{id} } = b( $oline->{name} )->decode->to_string;
-            }
-        }
+        my $field = $class->get_field_data( $dbis, $fline );
         $setting->{fields}->{ $field->{name} } = $field;
         push( @{ $setting->{field_list} }, $field );
     }
-    $dbis->commit;
-    $dbis->disconnect or die $dbis->error;
-    #$app->log->debug( Dumper( $setting ) );
+    if( $dbis_is_not_defined ) {
+        $dbis->commit;
+        $dbis->disconnect or die $dbis->error;
+        #$app->log->debug( Dumper( $setting ) );
+    }
     return $setting;
+}
+
+sub get_field_data {
+    my $self = shift;
+    my $dbis = shift;
+    my $line = shift;
+
+    my $field = { id          => $line->{id},
+                  name        => "field_" . $line->{id},
+                  desc        => b( $line->{name} )->decode->to_string,
+                  type        => $line->{type},
+                  default     => b( $line->{default} )->decode->to_string || undef,
+                  is_required => $line->{is_required},
+                  is_global   => $line->{is_global},
+                  error_check => $line->{error_check} };
+    if( grep( $_ eq $line->{type}, qw/checkbox radio popup select/ ) ) {
+        ( $field->{options}, $field->{options_hash} ) = $self->get_field_options( $dbis, $line->{id} );
+    }
+    return $field;
+}
+
+sub get_field_options {
+    my $self     = shift;
+    my $dbis     = shift;
+    my $field_id = shift;
+    
+    
+    my $it = $dbis->select('field_options', ['*'], { is_deleted => 0, fields_id => $field_id }, { order_by => 'sortorder, id' } )
+        or die $dbis->error;
+    
+    my $options = [];
+    my $options_hash = {};
+    while( my $line = $it->hash ) {
+        my $option = { name => b( $line->{name} )->decode->to_string,
+                       value => $line->{id} };
+        push( @{ $options }, $option );
+        $options_hash->{ $line->{id} } = b( $line->{name} )->decode->to_string;
+    }
+    return ( $options, $options_hash );
+}
+
+sub get_fields {
+    my $self = shift;
+    my $dbis = shift;
+    my $forms_id = shift;
+    my $common_only = shift || 0;
+    #  select fields_id, count( id ) FROM form_fields WHERE forms_id IN ( SELECT forms_id FROM applicant_form WHERE applicants_id IN ( 1,2,3,4,5,6 ) ) GROUP BY fields_id;
+
+    my $tmp_fields = {};
+    {
+        my $stmt = SQL::Maker::Select->new;
+        $stmt->{new_line} = ' ';
+        $stmt->add_select( sprintf( "fields_id, COUNT( id ) = %d AS is_common", scalar @{ $forms_id } ) );
+        $stmt->add_from( "form_fields" );
+        $stmt->add_where( "is_deleted" => 0 );
+        $stmt->add_where( "forms_id" => { IN => $forms_id } );
+        $stmt->add_group_by( "fields_id" );
+        $self->app->log->debug( "[SQL] " . $stmt->as_sql . "; ( " . join(", ", $stmt->bind ) . " )" );
+        
+        my $rslt = $dbis->query( $stmt->as_sql, $stmt->bind ) or die $dbis->error;
+        while( my $line = $rslt->hash ) {
+            next if( $common_only and !$line->{is_common} );
+            $tmp_fields->{ $line->{fields_id} } = { is_common => $line->{is_common} };
+        }
+    }
+
+    my $fields = {};
+    my $it = $dbis->select( 'fields', ["*"],{ is_deleted => 0, id => { IN => [ keys( %{ $tmp_fields } ) ] } }, { order_by => 'name, id' } )
+        or die $dbis->error;
+    while( my $line = $it->hash ) {
+        my $field = $self->get_field_data( $dbis, $line );
+        my $div = $tmp_fields->{ $line->{id} }->{is_common} ? 'common' : 'individual';
+        $fields->{ $div } = { hash => {}, array => [] }
+            unless( exists $fields->{ $div } );
+        push( @{ $fields->{$div }->{array} }, $field );
+        $fields->{$div }->{hash}->{ $field->{id} } = $field;
+    }
+    return $fields;
 }
 
 1;

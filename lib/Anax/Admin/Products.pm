@@ -77,6 +77,7 @@ sub register {
         $self->stash( missing => 1 ) if( $vrslt->has_missing );
         $self->stash( messages => $vrslt->messages_to_hash )
             if( $vrslt->has_invalid );
+        $self->stash( params => $params );
         $self->app->log->debug( Dumper( $self->stash ) );
         $self->render( 'admin/products/input' );
     }

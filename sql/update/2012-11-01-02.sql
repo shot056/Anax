@@ -6,7 +6,7 @@ CREATE TABLE applicants (
     date_deleted TIMESTAMP WITH TIME ZONE,
     email TEXT NOT NULL
 );
-CREATE INDEX idx_applicants_is_delete ON applicants ( is_delete );
+CREATE INDEX idx_applicants_is_deleted ON applicants ( is_deleted );
 CREATE INDEX idx_applicants_date_created ON applicants ( date_created );
 CREATE INDEX idx_applicants_email ON applicants ( email );
 

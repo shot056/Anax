@@ -1,0 +1,26 @@
+% layout 'admin';
+% title 'メールウィザード';
+
+  <script language="javascript" type="text/javascript">
+  $( document ).ready( function() {
+    $("#btn_back").click( function() { history.go( -1 ); return false } );
+  } );
+  </script>
+  <ul class="breadcrumb">
+    <li>メールウィザード<span class="divider">/</span></li>
+    <li class="active">テンプレート入力</li>
+  </ul>
+  <form method="POST" action="/admin/mailwizard/confirm" name="form_mailwizard_template" id="form_mailwizard_template" class="form-horizontal">
+    
+    %=include 'admin/mail_templates/form'
+    
+    % if( $params->{target_ids} ) {
+    % foreach my $target_id ( @{ $params->{target_ids} } ) {
+    <input type="hidden" name="target_ids" value="<%= $target_id %>" />
+    % }
+    % }
+    <div class="form-actions">
+      <button type="button" id="btn_back" name="btn_back" class="btn">戻る</button>
+      <button type="submit" class="btn btn-primary">最終確認</button>
+    </div>
+  </form>

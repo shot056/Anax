@@ -14,7 +14,7 @@ use CGI qw/:any/;
 
 use DBIx::Simple;
 use SQL::Maker;
-
+use Parallel::ForkManager;
 
 use Data::Dumper;
 
@@ -29,11 +29,11 @@ sub input {
     $params->{products} = [ $params->{products} ]
         if( exists $params->{products} and defined $params->{products} and ref( $params->{products} ) ne 'ARRAY' );
     
-    my $form_setting = Anax::Admin::Forms->get_form_setting( $self->app, $key, $params->{is_admin} );
+    my $form_setting = Anax::Admin::Forms->new( $self )->get_form_setting( $self->app, $key, $params->{is_admin} );
     #$self->app->log->debug( "settings : \n" . Dumper( $form_setting ) );
     $self->render_not_found unless( defined $form_setting );
     
-    my $products     = Anax::Admin::Products->get_form_products( $self->app, $form_setting->{id} );
+    my $products     = Anax::Admin::Products->new( $self )->get_form_products( $self->app, $form_setting->{id} );
     
     #$self->app->log->debug( "params : \n" . Dumper( $params ) );
 
@@ -67,11 +67,11 @@ sub confirm {
     
     #$self->app->log->debug( "params : \n" . Dumper( $params ) );
     
-    my $form_setting = Anax::Admin::Forms->get_form_setting( $self->app, $key, $params->{is_admin} );
+    my $form_setting = Anax::Admin::Forms->new( $self )->get_form_setting( $self->app, $key, $params->{is_admin} );
     #$self->app->log->debug( "settings : \n" . Dumper( $form_setting ) );
     $self->render_not_found unless( defined $form_setting );
     
-    my $products     = Anax::Admin::Products->get_form_products( $self->app, $form_setting->{id} );
+    my $products     = Anax::Admin::Products->new( $self )->get_form_products( $self->app, $form_setting->{id} );
     
     
     my $datas = { action_base     => "/form/$key",
@@ -119,11 +119,11 @@ sub complete {
     
     #$self->app->log->debug( "params : \n" . Dumper( $params ) );
     
-    my $form_setting = Anax::Admin::Forms->get_form_setting( $self->app, $key, $params->{is_admin} );
+    my $form_setting = Anax::Admin::Forms->new( $self )->get_form_setting( $self->app, $key, $params->{is_admin} );
     #$self->app->log->debug( "settings : \n" . Dumper( $form_setting ) );
     $self->render_not_found unless( defined $form_setting );
     
-    my $products     = Anax::Admin::Products->get_form_products( $self->app, $form_setting->{id} );
+    my $products     = Anax::Admin::Products->new( $self )->get_form_products( $self->app, $form_setting->{id} );
 
     my $datas = { action_base     => "/form/$key",
                   key             => $key,
@@ -204,14 +204,30 @@ sub complete {
         }
         my $mail_templates_it = $dbis->select('mail_templates', ['id'], { is_deleted => 0, forms_id => $form_setting->{id} } )
             or die $dbis->error;
+        my $mail_parts;
+        my $mail_charset;
+        my $mail;
         if( $mail_templates_it->rows ) {
             my $id = $mail_templates_it->hash->{id};
-            my $mail = Anax::Mail->new( $self->app );
-            $mail->sendmail( $id, $datas );
+            $mail = Anax::Mail->new( $self->app );
+            my $tmpl = $mail->load( $id );
+            $mail_charset = $tmpl->{charset};
+            $mail_parts = $mail->render( $id, $tmpl, $datas );
         }
         $self->render( text => $self->render_template( $key, 'complete', $datas ) );
         $dbis->commit;
         $dbis->disconnect or die $dbis->error;
+
+
+        if( defined $mail_parts ) {
+            my $pm = Parallel::ForkManager->new( 1 );
+            
+            my $pid = $pm->start and next;
+            $mail->sendmail( $mail_charset, $mail_parts, $datas->{key} );
+            $pm->finish;
+            
+            $pm->wait_all_children;
+        }
 
     }
 }
@@ -336,9 +352,11 @@ sub generate_forms {
         if( $is_hidden ) {
             $fields{ $field->{name} } = $cgi->hidden( -name => $mopts{'-name'}, -value => $mopts{'-default'} );
             $label = CGI::escapeHTML( $label );
-            $label =~ s/\r\n/\n/g;
-            $label =~ s/\n/<br \/>\n/g;
-            $fields{ $field->{name} } .= $label;
+            if( defined $label ) {
+                $label =~ s/\r\n/\n/g;
+                $label =~ s/\n/<br \/>\n/g;
+            }
+            $fields{ $field->{name} } .= $label || '';
         }
         else {
             $fields{ $field->{name} } = $cgi->$method( %mopts );

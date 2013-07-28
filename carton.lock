@@ -141,6 +141,13 @@
                      "ExtUtils::MakeMaker" : "6.30"
                   }
                },
+               "develop" : {
+                  "requires" : {
+                     "Pod::Coverage::TrustPod" : "0",
+                     "Test::Pod" : "1.41",
+                     "Test::Pod::Coverage" : "1.08"
+                  }
+               },
                "runtime" : {
                   "requires" : {
                      "Module::Implementation" : "0.05",
@@ -148,17 +155,24 @@
                      "Sub::Exporter::Progressive" : "0.001006",
                      "Variable::Magic" : "0.48"
                   }
+               },
+               "test" : {
+                  "requires" : {
+                     "Test::More" : "0.88"
+                  }
                }
             },
             "release_status" : "stable",
             "resources" : {
                "bugtracker" : {
+                  "mailto" : "bug-B-Hooks-EndOfScope@rt.cpan.org",
                   "web" : "http://rt.cpan.org/Public/Dist/Display.html?Name=B-Hooks-EndOfScope"
                },
                "homepage" : "http://metacpan.org/release/B-Hooks-EndOfScope",
                "repository" : {
                   "type" : "git",
-                  "url" : "git://github.com/rafl/b-hooks-endofscope.git"
+                  "url" : "git://github.com/rafl/b-hooks-endofscope.git",
+                  "web" : "http://github.com/rafl/b-hooks-endofscope"
                }
             },
             "version" : "0.12",
@@ -688,7 +702,7 @@
                "Robert Silve <robert@silve.net>"
             ],
             "dynamic_config" : 0,
-            "generated_by" : "ExtUtils::MakeMaker version 6.6302, CPAN::Meta::Converter version 2.120630",
+            "generated_by" : "ExtUtils::MakeMaker version 6.72, CPAN::Meta::Converter version 2.120630",
             "license" : [
                "unknown"
             ],
@@ -1939,17 +1953,25 @@
                      "Tie::ToObject" : "0.01",
                      "namespace::clean" : "0.19"
                   }
+               },
+               "test" : {
+                  "requires" : {
+                     "Test::More" : "0.88",
+                     "Test::Requires" : "0"
+                  }
                }
             },
             "release_status" : "stable",
             "resources" : {
                "bugtracker" : {
+                  "mailto" : "bug-data-visitor@rt.cpan.org",
                   "web" : "http://rt.cpan.org/Public/Dist/Display.html?Name=Data-Visitor"
                },
                "homepage" : "http://metacpan.org/release/Data-Visitor",
                "repository" : {
                   "type" : "git",
-                  "url" : "git://github.com/nothingmuch/data-visitor.git"
+                  "url" : "git://github.com/nothingmuch/data-visitor.git",
+                  "web" : "https://github.com/nothingmuch/data-visitor"
                }
             },
             "version" : "0.28",
@@ -2516,16 +2538,23 @@
                      "strict" : "0",
                      "vars" : "0"
                   }
+               },
+               "test" : {
+                  "requires" : {
+                     "Test::More" : "0.88"
+                  }
                }
             },
             "release_status" : "stable",
             "resources" : {
                "bugtracker" : {
+                  "mailto" : "bug-datetime-format-strptime@rt.cpan.org",
                   "web" : "http://rt.cpan.org/NoAuth/Bugs.html?Dist=DateTime-Format-Strptime"
                },
                "repository" : {
                   "type" : "git",
-                  "url" : "git://git.urth.org/DateTime-Format-Strptime.git"
+                  "url" : "git://git.urth.org/DateTime-Format-Strptime.git",
+                  "web" : "http://git.urth.org/DateTime-Format-Strptime.git"
                }
             },
             "version" : "1.52"
@@ -7739,15 +7768,23 @@
                      "File::Spec" : "0",
                      "Scalar::Util" : "0"
                   }
+               },
+               "test" : {
+                  "requires" : {
+                     "Test::More" : "0.88"
+                  }
                }
             },
             "release_status" : "stable",
             "resources" : {
                "bugtracker" : {
+                  "mailto" : "bug-devel-stacktrace@rt.cpan.org",
                   "web" : "http://rt.cpan.org/NoAuth/Bugs.html?Dist=Devel-StackTrace"
                },
                "repository" : {
-                  "url" : "http://hg.urth.org/hg/Devel-StackTrace"
+                  "type" : "hg",
+                  "url" : "http://hg.urth.org/hg/Devel-StackTrace",
+                  "web" : "http://hg.urth.org/hg/Devel-StackTrace"
                }
             },
             "version" : "1.27"
@@ -8538,7 +8575,6 @@
                "runtime" : {
                   "requires" : {
                      "Mail::Address" : "0",
-                     "Net::DNS" : "0",
                      "Scalar::Util" : "0",
                      "Test::More" : "0",
                      "perl" : "5.006"
@@ -8713,13 +8749,21 @@
                      "Sub::Exporter" : "0",
                      "Try::Tiny" : "0"
                   }
+               },
+               "test" : {
+                  "requires" : {
+                     "Test::Fatal" : "0",
+                     "Test::More" : "0.88",
+                     "Test::Requires" : "0"
+                  }
                }
             },
             "release_status" : "stable",
             "resources" : {
                "repository" : {
                   "type" : "git",
-                  "url" : "git://github.com/doy/eval-closure.git"
+                  "url" : "git://github.com/doy/eval-closure.git",
+                  "web" : "http://github.com/doy/eval-closure"
                }
             },
             "version" : "0.08",
@@ -8964,6 +9008,202 @@
          },
          "target" : "Eval::Closure",
          "version" : "0.08"
+      },
+      "ExtUtils::MakeMaker" : {
+         "dist" : "ExtUtils-MakeMaker-6.72",
+         "mymeta" : {
+            "abstract" : "Create a module Makefile",
+            "author" : [
+               "Michael G Schwern <schwern@pobox.com>"
+            ],
+            "dynamic_config" : 0,
+            "generated_by" : "ExtUtils::MakeMaker version 6.72, CPAN::Meta::Converter version 2.120351, CPAN::Meta::Converter version 2.120630",
+            "license" : [
+               "perl_5"
+            ],
+            "meta-spec" : {
+               "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+               "version" : "2"
+            },
+            "name" : "ExtUtils-MakeMaker",
+            "no_index" : {
+               "directory" : [
+                  "t",
+                  "inc",
+                  "bundled",
+                  "my"
+               ],
+               "package" : [
+                  "DynaLoader",
+                  "in"
+               ]
+            },
+            "prereqs" : {
+               "build" : {
+                  "requires" : {
+                     "Data::Dumper" : "0"
+                  }
+               },
+               "configure" : {
+                  "requires" : {}
+               },
+               "runtime" : {
+                  "requires" : {
+                     "DirHandle" : "0",
+                     "File::Basename" : "0",
+                     "File::Spec" : "0.8",
+                     "Pod::Man" : "0",
+                     "perl" : "5.006"
+                  }
+               }
+            },
+            "release_status" : "stable",
+            "resources" : {
+               "bugtracker" : {
+                  "web" : "http://rt.cpan.org/NoAuth/Bugs.html?Dist=ExtUtils-MakeMaker"
+               },
+               "homepage" : "https://metacpan.org/release/ExtUtils-MakeMaker",
+               "license" : [
+                  "http://dev.perl.org/licenses/"
+               ],
+               "repository" : {
+                  "url" : "http://github.com/Perl-Toolchain-Gang/ExtUtils-MakeMaker"
+               },
+               "x_MailingList" : "makemaker@perl.org"
+            },
+            "version" : "6.72"
+         },
+         "name" : "ExtUtils::MakeMaker",
+         "pathname" : "B/BI/BINGOS/ExtUtils-MakeMaker-6.72.tar.gz",
+         "provides" : {
+            "CPAN::Meta::YAML" : {
+               "file" : "CPAN/Meta/YAML.pm",
+               "version" : "0.008"
+            },
+            "DynaLoader" : {
+               "file" : "ExtUtils/Mkbootstrap.pm"
+            },
+            "ExtUtils::Command::MM" : {
+               "file" : "ExtUtils/Command/MM.pm",
+               "version" : "6.72"
+            },
+            "ExtUtils::Liblist" : {
+               "file" : "ExtUtils/Liblist.pm",
+               "version" : "6.72"
+            },
+            "ExtUtils::Liblist::Kid" : {
+               "file" : "ExtUtils/Liblist/Kid.pm",
+               "version" : "6.72"
+            },
+            "ExtUtils::MM" : {
+               "file" : "ExtUtils/MM.pm",
+               "version" : "6.72"
+            },
+            "ExtUtils::MM_AIX" : {
+               "file" : "ExtUtils/MM_AIX.pm",
+               "version" : "6.72"
+            },
+            "ExtUtils::MM_Any" : {
+               "file" : "ExtUtils/MM_Any.pm",
+               "version" : "6.72"
+            },
+            "ExtUtils::MM_BeOS" : {
+               "file" : "ExtUtils/MM_BeOS.pm",
+               "version" : "6.72"
+            },
+            "ExtUtils::MM_Cygwin" : {
+               "file" : "ExtUtils/MM_Cygwin.pm",
+               "version" : "6.72"
+            },
+            "ExtUtils::MM_DOS" : {
+               "file" : "ExtUtils/MM_DOS.pm",
+               "version" : "6.72"
+            },
+            "ExtUtils::MM_Darwin" : {
+               "file" : "ExtUtils/MM_Darwin.pm",
+               "version" : "6.72"
+            },
+            "ExtUtils::MM_MacOS" : {
+               "file" : "ExtUtils/MM_MacOS.pm",
+               "version" : "6.72"
+            },
+            "ExtUtils::MM_NW5" : {
+               "file" : "ExtUtils/MM_NW5.pm",
+               "version" : "6.72"
+            },
+            "ExtUtils::MM_OS2" : {
+               "file" : "ExtUtils/MM_OS2.pm",
+               "version" : "6.72"
+            },
+            "ExtUtils::MM_QNX" : {
+               "file" : "ExtUtils/MM_QNX.pm",
+               "version" : "6.72"
+            },
+            "ExtUtils::MM_UWIN" : {
+               "file" : "ExtUtils/MM_UWIN.pm",
+               "version" : "6.72"
+            },
+            "ExtUtils::MM_Unix" : {
+               "file" : "ExtUtils/MM_Unix.pm",
+               "version" : "6.72"
+            },
+            "ExtUtils::MM_VMS" : {
+               "file" : "ExtUtils/MM_VMS.pm",
+               "version" : "6.72"
+            },
+            "ExtUtils::MM_VOS" : {
+               "file" : "ExtUtils/MM_VOS.pm",
+               "version" : "6.72"
+            },
+            "ExtUtils::MM_Win32" : {
+               "file" : "ExtUtils/MM_Win32.pm",
+               "version" : "6.72"
+            },
+            "ExtUtils::MM_Win95" : {
+               "file" : "ExtUtils/MM_Win95.pm",
+               "version" : "6.72"
+            },
+            "ExtUtils::MY" : {
+               "file" : "ExtUtils/MY.pm",
+               "version" : "6.72"
+            },
+            "ExtUtils::MakeMaker" : {
+               "file" : "ExtUtils/MakeMaker.pm",
+               "version" : "6.72"
+            },
+            "ExtUtils::MakeMaker::Config" : {
+               "file" : "ExtUtils/MakeMaker/Config.pm",
+               "version" : "6.72"
+            },
+            "ExtUtils::Mkbootstrap" : {
+               "file" : "ExtUtils/Mkbootstrap.pm",
+               "version" : "6.72"
+            },
+            "ExtUtils::Mksymlists" : {
+               "file" : "ExtUtils/Mksymlists.pm",
+               "version" : "6.72"
+            },
+            "ExtUtils::testlib" : {
+               "file" : "ExtUtils/testlib.pm",
+               "version" : "6.72"
+            },
+            "File::Copy::Recursive" : {
+               "file" : "File/Copy/Recursive.pm",
+               "version" : "0.38"
+            },
+            "JSON::PP::Compat5006" : {
+               "file" : "JSON/PP/Compat5006.pm",
+               "version" : "1.09"
+            },
+            "MM" : {
+               "file" : "ExtUtils/MM.pm"
+            },
+            "MY" : {
+               "file" : "ExtUtils/MakeMaker.pm"
+            }
+         },
+         "target" : "ExtUtils::MakeMaker",
+         "version" : "6.72"
       },
       "File::Find::Iterator" : {
          "dist" : "File-Find-Iterator-0.4",
@@ -9256,6 +9496,12 @@
                      "ExtUtils::MakeMaker" : "6.30"
                   }
                },
+               "develop" : {
+                  "requires" : {
+                     "Test::Pod" : "1.41",
+                     "version" : "0.9901"
+                  }
+               },
                "runtime" : {
                   "requires" : {
                      "Carp" : "0",
@@ -9270,13 +9516,22 @@
                      "strict" : "0",
                      "warnings" : "0"
                   }
+               },
+               "test" : {
+                  "requires" : {
+                     "File::Find" : "0",
+                     "File::Temp" : "0",
+                     "Test::More" : "0.96"
+                  }
                }
             },
             "release_status" : "stable",
             "resources" : {
                "homepage" : "https://github.com/rjbs/Getopt-Long-Descriptive",
                "repository" : {
-                  "url" : "https://github.com/rjbs/Getopt-Long-Descriptive.git"
+                  "type" : "git",
+                  "url" : "https://github.com/rjbs/Getopt-Long-Descriptive.git",
+                  "web" : "https://github.com/rjbs/Getopt-Long-Descriptive"
                }
             },
             "version" : "0.093",
@@ -10319,13 +10574,21 @@
                      "Encode" : "2.10",
                      "Exporter" : "5.57"
                   }
+               },
+               "test" : {
+                  "requires" : {
+                     "File::Temp" : "0",
+                     "Scalar::Util" : "0",
+                     "Test::More" : "0.88"
+                  }
                }
             },
             "release_status" : "stable",
             "resources" : {
                "repository" : {
                   "type" : "git",
-                  "url" : "git://github.com/madsen/io-html.git"
+                  "url" : "git://github.com/madsen/io-html.git",
+                  "web" : "http://github.com/madsen/io-html"
                }
             },
             "version" : "0.04",
@@ -10640,7 +10903,7 @@
                "ASAKURA Takuji <asakura.takuji+cpan@gmail.com>"
             ],
             "dynamic_config" : 0,
-            "generated_by" : "ExtUtils::MakeMaker version 6.6302, CPAN::Meta::Converter version 2.120630",
+            "generated_by" : "ExtUtils::MakeMaker version 6.72, CPAN::Meta::Converter version 2.120630",
             "license" : [
                "unknown"
             ],
@@ -11724,7 +11987,7 @@
                "file" : "ojo.pm"
             }
          },
-         "target" : "Mojolicious",
+         "target" : "Test::Mojo",
          "version" : "3.54"
       },
       "Mojolicious::Plugin::CSRFDefender" : {
@@ -11853,6 +12116,36 @@
                      "ExtUtils::MakeMaker" : "6.30"
                   }
                },
+               "develop" : {
+                  "requires" : {
+                     "Algorithm::C3" : "0",
+                     "DBM::Deep" : "0",
+                     "Data::Visitor" : "0",
+                     "DateTime" : "0",
+                     "DateTime::Calendar::Mayan" : "0",
+                     "DateTime::Format::MySQL" : "0",
+                     "Declare::Constraints::Simple" : "0",
+                     "File::Find::Rule" : "0",
+                     "HTTP::Headers" : "0",
+                     "IO::File" : "0",
+                     "IO::String" : "0",
+                     "Locale::US" : "0",
+                     "Module::Info" : "0",
+                     "Module::Refresh" : "0",
+                     "PadWalker" : "0",
+                     "Params::Coerce" : "0",
+                     "Regexp::Common" : "0",
+                     "SUPER" : "0",
+                     "Test::Deep" : "0",
+                     "Test::DependentModules" : "0.13",
+                     "Test::Inline" : "0",
+                     "Test::LeakTrace" : "0",
+                     "Test::Memory::Cycle" : "0",
+                     "Test::Output" : "0",
+                     "Test::Spelling" : "0",
+                     "URI" : "0"
+                  }
+               },
                "runtime" : {
                   "recommends" : {
                      "Devel::PartialDump" : "0.14"
@@ -11877,16 +12170,25 @@
                      "Task::Weaken" : "0",
                      "Try::Tiny" : "0.02"
                   }
+               },
+               "test" : {
+                  "requires" : {
+                     "Test::Fatal" : "0.001",
+                     "Test::More" : "0.88",
+                     "Test::Requires" : "0.05"
+                  }
                }
             },
             "release_status" : "stable",
             "resources" : {
                "bugtracker" : {
+                  "mailto" : "bug-moose@rt.cpan.org",
                   "web" : "http://rt.cpan.org/NoAuth/Bugs.html?Dist=Moose"
                },
                "repository" : {
                   "type" : "git",
-                  "url" : "git://git.moose.perl.org/Moose.git"
+                  "url" : "git://git.moose.perl.org/Moose.git",
+                  "web" : "http://git.shadowcat.co.uk/gitweb/gitweb.cgi?p=gitmo/Moose.git;a=summary"
                }
             },
             "version" : "2.0604",
@@ -12594,301 +12896,6 @@
          "target" : "Moose",
          "version" : "2.0604"
       },
-      "Net::DNS" : {
-         "dist" : "Net-DNS-0.68",
-         "mymeta" : {
-            "abstract" : "Perl DNS resolver module",
-            "author" : [
-               "Olaf Kolkman <olaf@net-dns.org>"
-            ],
-            "dynamic_config" : 0,
-            "generated_by" : "ExtUtils::MakeMaker version 6.56, CPAN::Meta::Converter version 2.120630",
-            "license" : [
-               "perl_5"
-            ],
-            "meta-spec" : {
-               "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
-               "version" : "2"
-            },
-            "name" : "Net-DNS",
-            "no_index" : {
-               "directory" : [
-                  "t",
-                  "inc"
-               ]
-            },
-            "prereqs" : {
-               "build" : {
-                  "requires" : {
-                     "ExtUtils::MakeMaker" : "0"
-                  }
-               },
-               "configure" : {
-                  "requires" : {
-                     "ExtUtils::MakeMaker" : "0"
-                  }
-               },
-               "runtime" : {
-                  "requires" : {
-                     "Digest::HMAC_MD5" : "1",
-                     "Digest::MD5" : "2.12",
-                     "Digest::SHA" : "5.23",
-                     "IO::Socket" : "0",
-                     "MIME::Base64" : "2.11",
-                     "Test::More" : "0.18"
-                  }
-               }
-            },
-            "release_status" : "stable",
-            "version" : "0.68"
-         },
-         "name" : "Net::DNS",
-         "pathname" : "O/OL/OLAF/Net-DNS-0.68.tar.gz",
-         "provides" : {
-            "Net::DNS" : {
-               "file" : "Net/DNS.pm",
-               "version" : "0.68"
-            },
-            "Net::DNS::Domain" : {
-               "file" : "Net/DNS/Domain.pm",
-               "version" : "964"
-            },
-            "Net::DNS::DomainName" : {
-               "file" : "Net/DNS/DomainName.pm",
-               "version" : "964"
-            },
-            "Net::DNS::DomainName1035" : {
-               "file" : "Net/DNS/DomainName.pm"
-            },
-            "Net::DNS::DomainName2535" : {
-               "file" : "Net/DNS/DomainName.pm"
-            },
-            "Net::DNS::Header" : {
-               "file" : "Net/DNS/Header.pm",
-               "version" : "968"
-            },
-            "Net::DNS::Mailbox" : {
-               "file" : "Net/DNS/Mailbox.pm",
-               "version" : "970"
-            },
-            "Net::DNS::Mailbox1035" : {
-               "file" : "Net/DNS/Mailbox.pm"
-            },
-            "Net::DNS::Mailbox2535" : {
-               "file" : "Net/DNS/Mailbox.pm"
-            },
-            "Net::DNS::Nameserver" : {
-               "file" : "Net/DNS/Nameserver.pm",
-               "version" : "970"
-            },
-            "Net::DNS::Packet" : {
-               "file" : "Net/DNS/Packet.pm",
-               "version" : "969"
-            },
-            "Net::DNS::Question" : {
-               "file" : "Net/DNS/Question.pm",
-               "version" : "971"
-            },
-            "Net::DNS::RR" : {
-               "file" : "Net/DNS/RR.pm",
-               "version" : "969"
-            },
-            "Net::DNS::RR::A" : {
-               "file" : "Net/DNS/RR/A.pm",
-               "version" : "932"
-            },
-            "Net::DNS::RR::AAAA" : {
-               "file" : "Net/DNS/RR/AAAA.pm",
-               "version" : "932"
-            },
-            "Net::DNS::RR::AFSDB" : {
-               "file" : "Net/DNS/RR/AFSDB.pm",
-               "version" : "932"
-            },
-            "Net::DNS::RR::APL" : {
-               "file" : "Net/DNS/RR/APL.pm",
-               "version" : "684"
-            },
-            "Net::DNS::RR::APL::ApItem" : {
-               "file" : "Net/DNS/RR/APL/ApItem.pm",
-               "version" : "684"
-            },
-            "Net::DNS::RR::CERT" : {
-               "file" : "Net/DNS/RR/CERT.pm",
-               "version" : "932"
-            },
-            "Net::DNS::RR::CNAME" : {
-               "file" : "Net/DNS/RR/CNAME.pm",
-               "version" : "932"
-            },
-            "Net::DNS::RR::DHCID" : {
-               "file" : "Net/DNS/RR/DHCID.pm",
-               "version" : "718"
-            },
-            "Net::DNS::RR::DNAME" : {
-               "file" : "Net/DNS/RR/DNAME.pm",
-               "version" : "932"
-            },
-            "Net::DNS::RR::EID" : {
-               "file" : "Net/DNS/RR/EID.pm",
-               "version" : "932"
-            },
-            "Net::DNS::RR::HINFO" : {
-               "file" : "Net/DNS/RR/HINFO.pm",
-               "version" : "932"
-            },
-            "Net::DNS::RR::HIP" : {
-               "file" : "Net/DNS/RR/HIP.pm",
-               "version" : "718"
-            },
-            "Net::DNS::RR::IPSECKEY" : {
-               "file" : "Net/DNS/RR/IPSECKEY.pm",
-               "version" : "932"
-            },
-            "Net::DNS::RR::ISDN" : {
-               "file" : "Net/DNS/RR/ISDN.pm",
-               "version" : "932"
-            },
-            "Net::DNS::RR::KX" : {
-               "file" : "Net/DNS/RR/KX.pm",
-               "version" : "684"
-            },
-            "Net::DNS::RR::LOC" : {
-               "file" : "Net/DNS/RR/LOC.pm",
-               "version" : "932"
-            },
-            "Net::DNS::RR::MB" : {
-               "file" : "Net/DNS/RR/MB.pm",
-               "version" : "932"
-            },
-            "Net::DNS::RR::MG" : {
-               "file" : "Net/DNS/RR/MG.pm",
-               "version" : "932"
-            },
-            "Net::DNS::RR::MINFO" : {
-               "file" : "Net/DNS/RR/MINFO.pm",
-               "version" : "932"
-            },
-            "Net::DNS::RR::MR" : {
-               "file" : "Net/DNS/RR/MR.pm",
-               "version" : "932"
-            },
-            "Net::DNS::RR::MX" : {
-               "file" : "Net/DNS/RR/MX.pm",
-               "version" : "932"
-            },
-            "Net::DNS::RR::NAPTR" : {
-               "file" : "Net/DNS/RR/NAPTR.pm",
-               "version" : "932"
-            },
-            "Net::DNS::RR::NIMLOC" : {
-               "file" : "Net/DNS/RR/NIMLOC.pm",
-               "version" : "932"
-            },
-            "Net::DNS::RR::NS" : {
-               "file" : "Net/DNS/RR/NS.pm",
-               "version" : "932"
-            },
-            "Net::DNS::RR::NSAP" : {
-               "file" : "Net/DNS/RR/NSAP.pm",
-               "version" : "932"
-            },
-            "Net::DNS::RR::NULL" : {
-               "file" : "Net/DNS/RR/NULL.pm",
-               "version" : "932"
-            },
-            "Net::DNS::RR::OPT" : {
-               "file" : "Net/DNS/RR/OPT.pm",
-               "version" : "932"
-            },
-            "Net::DNS::RR::PTR" : {
-               "file" : "Net/DNS/RR/PTR.pm",
-               "version" : "966"
-            },
-            "Net::DNS::RR::PX" : {
-               "file" : "Net/DNS/RR/PX.pm",
-               "version" : "932"
-            },
-            "Net::DNS::RR::RP" : {
-               "file" : "Net/DNS/RR/RP.pm",
-               "version" : "932"
-            },
-            "Net::DNS::RR::RT" : {
-               "file" : "Net/DNS/RR/RT.pm",
-               "version" : "932"
-            },
-            "Net::DNS::RR::SOA" : {
-               "file" : "Net/DNS/RR/SOA.pm",
-               "version" : "932"
-            },
-            "Net::DNS::RR::SPF" : {
-               "file" : "Net/DNS/RR/SPF.pm",
-               "version" : "932"
-            },
-            "Net::DNS::RR::SRV" : {
-               "file" : "Net/DNS/RR/SRV.pm",
-               "version" : "932"
-            },
-            "Net::DNS::RR::SSHFP" : {
-               "file" : "Net/DNS/RR/SSHFP.pm",
-               "version" : "932"
-            },
-            "Net::DNS::RR::TKEY" : {
-               "file" : "Net/DNS/RR/TKEY.pm",
-               "version" : "932"
-            },
-            "Net::DNS::RR::TSIG" : {
-               "file" : "Net/DNS/RR/TSIG.pm",
-               "version" : "932"
-            },
-            "Net::DNS::RR::TXT" : {
-               "file" : "Net/DNS/RR/TXT.pm",
-               "version" : "932"
-            },
-            "Net::DNS::RR::Unknown" : {
-               "file" : "Net/DNS/RR/Unknown.pm",
-               "version" : "932"
-            },
-            "Net::DNS::RR::X25" : {
-               "file" : "Net/DNS/RR/X25.pm",
-               "version" : "932"
-            },
-            "Net::DNS::Resolver" : {
-               "file" : "Net/DNS/Resolver.pm",
-               "version" : "955"
-            },
-            "Net::DNS::Resolver::Base" : {
-               "file" : "Net/DNS/Resolver/Base.pm",
-               "version" : "932"
-            },
-            "Net::DNS::Resolver::Cygwin" : {
-               "file" : "Net/DNS/Resolver/Cygwin.pm",
-               "version" : "932"
-            },
-            "Net::DNS::Resolver::Recurse" : {
-               "file" : "Net/DNS/Resolver/Recurse.pm",
-               "version" : "932"
-            },
-            "Net::DNS::Resolver::UNIX" : {
-               "file" : "Net/DNS/Resolver/UNIX.pm",
-               "version" : "932"
-            },
-            "Net::DNS::Resolver::Win32" : {
-               "file" : "Net/DNS/Resolver/Win32.pm",
-               "version" : "932"
-            },
-            "Net::DNS::Text" : {
-               "file" : "Net/DNS/Text.pm",
-               "version" : "965"
-            },
-            "Net::DNS::Update" : {
-               "file" : "Net/DNS/Update.pm",
-               "version" : "970"
-            }
-         },
-         "target" : "Net::DNS",
-         "version" : "0.68"
-      },
       "Net::HTTP" : {
          "dist" : "Net-HTTP-6.03",
          "mymeta" : {
@@ -12976,7 +12983,7 @@
                "Casey West <casey@geeknest.com>"
             ],
             "dynamic_config" : 0,
-            "generated_by" : "ExtUtils::MakeMaker version 6.6302, CPAN::Meta::Converter version 2.120630",
+            "generated_by" : "ExtUtils::MakeMaker version 6.72, CPAN::Meta::Converter version 2.120630",
             "license" : [
                "unknown"
             ],
@@ -13066,7 +13073,8 @@
             "resources" : {
                "repository" : {
                   "type" : "git",
-                  "url" : "git://github.com/fayland/Net-SMTP-TLS.git"
+                  "url" : "git://github.com/fayland/Net-SMTP-TLS.git",
+                  "web" : "http://github.com/fayland/Net-SMTP-TLS"
                }
             },
             "version" : "0.20"
@@ -14014,6 +14022,78 @@
          },
          "target" : "Package::Stash::XS",
          "version" : "0.25"
+      },
+      "Parallel::ForkManager" : {
+         "dist" : "Parallel-ForkManager-1.03",
+         "mymeta" : {
+            "abstract" : "A simple parallel processing fork manager",
+            "author" : [
+               "Balazs Szabo (dLux)"
+            ],
+            "dynamic_config" : 0,
+            "generated_by" : "ExtUtils::MakeMaker version 6.64, CPAN::Meta::Converter version 2.120921, CPAN::Meta::Converter version 2.120630",
+            "license" : [
+               "perl_5"
+            ],
+            "meta-spec" : {
+               "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+               "version" : "2"
+            },
+            "name" : "Parallel-ForkManager",
+            "no_index" : {
+               "directory" : [
+                  "t",
+                  "inc"
+               ]
+            },
+            "prereqs" : {
+               "build" : {
+                  "requires" : {
+                     "Test::More" : "0.80"
+                  }
+               },
+               "configure" : {
+                  "requires" : {
+                     "ExtUtils::MakeMaker" : "0"
+                  }
+               },
+               "runtime" : {
+                  "requires" : {
+                     "File::Path" : "0",
+                     "File::Spec" : "0",
+                     "File::Temp" : "0",
+                     "POSIX" : "0",
+                     "Storable" : "0"
+                  }
+               }
+            },
+            "release_status" : "stable",
+            "resources" : {
+               "repository" : {
+                  "url" : "http://code.google.com/p/perl-parallel-forkmanager/"
+               }
+            },
+            "version" : "1.03",
+            "x_contributors" : [
+               "SZABGAB",
+               "Michael Gang",
+               "Noah Robin <sitz@onastick.net>",
+               "Chuck Hirstius <chirstius@megapathdsl.net>",
+               "Grant Hopwood <hopwoodg@valero.com>",
+               "Mark Southern <mark_southern@merck.com>",
+               "Ken Clarke <www.perlprogrammer.net>"
+            ]
+         },
+         "name" : "Parallel::ForkManager",
+         "pathname" : "S/SZ/SZABGAB/Parallel-ForkManager-1.03.tar.gz",
+         "provides" : {
+            "Parallel::ForkManager" : {
+               "file" : "Parallel/ForkManager.pm",
+               "version" : "1.03"
+            }
+         },
+         "target" : "Parallel::ForkManager",
+         "version" : "1.03"
       },
       "Params::Util" : {
          "dist" : "Params-Util-1.07",
@@ -15656,6 +15736,13 @@
                      "Fcntl" : "0",
                      "HTML::Entities" : "0"
                   }
+               },
+               "test" : {
+                  "requires" : {
+                     "Test::More" : "0",
+                     "Try::Tiny" : "0",
+                     "utf8" : "0"
+                  }
                }
             },
             "release_status" : "stable",
@@ -15663,7 +15750,8 @@
                "homepage" : "http://github.com/ido50/Tenjin/tree",
                "repository" : {
                   "type" : "git",
-                  "url" : "git://github.com/ido50/Tenjin.git"
+                  "url" : "git://github.com/ido50/Tenjin.git",
+                  "web" : "http://github.com/ido50/Tenjin/tree"
                }
             },
             "version" : "0.070001"

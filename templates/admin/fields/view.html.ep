@@ -65,8 +65,8 @@
         <td><%= date( $line->{date_updated} ) %></td>
         <td><%= decode( $line->{name} ) %></td>
         <td><% if( exists $hash->{default} and defined $hash->{default} and $line->{id} eq $hash->{default} ) {%>デフォルト<% } else { %>&nbsp;<% } %></td>
-        <td><a href="/admin/fields/edit/<%= $line->{id} %>">編集</a></td>
-        <td><a href="/admin/fields/disable/<%= $line->{id} %>">削除</a></td>
+        <td><a href="/admin/fields/<%= $hash->{id} %>/options/edit/<%= $line->{id} %>">編集</a></td>
+        <td><a href="/admin/fields/<%= $hash->{id} %>/options/disable/<%= $line->{id} %>">削除</a></td>
       </tr>
     % }
     </tbody>
