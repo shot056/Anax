@@ -1,0 +1,102 @@
+    <script language="javascript" type="text/javascript">
+    $( document ).ready( function() {
+      $("#sel_field_snippet").change( function() {
+        var selected_text = $("#sel_field_snippet option:selected").val();
+        if( selected_text.match(/^--/) )
+          $("#snippet_area").text( "" );
+        else
+          $("#snippet_area").text( selected_text );
+      } );
+    } );
+    </script>
+    <div class="row show-grid">
+      <div class="span3">
+        <select id="sel_field_snippet" name="sel_field_snippt">
+          <option value="----">----</option>
+          <option value="[= $mail_from =]">Fromアドレス</option>
+          <option value="--common--">-- 共通項目 --</option>
+          % foreach my $field ( @{ $fields->{common}->{array} } ) {
+          <option value="[= $values->{field_<%= $field->{id} %>} =]"><%= $field->{desc} %></option>
+          % }
+          <option value="--common--">-- 個別項目 --</option>
+          % foreach my $field ( @{ $fields->{individual}->{array} } ) {
+          <option value="[= $values->{field_<%= $field->{id} %>} =]"><%= $field->{desc} %></option>
+          % }
+        </select>
+      </div>
+      <div class="span6" id="snippet_area"></div>
+      
+    </div>
+    <br />
+    <div class="control-group">
+      <label class="control-label" for="field_from">From</label>
+      <div class="controls">
+        <input type="text" id="field_from" name="from" placeholder="" value="<%= decode( $params->{from} ) %>"" />
+        <span class="help-inline">
+          メールの送信者名を入力してください。
+          % if( exists $messages->{from} ) {
+          <p class="text-error"><%= decode( $messages->{from} ) %></p>
+          % }
+        </span>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="field_to">To</label>
+      <div class="controls">
+        <input type="text" id="field_to" name="to" placeholder="" value="<%= decode( $params->{to} ) %>" />
+        <span class="help-inline">
+          メールの送り先を入力してください。
+          % if( exists $messages->{to} ) {
+          <p class="text-error"><%= decode( $messages->{to} ) %></p>
+          % }
+        </span>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="field_cc">Cc</label>
+      <div class="controls">
+        <input type="text" id="field_cc" name="cc" placeholder="" value="<%= decode( $params->{cc} ) %>" />
+        <span class="help-inline">
+          メールのCcを入力してください。
+          % if( exists $messages->{cc} ) {
+          <p class="text-error"><%= decode( $messages->{cc} ) %></p>
+          % }
+        </span>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="field_bcc">Bcc</label>
+      <div class="controls">
+        <input type="text" id="field_bcc" name="bcc" placeholder="" value="<%= decode( $params->{bcc} ) %>" />
+        <span class="help-inline">
+          メールのBccを入力してください。
+          % if( exists $messages->{bcc} ) {
+          <p class="text-error"><%= decode( $messages->{bcc} ) %></p>
+          % }
+        </span>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="field_subject">タイトル</label>
+      <div class="controls">
+        <input type="text" id="field_subject" name="subject" placeholder="" class="input-xxlarge" value="<%= decode( $params->{subject} ) %>" />
+        <span class="help-inline">
+          メールのタイトルを入力してください。
+          % if( exists $messages->{subject} ) {
+          <p class="text-error"><%= decode( $messages->{subject} ) %></p>
+          % }
+        </span>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="field_body">本文</label>
+      <div class="controls">
+        <textarea name="body" rows="20" class="input-xxlarge"><%= decode( $params->{body} ) %></textarea>
+        <span class="help-inline">
+          メールの本文を入力してください。
+          % if( exists $messages->{body} ) {
+          <p class="text-error"><%= decode( $messages->{body} ) %></p>
+          % }
+        </span>
+      </div>
+    </div>
