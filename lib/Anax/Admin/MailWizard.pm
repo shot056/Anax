@@ -176,6 +176,7 @@ sub send_mail {
     my $uid = time . '.' . $$;
     my $form_settings = {};
     my $mail_targets = [];
+    my $used_mailaddr = {};
     foreach my $applicant ( @{ $applicants } ) {
         my $datas = { mail_from => $self->app->config->{gmail}->{username} };
         unless( exists $form_settings->{$applicant->{forms_id}} ) {
@@ -198,12 +199,16 @@ sub send_mail {
         no warnings;
         my $parts = $mail->render( $uid, $tmpl, $datas );
         use warnings;
-        #$self->app->log->debug( Dumper( { tmpl => $tmpl, datas => $datas, parts => $parts } ) );
-        push( @{ $mail_targets }, $parts );
+        # $self->app->log->debug( Dumper( { tmpl => $tmpl, datas => $datas, parts => $parts } ) );
+        unless( exists $used_mailaddr->{ $parts->{to} } ) {
+            $used_mailaddr->{ $parts->{to} } = $applicant->{id};
+            push( @{ $mail_targets }, $parts );
+        }
     }
     $self->render( template => 'admin/mail_wizard/send' );
     $dbis->commit;
     $dbis->disconnect or die $dbis->error;
+    # $self->app->log->debug( Dumper( $mail_targets ) );
     my $pm = Parallel::ForkManager->new( 3 );
     foreach my $data ( @{ $mail_targets } ) {
         my $pid = $pm->start and next;
