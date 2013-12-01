@@ -1,6 +1,6 @@
 % layout 'admin';
 % title 'メールウィザード';
-  <script language="javascript" type="text/javascript" src="/staic/js/jquery.dataTables.min.js"></script>
+  <script language="javascript" type="text/javascript" src="/static/js/jquery.dataTables.min.js"></script>
   <script language="javascript" type="text/javascript">
   $( document ).ready( function() {
     $("#chk_checkall").click( function() {
