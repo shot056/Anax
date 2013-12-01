@@ -8,9 +8,9 @@ use Data::Dumper;
 
 sub index {
     my $self = shift;
-    my $todo = $self->app->home->slurp_rel_file('ToDo');
+    my $todo = $self->app->home->rel_file('ToDo');
     $self->stash( todo => $todo );
-    my $changes = $self->app->home->slurp_rel_file('Changes');
+    my $changes = $self->app->home->rel_file('Changes');
     $self->stash( changes => $changes );
     
     $self->render;
