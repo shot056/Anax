@@ -109,6 +109,12 @@
   </form>
   <script language="javascript" type="text/javascript">
   $(document).ready( function() {
-    $("#list-table").dataTable();
+    $("#list-table").dataTable( {
+      bPaginate: false,
+      bLengthChange: false,
+      bFilter: false,
+      bSort: true,
+      bInfo: true,
+      bAutoWidth: false } );
   } );
   </script>
