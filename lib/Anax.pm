@@ -101,7 +101,7 @@ sub startup {
                        my $self = shift;
                        my $str  = shift;
                        return '' unless( defined $str and length( $str ) );
-                       my $ret = Mojo::ByteStream->new( $str )->html_escape;
+                       my $ret = Mojo::ByteStream->new( $str )->xml_escape;
                        $ret =~ s/\r\n/\n/g;
                        $ret =~ s/\n/<br \/>\n/g;
                        return $ret;
