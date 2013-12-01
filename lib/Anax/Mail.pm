@@ -57,6 +57,8 @@ sub sendmail {
         my @encoded_subjects;
         foreach my $splited_str ( Jcode::CP932->new( $charset eq 'utf8' ? $parts->{subject} : Jcode::CP932->new( $parts->{subject} )->$charset )->jfold(20) ) {
             my $str = b( $splited_str )->b64_encode;
+            $str =~ s/\r\n/\n\/g;
+            $str =~ s/\r/\n/g;
             chomp($str);
             push( @encoded_subjects, $str );
         }
