@@ -27,7 +27,7 @@ sub index {
         or die DBIx::Simple->error;
     $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
     $dbis->begin_work or die $dbis->error;
-    my $rslt = $dbis->select( 'forms', ['*'], { is_deleted => 0 }, { '-asc' => 'name' } )
+    my $rslt = $dbis->select( 'forms', ['*'], { is_deleted => 0 }, { order_by => 'name' } )
         or die $dbis->error;
     $self->stash( datas => $rslt );
     $self->render();
