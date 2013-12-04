@@ -10,6 +10,7 @@ use warnings;
 use base 'Class::Accessor::Fast';
 use Email::Send;
 use Email::Simple::Creator;
+use Email::Address;
 use Tenjin;
 use Tenjin::Template;
 use DBIx::Simple;
@@ -45,6 +46,21 @@ sub sendmail {
           To => $charset eq 'utf8' ? $parts->{to} : Jcode::CP932->new( $parts->{to} )->$charset,
           'Content-Transfer-Encoding' => 'base64'
     );
+    foreach my $type ( qw/from to cc bcc/ ) {
+        next unless( exists $parts->{ $type } and defined $parts->{ $type } and length $parts->{ $type } );
+        my @addrs = Email::Address->parse( $parts->{$type} );
+        foreach my $addr ( @addrs ) {
+            foreach my $cmd ( qw/phrase comment/ ) {
+                if( defined $addr->$cmd and length( $addr->$cmd ) ) {
+                    my $str = ( $charset eq 'utf8' ? $addr->$cmd : Jcode::CP932->new( $addr->$cmd )->$charset );
+                    my $new_str = b( $str )->encode->b64_encode;
+                    chomp( $new_str );
+                    $addr->$cmd( sprintf( '=?%s?B?%s?=', ( $charset eq 'utf8' ? 'UTF-8' : 'ISO-2022-JP' ), $new_str ) );
+                }
+            }
+        }
+        $header{ ucfirst( $type ) } = join( ', ', map { "$_" } @addrs );
+    }
     if ( $charset eq 'utf8' ) {
         $header{'Content-Type'} = 'text/plain; charset=UTF-8';
     }
@@ -52,10 +68,6 @@ sub sendmail {
         $header{'Content-Type'} = 'text/plain; charset=ISO-2022-JP';
     }
     $header{'X-AnaxWebForm-Key'} = $key if ( defined $key );
-    $header{'Cc'} = Jcode::CP932->new( $parts->{cc} )->$charset
-      if (  exists $parts->{cc}
-        and defined $parts->{cc}
-        and length( $parts->{cc} ) );
     
     {
         my @encoded_subjects;
@@ -74,6 +86,8 @@ sub sendmail {
     $parts->{body} =~ s/\r\n/\n/g;
     $parts->{body} =~ s/\r/\n/g;
 
+    my $bccs = delete $header{Bcc};
+    
     my $mail_body = b( $charset eq 'utf8' ? $parts->{body} : Jcode::CP932->new( $parts->{body} )->$charset )->encode->b64_encode;
     
     my $email = Email::Simple->create(
@@ -93,12 +107,12 @@ sub sendmail {
     $self->app->log->info( "+++++ Sending Email To: $parts->{to} Cc: $parts->{cc}" );
     $sender->send($email);
 
-    if ( exists $parts->{bcc} and defined $parts->{bcc} and length( $parts->{bcc} ) ) {
-        foreach my $bcc ( split /, /, Jcode::CP932->new( $parts->{bcc} )->$charset ) {
+    if ( defined $bccs and length( $bccs ) ) {
+        foreach my $bcc ( Email::Address->parse( $bccs ) ) {
             my %tmp_header = %header;
             delete $tmp_header{'To'};
             delete $tmp_header{'Cc'};
-            $tmp_header{'Bcc'} = $bcc;
+            $tmp_header{'Bcc'} = "$bcc";
             $self->app->log->info( "+++++ Sending Email Bcc: $bcc" );
             my $email_bcc = Email::Simple->create(
                 header => [ %tmp_header ],

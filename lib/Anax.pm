@@ -58,7 +58,7 @@ sub startup {
                        my $str  = shift;
                        return '' unless( defined $str and length( $str ) );
                        my $undef = undef;
-                       my $ret = Mojo::ByteStream->new( $str )->decode;
+                       my $ret = Mojo::ByteStream->new( $str )->decode->to_string;
                        return ( ( defined $ret and length( $ret ) ) ? $ret : $str );
                    } );
     my $v_decode = Data::Visitor::Callback->new(
