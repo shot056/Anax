@@ -56,6 +56,7 @@ sub sendmail {
       if (  exists $parts->{cc}
         and defined $parts->{cc}
         and length( $parts->{cc} ) );
+    
     {
         my @encoded_subjects;
         foreach my $splited_str ( Jcode::CP932->new( $charset eq 'utf8' ? $parts->{subject} : Jcode::CP932->new( $parts->{subject} )->$charset )->jfold(20) ) {
@@ -66,6 +67,9 @@ sub sendmail {
             push( @encoded_subjects, $str );
         }
         $header{Subject} = join( "\n", map { sprintf( '=?%s?B?%s?=', ( $charset eq 'utf8' ? 'UTF-8' : 'ISO-2022-JP' ), $_ ) } @encoded_subjects );
+        $header{Subject} =~ s/\r\n/\n/g;
+        $header{Subject} =~ s/\r/\n/g;
+        $header{Subject} =~ s/\n\n/\n/g;
     }
     $parts->{body} =~ s/\r\n/\n/g;
     $parts->{body} =~ s/\r/\n/g;
@@ -96,10 +100,11 @@ sub sendmail {
             delete $tmp_header{'Cc'};
             $tmp_header{'Bcc'} = $bcc;
             $self->app->log->info( "+++++ Sending Email Bcc: $bcc" );
-            $sender->send( Email::Simple->create(
+            my $email_bcc = Email::Simple->create(
                 header => [ %tmp_header ],
                 body   => $mail_body
-            ) );
+            );
+            $sender->send( $email_bcc );
         }
     }
     return 1;

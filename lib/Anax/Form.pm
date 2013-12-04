@@ -221,11 +221,11 @@ sub complete {
 
         if( defined $mail_parts ) {
             my $pm = Parallel::ForkManager->new( 1 );
-            
-            my $pid = $pm->start and next;
-            $mail->sendmail( $mail_charset, $mail_parts, $datas->{key} );
-            $pm->finish;
-            
+            foreach( 0 ) {
+                my $pid = $pm->start and next;
+                $mail->sendmail( $mail_charset, $mail_parts, $datas->{key} );
+                $pm->finish;
+            }
             $pm->wait_all_children;
         }
 
