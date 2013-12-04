@@ -66,7 +66,7 @@ sub sendmail {
             chomp($str);
             push( @encoded_subjects, $str );
         }
-        $header{Subject} = join( "\n", map { sprintf( '=?%s?B?%s?=', ( $charset eq 'utf8' ? 'UTF-8' : 'ISO-2022-JP' ), $_ ) } @encoded_subjects );
+        $header{Subject} = join( "\n       ", map { sprintf( '=?%s?B?%s?=', ( $charset eq 'utf8' ? 'UTF-8' : 'ISO-2022-JP' ), $_ ) } @encoded_subjects );
         $header{Subject} =~ s/\r\n/\n/g;
         $header{Subject} =~ s/\r/\n/g;
         $header{Subject} =~ s/\n\n/\n/g;
