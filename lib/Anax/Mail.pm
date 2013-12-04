@@ -33,16 +33,11 @@ sub new {
 }
 
 sub sendmail {
-    my $self = shift;
-    my $id   = shift;
-    my $data = shift;
+    my $self    = shift;
+    my $charset = shift;
+    my $parts   = shift;
+    my $key     = shift;
 
-    my $tmpl = $self->load($id);
-    #$self->app->log->debug( Dumper( { tmpl => $tmpl } ) );
-    my $parts = $self->render( $id, $tmpl, $data );
-    #$self->app->log->debug( Dumper( { parts => $parts } ) );
-
-    my $charset = $tmpl->{charset};
     $charset = 'utf8' unless ( grep( $charset eq $_, qw/utf8 iso_2022_jp/ ) );
 
     my %header = (
@@ -56,7 +51,7 @@ sub sendmail {
     else {
         $header{'Content-Type'} = 'text/plain; charset=ISO-2022-JP';
     }
-    $header{'X-AnaxWebForm-Key'} = $data->{key} if ( exists $data->{key} );
+    $header{'X-AnaxWebForm-Key'} = $key if ( defined $key );
     $header{'Cc'} = Jcode::CP932->new( $parts->{cc} )->$charset
       if (  exists $parts->{cc}
         and defined $parts->{cc}

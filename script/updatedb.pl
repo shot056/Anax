@@ -1,4 +1,4 @@
-#!/usr/bin/env perl
+#!/bin/env perl
 
 use strict;
 use warnings;
@@ -7,7 +7,9 @@ BEGIN {
     use FindBin;
     $ENV{MOJO_HOME} = "$FindBin::Bin/../";
 };
-use lib ( "$FindBin::Bin/../lib/" );
+use lib ( "$FindBin::Bin/../lib/",
+          "$FindBin::Bin/../local/lib/perl5/",
+          "$FindBin::Bin/../local/lib/perl5/x86_64-linux/" );
 
 use Getopt::Long qw(:config posix_default no_ignore_case gnu_compat);
 
@@ -20,7 +22,6 @@ use File::Find::Iterator;
 use Data::Dumper;
 
 my $mode = 'development';
-my $type = 'msyql';
 my $host;
 my $port;
 my $name;
@@ -60,11 +61,11 @@ sub main {
         exit( -1 );
     }
     my $dsn = get_dsn();
-    error_exit( "DSN is not defined" ) unless( defined $dsn );
-
+    error_exit( "DSN is not defined" )
+        unless( defined $dsn and ref( $dsn ) eq 'ARRAY' and scalar @{$dsn} );
+    print RED "Connect to $dsn->[0]\n";
     my $dbis = DBIx::Simple->new( @{$dsn} )
         or die "can not connect to $dsn->[0] : " . DBIx::Simple->error;
-    print BOLD GREEN "Update Database : $dsn->[0]\n";
     $dbis->begin_work or die $dbis->error;
 
     check_system_setting_table( $dbis );
@@ -75,17 +76,18 @@ sub main {
     my $home = "$FindBin::Bin/../";
     my $find = File::Find::Iterator->create( dir => [ "${home}sql/update" ],
                                              filter => sub { -f and m/\.(sql|pl)$/ } );
-    my $do_flg = 0;
-    my @update_files;
+    my @files;
     while( my $file = $find->next ) {
-        push( @update_files, $file );
+        push( @files, $file );
     }
-    foreach my $file ( sort { $a cmp $b } @update_files ) {
+    my $do_flg = 0;
+    foreach my $file ( sort @files ) {
         my ($version_date, $ext) = $file =~ m!(\d{4}-\d{2}-\d{2}-\d+)\.(sql|pl)$!;
         my $version = $version_date;
         $version =~ s/-//g;
         my $relpath = $file;
         $relpath =~ s/^$home//;
+        
         if( $now < $version ) {
             $do_flg = 1;
             print YELLOW "do update : ", BLUE, $relpath, WHITE, "\n";
@@ -100,7 +102,6 @@ sub main {
             exec_sql( $dbis, "UPDATE system_settings SET data = ? WHERE name = 'sql_version'", $version_date );
         }
     }
-    
     unless( $do_flg ) {
         print YELLOW "update target is not found\n";
     }
@@ -169,7 +170,6 @@ sub do_update_pl {
         print "$@";
         return 0;
     }
-    return $ret;
 }
 
 sub get_now_version {
@@ -184,7 +184,7 @@ sub get_now_version {
 sub check_system_setting_table {
     my $dbis = shift;
     my $rslt = exec_sql( $dbis, "SELECT * FROM pg_catalog.pg_tables WHERE schemaname = 'public' AND tablename = 'system_settings';" );
-    my $flg = $rslt->rows ? 1 : 0;
+    my $flg = $rslt->rows;
     unless( $flg ) {
         print RED "system_settings table is not exists.\n";
         print GREEN "creating table...\n";
@@ -199,7 +199,7 @@ sub get_dsn {
     if( defined $name and length( $name ) ) {
         $host = "localhost" unless( defined $host );
         $user = $ENV{USER} unless( defined $user );
-        $dsn = [ "dbi:mysql:dbname=$name",
+        $dsn = [ "dbi:Pg:dbname=$name",
                  $user,
                  $pass || "",
                  { AutoCommit => 1, RaiseError => 1 } ];
@@ -232,12 +232,12 @@ sub error_exit {
 
 __DATA__
 CREATE TABLE system_settings (
-    name VARCHAR(32) PRIMARY KEY NOT NULL,
-    is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
-    date_created TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT ('now')::TIMESTAMP WITH TIME ZONE,
-    date_updated TIMESTAMP WITH TIME ZONE,
-    date_deleted TIMESTAMP WITH TIME ZONE,
-    data VARCHAR(128)
+  "name" varchar(32) NOT NULL PRIMARY KEY,
+  is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
+  date_created timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  date_updated timestamp NULL DEFAULT NULL,
+  date_deleted timestamp NULL DEFAULT NULL,
+  "data" varchar(128) NOT NULL
 );
 CREATE INDEX idx_system_settings_name ON system_settings ( name );
 CREATE INDEX idx_system_settings_is_deleted ON system_settings ( is_deleted );
