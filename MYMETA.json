@@ -40,6 +40,7 @@
             "Email::Send::SMTP::TLS" : "0.04",
             "Email::Simple" : "2.102",
             "Email::Valid" : "0.190",
+            "File::Find::Iterator" : "0.4",
             "Jcode::CP932" : "0.08",
             "Mojolicious" : "3.54",
             "Mojolicious::Plugin::CSRFDefender" : "v0.0.6",
