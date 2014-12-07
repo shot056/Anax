@@ -248,7 +248,7 @@ sub get_form_setting {
 #                    messages => { input => $form->{message_input} || '',
 #                                  confirm => $form->{message_confirm} || '',
 #                                  complete => $form->{message_complete} || '' },
-                    name => b( $form->{name} ),
+                    name => b( $form->{name} || '' ),
                     description => b( $form->{description} || '' ),
                     product_message => b( $form->{product_message} || '' ),
                     messages => { input => b( $form->{message_input} || '' ),
@@ -296,10 +296,10 @@ sub get_field_data {
                   name        => "field_" . $line->{id},
 #                  desc        => $line->{name},
 #                  desc        => b( $line->{name} )->decode->to_string,
-                  desc        => b( $line->{name} ),
+                  desc        => b( $line->{name} || '' ),
                   type        => $line->{type},
                   default     => $line->{default} || undef,
-                  default     => b( $line->{default} ),
+                  default     => b( $line->{default} || '' ),
 #                  default     => b( $line->{default} )->decode->to_string || undef,
                   is_required => $line->{is_required},
                   is_global   => $line->{is_global},
@@ -322,13 +322,13 @@ sub get_field_options {
     my $options = [];
     my $options_hash = {};
     while( my $line = $it->hash ) {
-        my $option = { name => b( $line->{name} ),
+        my $option = { name => b( $line->{name} || '' ),
 #        my $option = { name => b( $line->{name} )->decode->to_string,
 #        my $option = { name => $line->{name},
                        value => $line->{id} };
         push( @{ $options }, $option );
 #        $options_hash->{ $line->{id} } = $line->{name};
-        $options_hash->{ $line->{id} } = b( $line->{name} );
+        $options_hash->{ $line->{id} } = b( $line->{name} || '' );
 #        $options_hash->{ $line->{id} } = b( $line->{name} )->decode->to_string;
     }
     return ( $options, $options_hash );

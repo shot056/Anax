@@ -218,8 +218,8 @@ sub get_form_products {
     while( my $line = $it->hash ) {
 #        $products->{hash}->{ $line->{id} } = $line;
         $products->{hash}->{ $line->{id} } = { map { $_ => $line->{$_} } qw/id price sortorder p_sortorder name description/ };
-        $products->{hash}->{ $line->{id} }->{name} = b( $line->{name} );
-        $products->{hash}->{ $line->{id} }->{description} = b( $line->{description} );
+        $products->{hash}->{ $line->{id} }->{name} = b( $line->{name} || '' );
+        $products->{hash}->{ $line->{id} }->{description} = b( $line->{description} || '' );
 #       $products->{hash}->{ $line->{id} }->{name} = b( $line->{name} )->decode->to_string;
 #       $products->{hash}->{ $line->{id} }->{description} = b( $line->{description} )->decode->to_string;
         
