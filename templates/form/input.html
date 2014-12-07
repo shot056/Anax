@@ -73,6 +73,18 @@
           <div class="controls">
           <?pl foreach my $p ( @{$product_list} ) { ?>
             <label><input type="checkbox" value="[= $p->{id} =]" name="products"<?pl if( grep( $_ eq $p->{id}, @{ $params->{products} } ) ) { ?> checked="checked"<?pl } ?>>[= $p->{name} =]</label>
+            <?pl if( $p->{images}->{has_image} ) { ?>
+              <?pl if( $p->{images}->{has_thumb} ) { ?>
+            <div class="image-thumb"><img src="[= $p->{images}->{thumb}->{url} =]" alt="[= $p->{images}->{thumb}->{name} =]" /></div>
+              <?pl } ?>
+              <?pl if( $p->{images}->{has_slides} ) { ?>
+            <div class="image-slides">
+                <?pl foreach my $i ( @{ $p->{images}->{slides} } ) { ?>
+              <div class="image-slide-part"><img src="[= $i->{url} =]" alt="[= $i->{name} =]" /></div>
+                <?pl } ?>
+            </div>
+              <?pl } ?>
+            <?pl } ?>
           <?pl } ?>
           </div>
         </div>

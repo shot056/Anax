@@ -3,13 +3,6 @@
 #     requires 'Module::Install::CPANfile';
 # };
 
-# 
-# 
-# 
-# 
-# 
-# 
-
 # CGI
 requires 'FCGI', '== 0.77';
 requires 'CGI', '== 3.65';
@@ -154,3 +147,10 @@ requires 'Module::Pluggable', '== 5.1';
 requires 'Email::Abstract', '== 3.007';
 requires 'Email::Send', '== 2.199';
 requires 'Email::Send::SMTP::TLS';
+
+# UNIVERSAL::require
+requires 'UNIVERSAL::require', '== 0.17';
+
+# Mojolicious::Plugin::Cloudinary
+requires 'Cloudinary', '== 0.14';
+

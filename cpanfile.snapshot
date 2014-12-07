@@ -174,6 +174,15 @@ DISTRIBUTIONS
     requirements:
       ExtUtils::MakeMaker 0
       Test::More 0
+  Cloudinary-0.14
+    pathname: J/JH/JHTHORSEN/Cloudinary-0.14.tar.gz
+    provides:
+      Cloudinary 0.14
+      Mojolicious::Plugin::Cloudinary 0.0402
+    requirements:
+      ExtUtils::MakeMaker 0
+      Mojolicious 4.30
+      Test::More 0.90
   DBD-Pg-3.4.2
     pathname: T/TU/TURNSTEP/DBD-Pg-3.4.2.tar.gz
     provides:
@@ -3150,6 +3159,15 @@ DISTRIBUTIONS
       constant 0
       strict 0
       warnings 0
+  UNIVERSAL-require-0.17
+    pathname: N/NE/NEILB/UNIVERSAL-require-0.17.tar.gz
+    provides:
+      UNIVERSAL::require 0.17
+    requirements:
+      Carp 0
+      ExtUtils::MakeMaker 0
+      Test::More 0.47
+      perl 5.006
   URI-1.65
     pathname: E/ET/ETHER/URI-1.65.tar.gz
     provides:

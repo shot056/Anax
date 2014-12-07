@@ -7,6 +7,8 @@ use Validator::Custom::Anax;
 
 use Mojo::Base 'Mojolicious::Controller';
 
+use UNIVERSAL::require;
+
 use DBIx::Simple;
 use SQL::Maker;
 
@@ -95,17 +97,53 @@ sub register {
                 or die $dbis->error;
             $id = $dbis->last_insert_id( undef, 'public', 'product_images', 'id' ) or die $dbis->error;
         }
-        my $store_dir = $self->app->home->rel_dir("public/static/products/$product_id/images/");
-        $self->app->log->info( "store_dir : $store_dir" );
-        $self->app->commands->create_dir( $store_dir )
-            unless( -d $store_dir );
-        my $target_file = $self->app->home->rel_file( "public/static/products/$product_id/images/$id.$ext" );
-        $self->app->log->info( "store to : $target_file" );
-        $upload->move_to( "public/static/products/$product_id/images/$id.$ext" );
+
+        $self->render_later;
+        Mojo::IOLoop->delay(
+            sub {
+                my $delay = shift;
+                $self->cloudinary_upload( {
+                    file => $self->param('file'),
+                }, $delay->begin );
+            },
+            sub {
+                my $delay = shift;
+                my $res   = shift;
+                my $tx    = shift;
+                $self->app->log->debug( Dumper( { res => $res } ) );
+                $dbis->update( 'product_images',
+                               { url => $res->{secure_url},
+                                 width => $res->{width},
+                                 height => $res->{height},
+                                 public_id => $res->{public_id} },
+                               { id => $id } )
+                    or die $dbis->error;
+                
+                $dbis->commit or die $dbis->error;
+                $dbis->disconnect or die $dbis->error;
+                $self->redirect_to( '/admin/products/view/' . $product_id );
+            }
+        );
         
-        $dbis->commit or die $dbis->error;
-        $dbis->disconnect or die $dbis->error;
-        $self->redirect_to( '/admin/products/view/' . $product_id );
+#         my $file_class = 'Anax::Admin::File::' . $self->app->config->{file}->{class};
+#         $file_class->use or die "can not use $file_class : $@";
+#         my $file_obj = $file_class->new( $self->app );
+
+#         my $path = $file_obj->save( "products/$product_id/images/", "$id.$ext", $upload );
+#         $self->app->log->info( "path = $path" );
+        
+# #        my $store_dir = $self->app->home->rel_dir("public/static/products/$product_id/images/");
+# #        $self->app->log->info( "store_dir : $store_dir" );
+# #        $self->app->commands->create_dir( $store_dir )
+# #            unless( -d $store_dir );
+# #        my $target_file = $self->app->home->rel_file( "public/static/products/$product_id/images/$id.$ext" );
+# #        $self->app->log->info( "store to : $target_file" );
+# #        $upload->move_to( "public/static/products/$product_id/images/$id.$ext" );
+#         $dbis->update( 'product_images', { url => $path }, { id => $id } );
+        
+#         $dbis->commit or die $dbis->error;
+#         $dbis->disconnect or die $dbis->error;
+#         $self->redirect_to( '/admin/products/view/' . $product_id );
     }
 }
 
@@ -146,11 +184,36 @@ sub do_disable {
     my $data = $it->hash;
     $dbis->delete( 'product_images', { id => $id } )
         or die $dbis->error;
-    unlink $self->app->home->rel_file( "public/static/products/$product_id/images/$id.$data->{ext}" )
-        or die "can not remove image : public/static/products/$product_id/images/$id.$data->{ext} : $!";
     
-    $dbis->commit or die $dbis->error;
-    $dbis->disconnect or die $dbis->error;
-    $self->redirect_to( "admin/products/view/$product_id" );
+#    my $file_class = 'Anax::Admin::File::' . $self->app->config->{file}->{class};
+#    $file_class->use or die "can not use $file_class : $@";
+#    my $file_obj = $file_class->new( $self->app );
+#    $file_obj->remove( "products/$product_id/images/", "$id.$data->{ext}" );
+
+    if( length( $data->{public_id} ) ) {
+        $self->app->log->debug( "destory cloudinary file : $data->{public_id}" );
+        $self->render_later;
+        Mojo::IOLoop->delay(
+            sub {
+                my $delay = shift;
+                $self->cloudinary_destroy( {
+                    public_id => $data->{public_id}
+                }, $delay->begin );
+            },
+            sub {
+                my $delay = shift;
+                my $res   = shift;
+                my $tx    = shift;
+                
+                $dbis->commit or die $dbis->error;
+                $dbis->disconnect or die $dbis->error;
+                $self->redirect_to( "admin/products/view/$product_id" );
+            } );
+    }
+    else {
+        $dbis->commit or die $dbis->error;
+        $dbis->disconnect or die $dbis->error;
+        $self->redirect_to( "admin/products/view/$product_id" );
+    }
 }
 1;

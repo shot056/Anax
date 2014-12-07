@@ -29,13 +29,14 @@ sub input {
     $params->{products} = [ $params->{products} ]
         if( exists $params->{products} and defined $params->{products} and ref( $params->{products} ) ne 'ARRAY' );
     
+    #$self->app->log->debug( "params : \n" . Dumper( $params ) );
+    
     my $form_setting = Anax::Admin::Forms->new( $self )->get_form_setting( $self->app, $key, $params->{is_admin} );
     #$self->app->log->debug( "settings : \n" . Dumper( $form_setting ) );
     $self->render_not_found unless( defined $form_setting );
     
     my $products     = Anax::Admin::Products->new( $self )->get_form_products( $self->app, $form_setting->{id} );
-    
-    #$self->app->log->debug( "params : \n" . Dumper( $params ) );
+    $self->app->log->debug( "products : \n" . Data::Dumper->new( [ $products ] )->Sortkeys( 1 )->Dump );
 
     my $forms = $self->generate_forms( $form_setting->{field_list}, $params );
     

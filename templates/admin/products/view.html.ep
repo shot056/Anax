@@ -43,7 +43,7 @@
     % while( my $line = $images->hash ) {
     <li class="span4">
       <div class="thumbnail">
-        <img src="/static/products/<%= $hash->{id} %>/images/<%= $line->{id} %>.<%= $line->{ext} %>" alt="<%= decode( $line->{name} ) %>" />
+        <img src="<%= $line->{url} %>" alt="<%= decode( $line->{name} ) %>" />
         <h3><%= decode( $line->{name} ) %></h3>
         <p><%== html_br( decode( $line->{description} ) ) %></p>
         <a href="/admin/product/<%= $hash->{id} %>/images/disable/<%= $line->{id} %>" class="btn btn-danger">削除</a>

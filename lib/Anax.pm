@@ -46,6 +46,11 @@ sub startup {
     $self->plugin('Config');
     #$self->plugin('TagHelpers');
     $self->plugin('CSRFDefender');
+    $self->plugin('Cloudinary',
+                  { cloud_name => $self->config->{Cloudinary}->{cloud_name},
+                    api_key => $self->config->{Cloudinary}->{api_key},
+                    api_secret => $self->config->{Cloudinary}->{api_secret}
+                  } );
 
     $self->helper( b => sub {
                        my $self = shift;
