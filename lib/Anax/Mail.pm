@@ -88,7 +88,7 @@ sub sendmail {
 
     my $bccs = delete $header{Bcc};
     
-    my $mail_body = b( $charset eq 'utf8' ? $parts->{body} : Jcode::CP932->new( $parts->{body} )->$charset )->encode->b64_encode;
+    my $mail_body = b( $charset eq 'utf8' ? $parts->{body} : Jcode::CP932->new( $parts->{body} )->$charset )->b64_encode;
     
     my $email = Email::Simple->create(
         header => [ %header ],
@@ -162,7 +162,7 @@ sub load {
         or die $dbis->error;
     return undef unless( $rslt->rows );
     my $hash = $rslt->hash;
-    my $tmpl = { map { $_ => b( $hash->{$_} )->decode->to_string || '' } qw/from to cc bcc subject body charset/ };
+    my $tmpl = { map { $_ => b( $hash->{$_} )->encode->to_string || '' } qw/from to cc bcc subject body charset/ };
     $dbis->commit or die $dbis->error;
     $dbis->disconnect or die $dbis->error;
     return $tmpl;

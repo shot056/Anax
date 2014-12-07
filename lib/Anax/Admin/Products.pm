@@ -204,24 +204,28 @@ sub get_form_products {
     my $class   = shift;
     my $app     = shift;
     my $form_id = shift;
-    
+
+    $app->log->debug( Dumper( $app->config->{dsn} ) );
     my $dbis = DBIx::Simple->new( @{ $app->config->{dsn} } )
         or die DBIx::Simple->error;
     $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
     $dbis->begin_work or die $dbis->error;
 
-    my $it = $dbis->query( "SELECT p.*, fp.sortorder AS p_sortorder FROM products AS p, form_products AS fp WHERE p.is_deleted = FALSE AND fp.is_deleted = FALSE AND fp.products_id = p.id AND fp.forms_id = ? ORDER BY fp.sortorder, p.sortorder, p.id",
+    my $it = $dbis->query( "SELECT p.*, fp.sortorder AS fp_sortorder FROM products AS p, form_products AS fp WHERE p.is_deleted = FALSE AND fp.is_deleted = FALSE AND fp.products_id = p.id AND fp.forms_id = ? ORDER BY fp.sortorder, p.sortorder, p.id",
                            $form_id )
         or die $dbis->error;
     my $products = { hash => {}, list => [] };
     while( my $line = $it->hash ) {
-        $products->{hash}->{ $line->{id} } = { map { $_ => $line->{$_} } qw/id price sortorder p_sortorder/ };
-        $products->{hash}->{ $line->{id} }->{name} = b( $line->{name} )->decode->to_string;
-        $products->{hash}->{ $line->{id} }->{description} = b( $line->{description} )->decode->to_string;
+#        $products->{hash}->{ $line->{id} } = $line;
+        $products->{hash}->{ $line->{id} } = { map { $_ => $line->{$_} } qw/id price sortorder p_sortorder name description/ };
+        $products->{hash}->{ $line->{id} }->{name} = b( $line->{name} );
+        $products->{hash}->{ $line->{id} }->{description} = b( $line->{description} );
+#       $products->{hash}->{ $line->{id} }->{name} = b( $line->{name} )->decode->to_string;
+#       $products->{hash}->{ $line->{id} }->{description} = b( $line->{description} )->decode->to_string;
         
         push( @{ $products->{list} }, $products->{hash}->{ $line->{id} } );
     }
-    #$app->log->debug( Dumper( $products ) );
+#    $app->log->debug( Data::Dumper->new( [ { products => $products } ] )->Sortkeys( 1 )->Dump );
     return $products;
 }
 
