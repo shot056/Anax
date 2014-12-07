@@ -22,7 +22,7 @@ sub do_update_2013011001 {
     }
     exec_sql( $dbis, "ALTER TABLE applicants ALTER COLUMN email DROP NOT NULL" );
     
-    return 1;
+    return "1";
 }
 
 

@@ -120,7 +120,7 @@ sub exec_sql {
 
     $sql .= ';' unless( $sql =~ /;$/ );
     if( $debug ) {
-        print CYAN "exec sql : \n", WHITE "$sql";
+        print CYAN "exec sql : ", WHITE "$sql";
         print " ( '".join("', '",@vals)."' )" if( scalar @vals );
         print "\n";
     }
@@ -167,9 +167,10 @@ sub do_update_pl {
         }
     };
     if( $@ ) {
-        print "$@";
+        print RED BOLD "have error : ", RESET, WHITE, "$@";
         return 0;
     }
+    return $ret;
 }
 
 sub get_now_version {
