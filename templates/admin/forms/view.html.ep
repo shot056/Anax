@@ -53,6 +53,9 @@
       <th>商品選択の文言</th><td><%= decode( $hash->{product_message} ) %></td>
     </tr>
     <tr>
+      <th>商品画像の表示</th><td><% if( $hash->{use_product_image} ) { %>表示する<% } else { %>表示しない<% } %></td>
+    </tr>
+    <tr>
       <th>状態</th><td><% if( $hash->{is_published} ) { %>公開済み<% } else { %>非公開<% } %></td>
     </tr>
   </table>

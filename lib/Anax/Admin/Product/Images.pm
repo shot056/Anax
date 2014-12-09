@@ -72,9 +72,7 @@ sub register {
         $self->render( 'admin/product/images/input' );
     }
     else {
-        my $dbis = DBIx::Simple->new( @{ $self->app->config->{dsn} } )
-            or die DBIx::Simple->error;
-        $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
+        my $dbis = $self->dbis;
         $dbis->begin_work or die $dbis->error;
         if( $content_type eq 'image/jpeg' ) {
             $ext = 'jpg';
@@ -153,4 +151,21 @@ sub do_disable {
     $dbis->disconnect or die $dbis->error;
     $self->redirect_to( "admin/products/view/$product_id" );
 }
+
+sub to_thumbnail {
+    my $self = shift;
+    my $product_id = $self->stash('product_id');
+    my $id         = $self->stash('id');
+
+    my $dbis = $self->dbis;
+    $dbis->begin_work or die $dbis->error;
+    $dbis->update( 'product_images', { use_thumbnail => 0 }, { products_id => $product_id } )
+        or die $dbis->error;
+    $dbis->update( 'product_images', { use_thumbnail => 1 }, { id => $id } )
+        or die $dbis->error;
+    $dbis->commit or die $dbis->error;
+    $dbis->disconnect or die $dbis->error;
+    $self->redirect_to( "admin/products/view/$product_id" );
+}
+
 1;

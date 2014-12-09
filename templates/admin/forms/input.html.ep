@@ -83,6 +83,15 @@
         </span>
       </div>
     </div>
+    <div class="control-group">
+      <label class="control-label" for="field_name">商品画像の表示</label>
+      <div class="controls">
+        <input type="checkbox" id="field_use_product_image" name="use_product_image" value="1" <% if( $params->{use_product_image} ) { %>checked="checked"<% } %> />
+        <span class="help-inline">
+          商品一覧に画像を表示するかどうかの設定です。
+        </span>
+      </div>
+    </div>
     <div class="form-actions">
       <button type="submit" class="btn btn-primary">登録</button>
       <a href="/admin/forms" class="btn">キャンセル</a>

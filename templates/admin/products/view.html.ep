@@ -47,6 +47,11 @@
         <h3><%= decode( $line->{name} ) %></h3>
         <p><%== html_br( decode( $line->{description} ) ) %></p>
         <a href="/admin/product/<%= $hash->{id} %>/images/disable/<%= $line->{id} %>" class="btn btn-danger">削除</a>
+        % if( !$line->{use_thumbnail} ) {
+        <form method="POST" name="form-img-<%= $line->{id} %>" action="/admin/product/<%= $hash->{id} %>/images/to_thumbnail/<%= $line->{id} %>">
+          <input type="submit" class="btn btn-warn" value="サムネイルに使う" />
+        </form>
+        % }
       </div>
     </li>
     % }

@@ -216,6 +216,22 @@ sub get_form_products {
         or die $dbis->error;
     my $products = { hash => {}, list => [] };
     while( my $line = $it->hash ) {
+        my $img_it = $dbis->select( 'product_images', [ '*' ], { products_id => $line->{id}, is_deleted => 0 }, { order_by => 'sortorder, id' } );
+        my $images = { has_image => 0, has_thumb => 0, has_slides => 0, slides => [] };
+        while( my $img_line = $img_it->hash ) {
+            $img_line->{name} = b( $line->{name} || '' );
+            $img_line->{description} = b( $line->{description} || '' );
+            if( $img_line->{is_thumb} ) {
+                $images->{thumb} = $img_line;
+                $images->{has_thum} = 1;
+                $images->{has_image} = 1;
+            }
+            else {
+                push( @{ $images->{slides} }, $img_line );
+                $images->{has_slides} = 1;
+                $images->{has_image} = 1;
+            }
+        }
 #        $products->{hash}->{ $line->{id} } = $line;
         $products->{hash}->{ $line->{id} } = { map { $_ => $line->{$_} } qw/id price sortorder p_sortorder name description/ };
         $products->{hash}->{ $line->{id} }->{name} = b( $line->{name} || '' );

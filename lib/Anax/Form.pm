@@ -51,7 +51,8 @@ sub input {
                   product_message => $form_setting->{product_message} || '',
                   has_products    => scalar @{$products->{list}} ? 1 : 0,
                   params          => $params,
-                  mail_from       => $self->app->config->{gmail}->{username}
+                  mail_from       => $self->app->config->{gmail}->{username},
+                  use_product_image => $form_setting->{use_product_image}
                 };
     #$self->app->log->debug( Dumper( $datas ) );
     $self->render( text => $self->render_template( $key, 'input', $datas ) );

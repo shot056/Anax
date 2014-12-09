@@ -119,7 +119,14 @@ sub startup {
                       my $opts = $v_decode->visit( $options );
                       return $self->stash( '__cgi_object' )->$method( %{ $opts } );
                   } );
-    
+    $self->helper( dbis => sub {
+                       my $self = shift;
+
+                       my $dbis = DBIx::Simple->new( @{ $self->app->config->{dsn} } )
+                           or die DBIx::Simple->error;
+                       $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
+                       return $dbis;
+                   } );
     $self->app->sessions->cookie_name('anax_session');
     # Router
     my $r = $self->routes;
@@ -199,14 +206,16 @@ sub startup {
     $r->route('/admin/products/associate/:form_id', form_id => qr/\d+/ )->via('GET')->to( controller => 'Admin::Products', action => 'associate' );
     $r->route('/admin/products/associate/:form_id', form_id => qr/\d+/ )->via('POST')->to( controller => 'Admin::Products', action => 'do_associate' );
     
-    $r->route('/admin/product/:product_id/images/add',         product_id => qr/\d+/                )
+    $r->route('/admin/product/:product_id/images/add',              product_id => qr/\d+/                )
         ->via('GET' )->to( controller => 'Admin::Product::Images', action => 'input' );
-    $r->route('/admin/product/:product_id/images/add',         product_id => qr/\d+/                )
+    $r->route('/admin/product/:product_id/images/add',              product_id => qr/\d+/                )
         ->via('POST')->to( controller => 'Admin::Product::Images', action => 'register' );
-    $r->route('/admin/product/:product_id/images/disable/:id', product_id => qr/\d+/, id => qr/\d+/ )
+    $r->route('/admin/product/:product_id/images/disable/:id',      product_id => qr/\d+/, id => qr/\d+/ )
         ->via('GET' )->to( controller => 'Admin::Product::Images', action => 'disable' );
-    $r->route('/admin/product/:product_id/images/disable/:id', product_id => qr/\d+/, id => qr/\d+/ )
+    $r->route('/admin/product/:product_id/images/disable/:id',      product_id => qr/\d+/, id => qr/\d+/ )
         ->via('POST')->to( controller => 'Admin::Product::Images', action => 'do_disable' );
+    $r->route('/admin/product/:product_id/images/to_thumbnail/:id', product_id => qr/\d+/, id => qr/\d+/ )
+        ->via('POST')->to( controller => 'Admin::Product::Images', action => 'to_thumbnail' );
     
     $r->route('/admin/mailwizard/select'   )->via('POST')->to( controller => 'Admin::MailWizard', action => 'select_target' );
     $r->route('/admin/mailwizard/template' )->via('POST')->to( controller => 'Admin::MailWizard', action => 'template_input' );

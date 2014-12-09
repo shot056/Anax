@@ -88,6 +88,7 @@ sub register {
                      message_input => $params->{message_input},
                      message_confirm => $params->{message_confirm},
                      message_complete => $params->{message_complete},
+                     use_product_image => $params->{use_product_image},
 #                     is_published => $params->{is_published}
                    };
         if( defined $id and $id =~ /^\d+$/ ) {
@@ -251,6 +252,7 @@ sub get_form_setting {
                     name => b( $form->{name} || '' ),
                     description => b( $form->{description} || '' ),
                     product_message => b( $form->{product_message} || '' ),
+                    use_product_image => $form->{use_product_image} || 0,
                     messages => { input => b( $form->{message_input} || '' ),
                                   confirm => b( $form->{message_confirm} || '' ),
                                   complete => b( $form->{message_complete} || '' ) },
