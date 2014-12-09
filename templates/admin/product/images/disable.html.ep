@@ -9,7 +9,7 @@
   </ul>
 
   <div class="actions">
-    <a href="/admin/products/view/<%= stash 'product_id' %>" class="btn">詳細へ戻る</a>
+    <a href="/admin/products/view/<%= stash 'product_id' %>" class="btn btn-default">詳細へ戻る</a>
   </div>
   
   <table class="table table-striped table-hover">
@@ -31,15 +31,15 @@
     <tr>
       <th>画像</th><td>
         <ul class="thumbnails">
-          <li class="span4">
-            <img src="/static/products/<%= $hash->{products_id} %>/images/<%= $hash->{id} %>.<%= $hash->{ext} %>" alt="">
+          <li class="col-md-4">
+            <img src="<%= $hash->{url} %>" alt="">
           </li>
       </ul></td>
     </tr>
   </table>
   <form method="POST" name="admin_forms_disable" action="/admin/product/<%= $hash->{products_id} %>/images/disable/<%= $hash->{id} %>">
     <div class="form-actions">
-      <a href="/admin/products/view/<%= $hash->{products_id} %>" class="btn">キャンセル</a>
+      <a href="/admin/products/view/<%= $hash->{products_id} %>" class="btn btn-default">キャンセル</a>
       <button type="submit" class="btn btn-danger pull-right">削除</button>
     </div>
   </form>

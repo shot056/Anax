@@ -9,7 +9,7 @@
 
     <!-- Le styles -->
     <link href="/static/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="/static/css/bootstrap-responsive.min.css" rel="stylesheet" />
+    <link href="/static/css/bootstrap-theme.min.css" rel="stylesheet" />
     <link href="/static/css/style.css" rel="stylesheet" />
     <!-- <link href="/static/css/overcast/jquery-ui-1.9.1.custom.min.css" rel="stylesheet" /> -->
     <link href="/static/css/jquery-ui-bootstrap/jquery-ui-1.10.0.custom.css" rel="stylesheet" />
@@ -35,34 +35,47 @@
 
   <body>
 
-    <div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
-          </a>
-          <a class="brand" href="/admin/">Anax</a>
-          <div class="nav-collapse collapse">
-            <ul class="nav">
-              <li<% if( stash->{controller} eq 'Admin' ) { %> class="active"<% } %>><a href="/admin/">ホーム</a></li>
-              <li<% if( stash->{controller} eq 'Admin::Applicants' ) { %> class="active"<% } %>><a href="/admin/applicants">申込</a></li>
-              <li<% if( stash->{controller} eq 'Admin::Forms' ) { %> class="active"<% } %>><a href="/admin/forms">フォーム</a></li>
-              <li<% if( stash->{controller} eq 'Admin::Fields' ) { %> class="active"<% } %>><a href="/admin/fields">項目</a></li>
-              <li<% if( stash->{controller} eq 'Admin::Products' ) { %> class="active"<% } %>><a href="/admin/products">商品</a></li>
-            </ul>
-            <p class="navbar-text pull-right">
-              <a href="/admin/logout" class="navbar-link">ログアウト</a>
-            </p>
-          </div><!--/.nav-collapse -->
+          </button>
+          <a class="navbar-brand" href="/admin/">Anax</a>
         </div>
+        
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav">
+            <li<% if( stash->{controller} eq 'Admin' ) { %> class="active"<% } %>><a href="/admin/">ホーム</a></li>
+            <li<% if( stash->{controller} eq 'Admin::Applicants' ) { %> class="active"<% } %>><a href="/admin/applicants">申込</a></li>
+            <li<% if( stash->{controller} eq 'Admin::Forms' ) { %> class="active"<% } %>><a href="/admin/forms">フォーム</a></li>
+            <li<% if( stash->{controller} eq 'Admin::Fields' ) { %> class="active"<% } %>><a href="/admin/fields">項目</a></li>
+            <li<% if( stash->{controller} eq 'Admin::Products' ) { %> class="active"<% } %>><a href="/admin/products">商品</a></li>
+          </ul>
+          <p class="nav navbar-nav navbar-right">
+            <a href="/admin/logout" class="btn btn-default navbar-btn">ログアウト</a>
+          </p>
+        </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+    </nav>
+    
+
+    <div id="wrap">
+      <div class="container">
+        <%= content %>
+      </div> <!-- /container -->
+      <div id="push"></div>
+    </div>
+    <div id="footer">
+      <div class="container">
+        <p class="text-muted credit">Anax parthenope, shot &copy; 2012 .</p>
       </div>
     </div>
-
-    <div class="container">
-      <%= content %>
-    </div> <!-- /container -->
 
     <!-- Le javascript
     ================================================== -->

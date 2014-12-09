@@ -242,12 +242,24 @@ sub get_form_setting {
     
     my $setting = { id => $form->{id},
                     key => $form->{key},
-                    name => b( $form->{name} )->decode->to_string,
-                    description => b( $form->{description} || '' )->decode->to_string,
-                    product_message => b( $form->{product_message} || '' )->decode->to_string,
-                    messages => { input => b( $form->{message_input} || '' )->decode->to_string,
-                                  confirm => b( $form->{message_confirm} || '' )->decode->to_string,
-                                  complete => b( $form->{message_complete} || '' )->decode->to_string },
+#                    name => $form->{name},
+#                    description => $form->{description} || '',
+#                    product_message => $form->{product_message} || '',
+#                    messages => { input => $form->{message_input} || '',
+#                                  confirm => $form->{message_confirm} || '',
+#                                  complete => $form->{message_complete} || '' },
+                    name => b( $form->{name} || '' ),
+                    description => b( $form->{description} || '' ),
+                    product_message => b( $form->{product_message} || '' ),
+                    messages => { input => b( $form->{message_input} || '' ),
+                                  confirm => b( $form->{message_confirm} || '' ),
+                                  complete => b( $form->{message_complete} || '' ) },
+                    # name => b( $form->{name} )->decode->to_string,
+                    # description => b( $form->{description} || '' )->decode->to_string,
+                    # product_message => b( $form->{product_message} || '' )->decode->to_string,
+                    # messages => { input => b( $form->{message_input} || '' )->decode->to_string,
+                    #               confirm => b( $form->{message_confirm} || '' )->decode->to_string,
+                    #               complete => b( $form->{message_complete} || '' )->decode->to_string },
                     fields => {
 #                               email =>  { is_required => 1,
 #                                           desc => b( 'メールアドレス' )->decode->to_string,
@@ -282,9 +294,13 @@ sub get_field_data {
 
     my $field = { id          => $line->{id},
                   name        => "field_" . $line->{id},
-                  desc        => b( $line->{name} )->decode->to_string,
+#                  desc        => $line->{name},
+#                  desc        => b( $line->{name} )->decode->to_string,
+                  desc        => b( $line->{name} || '' ),
                   type        => $line->{type},
-                  default     => b( $line->{default} )->decode->to_string || undef,
+                  default     => $line->{default} || undef,
+                  default     => b( $line->{default} || '' ),
+#                  default     => b( $line->{default} )->decode->to_string || undef,
                   is_required => $line->{is_required},
                   is_global   => $line->{is_global},
                   error_check => $line->{error_check} };
@@ -306,10 +322,14 @@ sub get_field_options {
     my $options = [];
     my $options_hash = {};
     while( my $line = $it->hash ) {
-        my $option = { name => b( $line->{name} )->decode->to_string,
+        my $option = { name => b( $line->{name} || '' ),
+#        my $option = { name => b( $line->{name} )->decode->to_string,
+#        my $option = { name => $line->{name},
                        value => $line->{id} };
         push( @{ $options }, $option );
-        $options_hash->{ $line->{id} } = b( $line->{name} )->decode->to_string;
+#        $options_hash->{ $line->{id} } = $line->{name};
+        $options_hash->{ $line->{id} } = b( $line->{name} || '' );
+#        $options_hash->{ $line->{id} } = b( $line->{name} )->decode->to_string;
     }
     return ( $options, $options_hash );
 }

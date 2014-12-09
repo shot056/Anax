@@ -53,7 +53,7 @@ sub sendmail {
             foreach my $cmd ( qw/phrase comment/ ) {
                 if( defined $addr->$cmd and length( $addr->$cmd ) ) {
                     my $str = ( $charset eq 'utf8' ? $addr->$cmd : Jcode::CP932->new( $addr->$cmd )->$charset );
-                    my $new_str = b( $str )->encode->b64_encode;
+                    my $new_str = b( $str || '' )->encode->b64_encode;
                     chomp( $new_str );
                     $addr->$cmd( sprintf( '=?%s?B?%s?=', ( $charset eq 'utf8' ? 'UTF-8' : 'ISO-2022-JP' ), $new_str ) );
                 }
@@ -72,7 +72,7 @@ sub sendmail {
     {
         my @encoded_subjects;
         foreach my $splited_str ( Jcode::CP932->new( $charset eq 'utf8' ? $parts->{subject} : Jcode::CP932->new( $parts->{subject} )->$charset )->jfold(20) ) {
-            my $str = b( $splited_str )->b64_encode;
+            my $str = b( $splited_str || '' )->b64_encode;
             $str =~ s/\r\n/\n/g;
             $str =~ s/\r/\n/g;
             chomp($str);
@@ -88,7 +88,7 @@ sub sendmail {
 
     my $bccs = delete $header{Bcc};
     
-    my $mail_body = b( $charset eq 'utf8' ? $parts->{body} : Jcode::CP932->new( $parts->{body} )->$charset )->encode->b64_encode;
+    my $mail_body = b( ( $charset eq 'utf8' ? $parts->{body} : Jcode::CP932->new( $parts->{body} )->$charset ) || '' )->encode->b64_encode;
     
     my $email = Email::Simple->create(
         header => [ %header ],
@@ -162,7 +162,7 @@ sub load {
         or die $dbis->error;
     return undef unless( $rslt->rows );
     my $hash = $rslt->hash;
-    my $tmpl = { map { $_ => b( $hash->{$_} )->decode->to_string || '' } qw/from to cc bcc subject body charset/ };
+    my $tmpl = { map { $_ => b( $hash->{$_} || '' ) || '' } qw/from to cc bcc subject body charset/ };
     $dbis->commit or die $dbis->error;
     $dbis->disconnect or die $dbis->error;
     return $tmpl;

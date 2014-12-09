@@ -9,7 +9,7 @@
 
   <h4>フォーム詳細</h4>
   <div class="actions">
-    <a href="/admin/forms" class="btn">一覧へ戻る</a> 
+    <a href="/admin/forms" class="btn btn-default">一覧へ戻る</a> 
     <a href="/admin/forms/edit/<%= $hash->{id} %>" class="btn btn-primary">編集</a>
     <a href="/admin/forms/disable/<%= $hash->{id} %>" class="btn btn-danger">削除</a>
     <a href="/form/<%= $hash->{key} %>?is_admin=1" target="_blank" class="btn btn-info pull-right">プレビュー</a>

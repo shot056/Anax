@@ -29,13 +29,14 @@ sub input {
     $params->{products} = [ $params->{products} ]
         if( exists $params->{products} and defined $params->{products} and ref( $params->{products} ) ne 'ARRAY' );
     
+    #$self->app->log->debug( "params : \n" . Dumper( $params ) );
+    
     my $form_setting = Anax::Admin::Forms->new( $self )->get_form_setting( $self->app, $key, $params->{is_admin} );
     #$self->app->log->debug( "settings : \n" . Dumper( $form_setting ) );
     $self->render_not_found unless( defined $form_setting );
     
     my $products     = Anax::Admin::Products->new( $self )->get_form_products( $self->app, $form_setting->{id} );
-    
-    #$self->app->log->debug( "params : \n" . Dumper( $params ) );
+    $self->app->log->debug( "products : \n" . Data::Dumper->new( [ $products ] )->Sortkeys( 1 )->Dump );
 
     my $forms = $self->generate_forms( $form_setting->{field_list}, $params );
     
@@ -237,14 +238,22 @@ sub generate_rule {
     my $fields = shift;
     #$self->app->log->debug( Dumper( $fields ) );
 
-    my %msgs = ( email => b( '正しいメールアドレスを入力してください。' )->decode->to_string,
-                 integer => b( '半角数字で入力してください。' )->decode->to_string,
-                 ascii => b( '半角英数字で入力してください。' )->decode->to_string );
+    my %msgs = ( email => b( '正しいメールアドレスを入力してください。' ),
+                 integer => b( '半角数字で入力してください。' ),
+                 ascii => b( '半角英数字で入力してください。' ) );
+#    my %msgs = ( email => b( '正しいメールアドレスを入力してください。' )->decode->to_string,
+#                 integer => b( '半角数字で入力してください。' )->decode->to_string,
+#                 ascii => b( '半角英数字で入力してください。' )->decode->to_string );
+#    my %msgs = ( email => '正しいメールアドレスを入力してください。',
+#                 integer => '半角数字で入力してください。',
+#                 ascii => '半角英数字で入力してください。' );
     my $rules = [];
     foreach my $f ( @{ $fields } ) {
         my $c = [];
         if( exists $f->{is_required} and defined $f->{is_required} and $f->{is_required} ) {
-            push( @{ $c }, [ 'not_blank', b( '必ず入力してください。' )->decode->to_string ] );
+            push( @{ $c }, [ 'not_blank', b( '必ず入力してください。' ) ] );
+#            push( @{ $c }, [ 'not_blank', b( '必ず入力してください。' )->decode->to_string ] );
+#            push( @{ $c }, [ 'not_blank', '必ず入力してください。' ] );
         }
         if( exists $f->{error_check} and defined $f->{error_check} and length( $f->{error_check} ) ) {
             push( @{ $c }, [ $f->{error_check}, $msgs{ $f->{error_check} } ] );
@@ -307,7 +316,8 @@ sub generate_forms {
     my %fields;
     foreach my $field ( @{ $fields } ) {
         my %mopts = ( -name => $field->{name},
-                      -default => $params->{ $field->{name} } || $field->{default} || undef );
+                      -default => $params->{ $field->{name} } || $field->{default} || undef,
+                      -class => "form-control" );
         my $label = '';
         my $method;
         next if( $is_hidden and !( exists $params->{ $field->{name} } ) );

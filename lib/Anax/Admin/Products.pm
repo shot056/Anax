@@ -204,24 +204,44 @@ sub get_form_products {
     my $class   = shift;
     my $app     = shift;
     my $form_id = shift;
-    
+
+    $app->log->debug( Dumper( $app->config->{dsn} ) );
     my $dbis = DBIx::Simple->new( @{ $app->config->{dsn} } )
         or die DBIx::Simple->error;
     $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
     $dbis->begin_work or die $dbis->error;
 
-    my $it = $dbis->query( "SELECT p.*, fp.sortorder AS p_sortorder FROM products AS p, form_products AS fp WHERE p.is_deleted = FALSE AND fp.is_deleted = FALSE AND fp.products_id = p.id AND fp.forms_id = ? ORDER BY fp.sortorder, p.sortorder, p.id",
+    my $it = $dbis->query( "SELECT p.*, fp.sortorder AS fp_sortorder FROM products AS p, form_products AS fp WHERE p.is_deleted = FALSE AND fp.is_deleted = FALSE AND fp.products_id = p.id AND fp.forms_id = ? ORDER BY fp.sortorder, p.sortorder, p.id",
                            $form_id )
         or die $dbis->error;
     my $products = { hash => {}, list => [] };
     while( my $line = $it->hash ) {
-        $products->{hash}->{ $line->{id} } = { map { $_ => $line->{$_} } qw/id price sortorder p_sortorder/ };
-        $products->{hash}->{ $line->{id} }->{name} = b( $line->{name} )->decode->to_string;
-        $products->{hash}->{ $line->{id} }->{description} = b( $line->{description} )->decode->to_string;
-        
+        my $img_it = $dbis->query( "SELECT * FROM product_images WHERE products_id = ? AND is_deleted = FALSE ORDER BY sortorder", $line->{id} );
+        my $images = { has_image => 0, has_thumb => 0, has_slides => 0, slides => [] };
+        while( my $img_line = $img_it->hash ) {
+            $img_line->{name} = b( $line->{name} || '' );
+            $img_line->{description} = b( $line->{description} || '' );
+            if( $img_line->{is_thumb} ) {
+                $images->{thumb} = $img_line;
+                $images->{has_thum} = 1;
+                $images->{has_image} = 1;
+            }
+            else {
+                push( @{ $images->{slides} }, $img_line );
+                $images->{has_slides} = 1;
+                $images->{has_image} = 1;
+            }
+        }
+#        $products->{hash}->{ $line->{id} } = $line;
+        $products->{hash}->{ $line->{id} } = { map { $_ => $line->{$_} } qw/id price sortorder p_sortorder name description/ };
+        $products->{hash}->{ $line->{id} }->{name} = b( $line->{name} || '' );
+        $products->{hash}->{ $line->{id} }->{description} = b( $line->{description} || '' );
+#       $products->{hash}->{ $line->{id} }->{name} = b( $line->{name} )->decode->to_string;
+#       $products->{hash}->{ $line->{id} }->{description} = b( $line->{description} )->decode->to_string;
+        $products->{hash}->{ $line->{id} }->{images} = $images;
         push( @{ $products->{list} }, $products->{hash}->{ $line->{id} } );
     }
-    #$app->log->debug( Dumper( $products ) );
+#    $app->log->debug( Data::Dumper->new( [ { products => $products } ] )->Sortkeys( 1 )->Dump );
     return $products;
 }
 

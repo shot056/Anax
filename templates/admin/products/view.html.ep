@@ -8,7 +8,7 @@
   </ul>
 
   <div class="actions">
-    <a href="/admin/products" class="btn">一覧へ戻る</a>
+    <a href="/admin/products" class="btn btn-default">一覧へ戻る</a>
     <a href="/admin/products/edit/<%= $hash->{id} %>" class="btn btn-primary">編集</a>
     <a href="/admin/products/disable/<%= $hash->{id} %>" class="btn btn-danger">削除</a>
   </div>
@@ -41,9 +41,9 @@
 
   <ul class="thumbnails">
     % while( my $line = $images->hash ) {
-    <li class="span4">
+    <li class="col-md-4">
       <div class="thumbnail">
-        <img src="/static/products/<%= $hash->{id} %>/images/<%= $line->{id} %>.<%= $line->{ext} %>" alt="<%= decode( $line->{name} ) %>" />
+        <img src="<%= $line->{url} %>" alt="<%= decode( $line->{name} ) %>" />
         <h3><%= decode( $line->{name} ) %></h3>
         <p><%== html_br( decode( $line->{description} ) ) %></p>
         <a href="/admin/product/<%= $hash->{id} %>/images/disable/<%= $line->{id} %>" class="btn btn-danger">削除</a>

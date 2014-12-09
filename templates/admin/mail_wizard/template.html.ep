@@ -20,7 +20,7 @@
     % }
     % }
     <div class="form-actions">
-      <button type="button" id="btn_back" name="btn_back" class="btn">戻る</button>
+      <button type="button" id="btn_back" name="btn_back" class="btn btn-default">戻る</button>
       <button type="submit" class="btn btn-primary">最終確認</button>
     </div>
   </form>

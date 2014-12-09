@@ -35,7 +35,7 @@
   
   <form method="POST" name="admin_field_disable" action="/admin/fields/disable/<%= $hash->{id} %>">
     <div class="form-actions">
-      <a href="<% if( param 'forms_id' ) { %>/admin/forms/view/<%= param 'forms_id' %><% } else { %>/admin/fields<% } %>" class="btn">キャンセル</a>
+      <a href="<% if( param 'forms_id' ) { %>/admin/forms/view/<%= param 'forms_id' %><% } else { %>/admin/fields<% } %>" class="btn btn-default">キャンセル</a>
       <button type="submit" class="btn btn-danger pull-right">削除</button>
     </div>
     % if( param 'forms_id' ) {
