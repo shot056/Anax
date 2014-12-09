@@ -39,7 +39,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="/admin/">Anax</a>
+          <a class="navbar-brand" href="/admin/">Anax</a>
           <div class="nav-collapse collapse">
             <ul class="nav">
               <li<% if( stash->{controller} eq 'Admin' ) { %> class="active"<% } %>><a href="/admin/">ホーム</a></li>

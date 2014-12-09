@@ -11,39 +11,42 @@
 
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
     <style type="text/css">
-      body {
-        padding-top: 40px;
-        padding-bottom: 40px;
-        background-color: #f5f5f5;
-      }
+     body {
+       padding-top: 40px;
+       padding-bottom: 40px;
+       background-color: #f5f5f5;
+     }
 
-      .form-input {
-        max-width: 600px;
-        padding: 19px 29px 29px;
-        margin: 0 auto 20px;
-        background-color: #fff;
-        border: 1px solid #e5e5e5;
-        -webkit-border-radius: 5px;
-           -moz-border-radius: 5px;
-                border-radius: 5px;
-        -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
-           -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
-                box-shadow: 0 1px 2px rgba(0,0,0,.05);
-      }
-      .form-input .form-signin-heading,
-      .form-input .checkbox {
-        margin-bottom: 10px;
-      }
-      .form-input input[type="text"],
-      .form-input input[type="password"] {
-        font-size: 16px;
-        height: auto;
-        margin-bottom: 15px;
-        padding: 7px 9px;
-      }
+     .form-input {
+       max-width: 600px;
+       padding: 19px 29px 29px;
+       margin: 0 auto 20px;
+       background-color: #fff;
+       border: 1px solid #e5e5e5;
+       -webkit-border-radius: 5px;
+          -moz-border-radius: 5px;
+               border-radius: 5px;
+       -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+          -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
+               box-shadow: 0 1px 2px rgba(0,0,0,.05);
+     }
+     .form-input .form-signin-heading,
+     .form-input .checkbox {
+       margin-bottom: 10px;
+     }
+     .form-input input[type="text"],
+     .form-input input[type="password"] {
+       font-size: 16px;
+       height: auto;
+       margin-bottom: 15px;
+       padding: 7px 9px;
+     }
+     .image-slides {
+       display: none;
+     }
 
     </style>
-    <link href="/static/css/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="/static/css/bootstrap-theme.min.css" rel="stylesheet">
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -63,47 +66,57 @@
 
     <div class="container">
 
-      <form class="form-input form-horizontal" method="POST" action="[= $action_base =]/confirm">
+      <form class="form-input form-horizontal" method="POST" action="[= $action_base =]/confirm" role="form">
         <h2 class="form-signin-heading">[= $name =]</h2>
+        <?pl if( length( $description ) ) { ?>
         <blockquote><p>[== $description =]</p></blockquote>
+        <?pl } ?>
+        <?pl if( length( $message ) ) { ?>
         <blockquote><p>[== $message =]</p></blockquote>
+        <?pl } ?>
         <?pl if( $has_products ) { ?>
-        <div class="control-group">
-          <label class="control-label" for="field_products">[= $product_message =]</label>
-          <div class="controls">
+        <div class="form-group">
+          <?pl if( length( $product_message ) ) { ?>
+          <label class="col-sm-10">[= $product_message =]</label>
+          <?pl }  ?>
+          <div id="products" class="col-sm-10">
           <?pl foreach my $p ( @{$product_list} ) { ?>
-            <label><input type="checkbox" value="[= $p->{id} =]" name="products"<?pl if( grep( $_ eq $p->{id}, @{ $params->{products} } ) ) { ?> checked="checked"<?pl } ?>>[= $p->{name} =]</label>
+            <div class="one-product">
+              <label><input type="checkbox" value="[= $p->{id} =]" name="products"<?pl if( grep( $_ eq $p->{id}, @{ $params->{products} } ) ) { ?> checked="checked"<?pl } ?>>[= $p->{name} =]</label>
             <?pl if( $p->{images}->{has_image} ) { ?>
               <?pl if( $p->{images}->{has_thumb} ) { ?>
-            <div class="image-thumb"><img src="[= $p->{images}->{thumb}->{url} =]" alt="[= $p->{images}->{thumb}->{name} =]" /></div>
+              <div class="image-thumb"><img src="[= $p->{images}->{thumb}->{url} =]" alt="[= $p->{images}->{thumb}->{name} =]" /></div>
               <?pl } ?>
               <?pl if( $p->{images}->{has_slides} ) { ?>
-            <div class="image-slides">
+              <div class="image-slides">
                 <?pl foreach my $i ( @{ $p->{images}->{slides} } ) { ?>
-              <div class="image-slide-part"><img src="[= $i->{url} =]" alt="[= $i->{name} =]" /></div>
+                <div class="image-slide-part"><img src="[= $i->{url} =]" alt="[= $i->{name} =]" /></div>
                 <?pl } ?>
-            </div>
+              </div>
               <?pl } ?>
             <?pl } ?>
+            </div>
           <?pl } ?>
           </div>
         </div>
         <?pl } ?>
         <?pl foreach my $f ( @{$field_list} ) { ?>
-        <div class="control-group">
-          <label class="control-label" for="[= $f->{name} =]">[= $f->{desc} =]</label>
-          <div class="controls">
+        <div class="form-group">
+          <label class="col-sm-2 control-label" for="[= $f->{name} =]">[= $f->{desc} =]</label>
+          <div class="col-sm-8">
             [== $forms->{ $f->{name} } =]
             <span class="help-inline">
               <?pl if( exists $messages->{ $f->{name} } ) { ?>
-              <p class="text-error">[= $messages->{ $f->{name} } =]</p>
+              <p class="text-danger">[= $messages->{ $f->{name} } =]</p>
               <?pl } ?>
             </span>
           </div>
         </div>
         <?pl } ?>
-        <div>
-          <button class="btn btn-block btn-primary" type="submit">確認</button>
+        <div class="form-group">
+          <div class="col-sm-offset-4 col-sm-4">
+            <button class="btn btn-block btn-primary" type="submit">確認</button>
+          </div>
         </div>
         <?pl if( $params->{is_admin} ) { ?>
         <input type="hidden" name="is_admin" value="1" />

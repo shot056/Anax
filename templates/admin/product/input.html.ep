@@ -18,7 +18,7 @@
         <input type="text" id="field_name" name="name" placeholder="" value="<%= decode( $params->{name} ) %>" />
         <span class="help-inline">
           % if( exists $messages->{name} ) {
-          <p class="text-error"><%= decode( $messages->{name} ) %></p>
+          <p class="text-danger"><%= decode( $messages->{name} ) %></p>
           % }
         </span>
       </div>
@@ -29,7 +29,7 @@
         <textarea rows="10" id="field_description" name="description"><%= decode( $params->{description} ) %></textarea>
         <span class="help-inline">
           % if( exists $messages->{description} ) {
-          <p class="text-error"><%= decode( $messages->{description} ) %></p>
+          <p class="text-danger"><%= decode( $messages->{description} ) %></p>
           % }
         </span>
       </div>
@@ -37,19 +37,19 @@
     <div class="control-group">
       <label class="control-label" for="field_price">価格</label>
       <div class="controls">
-        <div class="input-prepend">
-          <span class="add-on">￥</span>
-          <input class="span2" type="file" id="field_file" name="file" placeholder="アップロードする画像を選択してください" value="<%= decode( $params->{base} .'.'. $parmas->{ext} ) %>" />
+        <div class="input-group">
+          <span class="input-group-addon">￥</span>
+          <input class="col-md-2" type="file" id="field_file" name="file" placeholder="アップロードする画像を選択してください" value="<%= decode( $params->{base} .'.'. $parmas->{ext} ) %>" />
         </div>
         <span class="help-inline">
           % if( exists $messages->{file} ) {
-          <p class="text-error"><%= decode( $messages->{file} ) %></p>
+          <p class="text-danger"><%= decode( $messages->{file} ) %></p>
           % }
         </span>
       </div>
     </div>
     <div class="form-actions">
-      <a href="/admin/products/view/<%= param 'product_id' %>" class="btn">キャンセル</a>
+      <a href="/admin/products/view/<%= param 'product_id' %>" class="btn btn-default">キャンセル</a>
       <button type="submit" class="btn btn-primary pull-right">登録</button>
     </div>
   </form>

@@ -316,7 +316,8 @@ sub generate_forms {
     my %fields;
     foreach my $field ( @{ $fields } ) {
         my %mopts = ( -name => $field->{name},
-                      -default => $params->{ $field->{name} } || $field->{default} || undef );
+                      -default => $params->{ $field->{name} } || $field->{default} || undef,
+                      -class => "form-control" );
         my $label = '';
         my $method;
         next if( $is_hidden and !( exists $params->{ $field->{name} } ) );

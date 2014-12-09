@@ -26,7 +26,7 @@
       % }
     </table>
     <div class="form-actions">
-      <a href="/admin/forms/view/<%= stash 'form_id' %>" class="btn">キャンセル</a>
+      <a href="/admin/forms/view/<%= stash 'form_id' %>" class="btn btn-default">キャンセル</a>
       <button type="submit" class="btn btn-primary pull-right">登録</button>
     </div>
   </form>

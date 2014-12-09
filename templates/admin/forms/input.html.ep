@@ -10,31 +10,31 @@
   % } else {
   <form method="POST" name="admin_forms_add" action="/admin/forms/add" class="form-horizontal">
   % }
-    <div class="control-group">
+    <div class="form-group">
       <label class="control-label" for="field_key">フォームID</label>
       <div class="controls">
         <input type="text" id="field_key" name="key" placeholder="myform" value="<%= $params->{key} %>" />
         <span class="help-inline">
           フォームのURLとなる文字列を入力してください。
           % if( exists $messages->{key} ) {
-          <p class="text-error"><%= decode( $messages->{key} ) %></p>
+          <p class="text-danger"><%= decode( $messages->{key} ) %></p>
           % }
         </span>
       </div>
     </div>
-    <div class="control-group">
+    <div class="form-group">
       <label class="control-label" for="field_name">名称</label>
       <div class="controls">
         <input type="text" id="field_name" name="name" placeholder="私の登録フォーム" value="<%= decode( $params->{name} ) %>"  />
         <span class="help-inline">
           管理用のフォーム名です。好きな名前をつけてください。
           % if( exists $messages->{name} ) {
-          <p class="text-error"><%= decode( $messages->{name} ) %></p>
+          <p class="text-danger"><%= decode( $messages->{name} ) %></p>
           % }
         </span>
       </div>
     </div>
-    <div class="control-group">
+    <div class="form-group">
       <label class="control-label" for="field_description">フォームの説明</label>
       <div class="controls">
         <textarea name="description" rows="6"><%= decode( $params->{description} ) %></textarea>
@@ -44,7 +44,7 @@
         </span>
       </div>
     </div>
-    <div class="control-group">
+    <div class="form-group">
       <label class="control-label" for="field_message_input">メッセージ：入力画面</label>
       <div class="controls">
         <textarea name="message_input" rows="4"><%= decode( $params->{message_input} ) %></textarea>
@@ -54,7 +54,7 @@
         </span>
       </div>
     </div>
-    <div class="control-group">
+    <div class="form-group">
       <label class="control-label" for="field_message_confirm">メッセージ：確認画面</label>
       <div class="controls">
         <textarea name="message_confirm" rows="4"><%= decode( $params->{message_confirm} ) %></textarea>
@@ -64,7 +64,7 @@
         </span>
       </div>
     </div>
-    <div class="control-group">
+    <div class="form-group">
       <label class="control-label" for="field_message_complete">メッセージ：完了画面</label>
       <div class="controls">
         <textarea name="message_complete" rows="4"><%= decode( $params->{message_complete} ) %></textarea>
@@ -74,7 +74,7 @@
         </span>
       </div>
     </div>
-    <div class="control-group">
+    <div class="form-group">
       <label class="control-label" for="field_name">商品選択の文言</label>
       <div class="controls">
         <input type="text" id="field_product_message" name="product_message" placeholder="注文対象" value="<%= decode( $params->{product_message} ) %>"  />
@@ -85,6 +85,6 @@
     </div>
     <div class="form-actions">
       <button type="submit" class="btn btn-primary">登録</button>
-      <a href="/admin/forms" class="btn">キャンセル</a>
+      <a href="/admin/forms" class="btn btn-default">キャンセル</a>
     </div>
   </form>

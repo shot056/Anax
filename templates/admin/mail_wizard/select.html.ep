@@ -46,7 +46,7 @@
     <li class="active">対象選択</li>
   </ul>
   % if( $messages and $messages->{target_ids} ) {
-  <div class="alert alert-error">
+  <div class="alert alert-danger">
     <button type="button" class="close" data-dismiss="alert">&times;</button>
     必ず一人は選択してください。
   </div>
@@ -99,7 +99,7 @@
       </tbody>
     </table>
     <div class="actions">
-      <button type="button" id="btn_back" name="btn_back" class="btn">戻る</button>
+      <button type="button" id="btn_back" name="btn_back" class="btn btn-default">戻る</button>
       <button type="submit" id="btn_submit" name="btn_submit" class="btn btn-primary pull-right">次へ</button>
     </div>
     % foreach my $key ( keys( %{ $params } ) ) {
