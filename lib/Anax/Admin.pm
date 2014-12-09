@@ -8,9 +8,9 @@ use Data::Dumper;
 
 sub index {
     my $self = shift;
-    my $todo = $self->app->home->rel_file('ToDo');
+    my $todo = Mojo::Asset::File->new( path => $self->app->home->rel_file('ToDo') )->slurp;
     $self->stash( todo => $todo );
-    my $changes = $self->app->home->rel_file('Changes');
+    my $changes = Mojo::Asset::File->new( path => $self->app->home->rel_file('Changes') )->slurp;
     $self->stash( changes => $changes );
     
     $self->render;

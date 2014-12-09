@@ -1,0 +1,1 @@
+ALTER TABLE product_images ADD COLUMN use_thumbnail BOOLEAN DEFAULT false;

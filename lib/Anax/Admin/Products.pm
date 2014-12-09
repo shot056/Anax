@@ -216,7 +216,7 @@ sub get_form_products {
         or die $dbis->error;
     my $products = { hash => {}, list => [] };
     while( my $line = $it->hash ) {
-        my $img_it = $dbis->query( "SELECT * FROM product_images WHERE products_id = ? AND is_deleted = FALSE ORDER BY sortorder", $line->{id} );
+        my $img_it = $dbis->select( 'product_images', [ '*' ], { products_id => $line->{id}, is_deleted => 0 }, { order_by => 'sortorder, id' } );
         my $images = { has_image => 0, has_thumb => 0, has_slides => 0, slides => [] };
         while( my $img_line = $img_it->hash ) {
             $img_line->{name} = b( $line->{name} || '' );

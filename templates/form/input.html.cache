@@ -82,19 +82,21 @@ my $_buf = ""; my $_V;  $_buf .= q`<!DOCTYPE html>
  $_buf .= q`          <div id="products" class="col-sm-10">
 `;           foreach my $p ( @{$product_list} ) {
  $_buf .= q`            <div class="one-product">
-              <label><input type="checkbox" value="` . escape_xml( $p->{id} ) . q`" name="products"`; if( grep( $_ eq $p->{id}, @{ $params->{products} } ) ) { $_buf .= q` checked="checked"`; } $_buf .= q`>` . escape_xml( $p->{name} ) . q`</label>
-`;             if( $p->{images}->{has_image} ) {
-              if( $p->{images}->{has_thumb} ) {
+`;             if( $use_product_image ) {
+              if( $p->{images}->{has_image} ) {
+                if( $p->{images}->{has_thumb} ) {
  $_buf .= q`              <div class="image-thumb"><img src="` . escape_xml( $p->{images}->{thumb}->{url} ) . q`" alt="` . escape_xml( $p->{images}->{thumb}->{name} ) . q`" /></div>
-`;               }
-              if( $p->{images}->{has_slides} ) {
- $_buf .= q`              <div class="image-slides">
-`;                 foreach my $i ( @{ $p->{images}->{slides} } ) {
- $_buf .= q`                <div class="image-slide-part"><img src="` . escape_xml( $i->{url} ) . q`" alt="` . escape_xml( $i->{name} ) . q`" /></div>
 `;                 }
+                if( $p->{images}->{has_slides} ) {
+ $_buf .= q`              <div class="image-slides">
+`;                   foreach my $i ( @{ $p->{images}->{slides} } ) {
+ $_buf .= q`                <div class="image-slide-part"><img src="` . escape_xml( $i->{url} ) . q`" alt="` . escape_xml( $i->{name} ) . q`" /></div>
+`;                   }
  $_buf .= q`              </div>
-`;               }
-            }
+`;                 }
+              }
+ $_buf .= q`              <label><input type="checkbox" value="` . escape_xml( $p->{id} ) . q`" name="products"`; if( grep( $_ eq $p->{id}, @{ $params->{products} } ) ) { $_buf .= q` checked="checked"`; } $_buf .= q`>` . escape_xml( $p->{name} ) . q`</label>
+`;             }
  $_buf .= q`            </div>
 `;           }
  $_buf .= q`          </div>
@@ -103,7 +105,7 @@ my $_buf = ""; my $_V;  $_buf .= q`<!DOCTYPE html>
         foreach my $f ( @{$field_list} ) {
  $_buf .= q`        <div class="form-group">
           <label class="col-sm-2 control-label" for="` . escape_xml( $f->{name} ) . q`">` . escape_xml( $f->{desc} ) . q`</label>
-          <div class="col-sm-10">
+          <div class="col-sm-8">
             ` . ( $forms->{ $f->{name} } ) . q`
             <span class="help-inline">
 `;               if( exists $messages->{ $f->{name} } ) {
