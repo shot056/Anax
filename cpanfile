@@ -8,7 +8,7 @@ requires 'FCGI', '== 0.77';
 requires 'CGI', '== 3.65';
 
 # Mojolicious
-requires 'Mojolicious', '== 4.58';
+requires 'Mojolicious', '== 5.68';
 
 # DBIx::Simple
 requires 'DBI', '== 1.632';

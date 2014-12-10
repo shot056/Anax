@@ -1938,8 +1938,8 @@ DISTRIBUTIONS
       perl 5.006
       strict 0
       warnings 0
-  Mojolicious-4.58
-    pathname: S/SR/SRI/Mojolicious-4.58.tar.gz
+  Mojolicious-5.68
+    pathname: S/SR/SRI/Mojolicious-5.68.tar.gz
     provides:
       Mojo undef
       Mojo::Asset undef
@@ -2002,7 +2002,7 @@ DISTRIBUTIONS
       Mojo::UserAgent::Server undef
       Mojo::UserAgent::Transactor undef
       Mojo::Util undef
-      Mojolicious 4.58
+      Mojolicious 5.68
       Mojolicious::Command undef
       Mojolicious::Command::cgi undef
       Mojolicious::Command::cpanify undef
@@ -2050,7 +2050,9 @@ DISTRIBUTIONS
       ojo undef
     requirements:
       ExtUtils::MakeMaker 0
-      perl 5.010001
+      IO::Socket::IP 0.26
+      Pod::Simple 3.09
+      Time::Local 1.2
   Mojolicious-Plugin-CSRFDefender-0.0.8
     pathname: S/SH/SHIBAZAKI/Mojolicious-Plugin-CSRFDefender-0.0.8.tar.gz
     provides:
