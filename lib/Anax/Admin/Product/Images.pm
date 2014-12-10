@@ -101,7 +101,7 @@ sub register {
         }
         $self->app->log->debug( "++++++++++++++++++++ 5" );
 
-#        $self->render_later;
+        $self->render_later;
 #        Mojo::IOLoop->delay(
 #            sub {
                 $self->app->log->debug( "++++++++++++++++++++ 6" );
