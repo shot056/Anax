@@ -101,14 +101,14 @@ sub register {
         }
         $self->app->log->debug( "++++++++++++++++++++ 5" );
 
-        $self->render_later;
-        Mojo::IOLoop->delay(
-            sub {
+#        $self->render_later;
+#        Mojo::IOLoop->delay(
+#            sub {
                 $self->app->log->debug( "++++++++++++++++++++ 6" );
                 my $delay = shift;
                 $self->cloudinary_upload( {
                     file => $self->param('file'),
-                }, $delay->begin );
+#                }, $delay->begin );
             },
             sub {
                 $self->app->log->debug( "++++++++++++++++++++ 7" );
