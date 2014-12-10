@@ -37,7 +37,7 @@
     <div class="form-group">
       <label class="control-label" for="field_price">価格</label>
       <div class="controls">
-        <input class="col-md-2" type="file" id="field_file" name="file" placeholder="アップロードする画像を選択してください" value="<%= decode( join(".", $params->{base}, $params->{ext} ) ) %>" />
+        <input class="col-md-2" type="file" id="field_file" name="file" placeholder="アップロードする画像を選択してください" value="" />
         <span class="help-inline">
           % if( exists $messages->{file} ) {
           <p class="text-danger"><%= decode( $messages->{file} ) %></p>

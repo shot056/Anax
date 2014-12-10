@@ -74,21 +74,17 @@ sub register {
         $self->render( 'admin/product/images/input' );
     }
     else {
-        $self->app->log->debug( "++++++++++++++++++++ 1" );
         my $dbis = $self->dbis;
         $dbis->begin_work or die $dbis->error;
-        $self->app->log->debug( "++++++++++++++++++++ 2" );
         if( $content_type eq 'image/jpeg' ) {
             $ext = 'jpg';
         }
-        $self->app->log->debug( "++++++++++++++++++++ 3" );
         my $hash = { name        => $params->{name},
                      basename    => $basename,
                      ext         => $ext,
                      description => $params->{description},
                      products_id => $product_id
                    };
-        $self->app->log->debug( "++++++++++++++++++++ 4" );
         if( defined $id and $id =~ /^\d+$/ ) {
             $hash->{date_updated} = 'now';
             $dbis->update( 'product_images', $hash, { id => $id } )
@@ -99,48 +95,102 @@ sub register {
                 or die $dbis->error;
             $id = $dbis->last_insert_id( undef, 'public', 'product_images', 'id' ) or die $dbis->error;
         }
-        $self->app->log->debug( "++++++++++++++++++++ 5" );
 
-        $self->render_later;
-        Mojo::IOLoop->delay(
-            sub {
-                $self->app->log->debug( "++++++++++++++++++++ 6" );
-                my $delay = shift;
-                $self->cloudinary_upload( {
-                    file => $self->param('file'),
-                }, $delay->begin );
-            },
-            sub {
-                $self->app->log->debug( "++++++++++++++++++++ 7" );
-                my $delay = shift;
-                my $res   = shift;
-                my $tx    = shift;
-                $self->app->log->debug( Dumper( { res => $res } ) );
-                my $thumb_url = sprintf("https://res.cloudinary.com/%s/%s/%s/c_limit,h_250,w_250/v%s/%s.%s",
-                                        $self->app->config->{Cloudinary}->{cloud_name},
-                                        $res->{resource_type},
-                                        $res->{type},
-                                        $res->{version},
-                                        $res->{public_id},
-                                        $res->{format} );
+        my $res = $self->save_to_cloudinary( $self->param('file') );
+        $self->app->log->debug( Dumper( { res => $res } ) );
+        my $thumb_url = sprintf("https://res.cloudinary.com/%s/%s/%s/c_limit,h_250,w_250/v%s/%s.%s",
+                                $self->app->config->{Cloudinary}->{cloud_name},
+                                $res->{resource_type},
+                                $res->{type},
+                                $res->{version},
+                                $res->{public_id},
+                                $res->{format} );
+        
+        $dbis->update( 'product_images',
+                       { url => $res->{secure_url},
+                         thumb_url => $thumb_url,
+                         width => $res->{width},
+                         height => $res->{height},
+                         public_id => $res->{public_id} },
+                       { id => $id } )
+            or die $dbis->error;
+        
+        $dbis->commit or die $dbis->error;
+        $dbis->disconnect or die $dbis->error;
+        $self->redirect_to( '/admin/products/view/' . $product_id );
+        
+        # my $flag = 0;
+        # $self->render_later;
+        # Mojo::IOLoop->delay(
+        #     sub {
+        #         my $delay = shift;
+        #         $self->cloudinary_upload( {
+        #             file => $self->param('file'),
+        #         }, $delay->begin );
+        #     },
+        #     sub {
+        #         my $delay = shift;
+        #         my $res   = shift;
+        #         my $tx    = shift;
+        #         $self->app->log->debug( Dumper( { res => $res } ) );
+        #         my $thumb_url = sprintf("https://res.cloudinary.com/%s/%s/%s/c_limit,h_250,w_250/v%s/%s.%s",
+        #                                 $self->app->config->{Cloudinary}->{cloud_name},
+        #                                 $res->{resource_type},
+        #                                 $res->{type},
+        #                                 $res->{version},
+        #                                 $res->{public_id},
+        #                                 $res->{format} );
 
-                $dbis->update( 'product_images',
-                               { url => $res->{secure_url},
-                                 thumb_url => $thumb_url,
-                                 width => $res->{width},
-                                 height => $res->{height},
-                                 public_id => $res->{public_id} },
-                               { id => $id } )
-                    or die $dbis->error;
+        #         $dbis->update( 'product_images',
+        #                        { url => $res->{secure_url},
+        #                          thumb_url => $thumb_url,
+        #                          width => $res->{width},
+        #                          height => $res->{height},
+        #                          public_id => $res->{public_id} },
+        #                        { id => $id } )
+        #             or die $dbis->error;
                 
-                $dbis->commit or die $dbis->error;
-                $dbis->disconnect or die $dbis->error;
-                $self->redirect_to( '/admin/products/view/' . $product_id );
-            }
-        );
-        $self->app->log->debug( "++++++++++++++++++++ -2" );
+        #         $dbis->commit or die $dbis->error;
+        #         $dbis->disconnect or die $dbis->error;
+        #         $self->redirect_to( '/admin/products/view/' . $product_id );
+        #         $flag = 1;
+        #     }
+        # );
     }
-    $self->app->log->debug( "++++++++++++++++++++ -1" );
+}
+
+use Cloudinary;
+
+sub save_to_cloudinary {
+    my $self = shift;
+    my $file = shift;
+
+    my $cdn = Cloudinary->new( cloud_name => $self->app->config->{Cloudinary}->{cloud_name},
+                               api_key => $self->config->{Cloudinary}->{api_key},
+                               api_secret => $self->config->{Cloudinary}->{api_secret} );
+    my $data = { api_key => $self->config->{Cloudinary}->{api_key},
+                 timestamp => time };
+    if( UNIVERSAL::isa( $file, 'Mojo::Asset' ) ) {
+        $data->{file} = { file => $file, filename => basename( $file->path ) };
+    }
+    elsif( UNIVERSAL::isa( $file, 'Mojo::Upload' ) ) {
+        $data->{file} = { file => $file->asset, filename => $file->filename };
+    }
+
+    $data->{signature} = $cdn->_api_sign_request( $data );
+    
+    my $url = join( '/', ( 'http://api.cloudinary.com/v1_1',
+                           $self->app->config->{Cloudinary}->{cloud_name},
+                           'image',
+                           'upload' ) );
+    my $headers = { 'Content-Type' => 'multipart/form-data' };
+
+#    $self->app->log->debug( "@@@ Call Cloudinary : $url" );
+#    $self->app->log->debug( "@@@ Headers : " . Data::Dumper->new( [ $headers ] )->Sortkeys( 1 )->Dump );
+#    $self->app->log->debug( "@@@ Body : " . Data::Dumper->new( [ $data ] )->Sortkeys( 1 )->Dump );
+    my $ua = Mojo::UserAgent->new;
+    my $tx = $ua->post( $url, $headers, form => $data );
+    return $tx->res->json || { error => $tx->error || 'Unknown error' };
 }
 
 sub disable {

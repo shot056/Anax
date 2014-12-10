@@ -11,6 +11,14 @@ use Data::Visitor::Callback;
 
 use Data::Dumper;
 
+sub mkrandstr {
+    my @s = ( "a" .. "z", "A" .. "Z", 0 .. 9, "!", "|" );
+    my $r = "";
+    while( length( $r ) < 20 ) {
+        $r .= $s[ sprintf( "%d", rand($#s) ) ]
+    }
+    return $r;
+}
 
 # This method will run once at server start
 sub startup {
@@ -40,7 +48,7 @@ sub startup {
         $error_checks->{hash}->{ $e->{value} } = $e->{label};
     }
     
-    $self->secrets( [ 'oJQFCAli%gfbORcj' ] );
+    $self->app->secrets( [ mkrandstr(), mkrandstr(), mkrandstr() ] );
     
     # Documentation browser under "/perldoc"
     # $self->plugin('PODRenderer');
