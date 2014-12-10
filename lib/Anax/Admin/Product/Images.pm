@@ -74,17 +74,21 @@ sub register {
         $self->render( 'admin/product/images/input' );
     }
     else {
+        $self->app->log->debug( "++++++++++++++++++++ 1" );
         my $dbis = $self->dbis;
         $dbis->begin_work or die $dbis->error;
+        $self->app->log->debug( "++++++++++++++++++++ 2" );
         if( $content_type eq 'image/jpeg' ) {
             $ext = 'jpg';
         }
+        $self->app->log->debug( "++++++++++++++++++++ 3" );
         my $hash = { name        => $params->{name},
                      basename    => $basename,
                      ext         => $ext,
                      description => $params->{description},
                      products_id => $product_id
                    };
+        $self->app->log->debug( "++++++++++++++++++++ 4" );
         if( defined $id and $id =~ /^\d+$/ ) {
             $hash->{date_updated} = 'now';
             $dbis->update( 'product_images', $hash, { id => $id } )
@@ -95,16 +99,19 @@ sub register {
                 or die $dbis->error;
             $id = $dbis->last_insert_id( undef, 'public', 'product_images', 'id' ) or die $dbis->error;
         }
+        $self->app->log->debug( "++++++++++++++++++++ 5" );
 
         $self->render_later;
         Mojo::IOLoop->delay(
             sub {
+                $self->app->log->debug( "++++++++++++++++++++ 6" );
                 my $delay = shift;
                 $self->cloudinary_upload( {
                     file => $self->param('file'),
                 }, $delay->begin );
             },
             sub {
+                $self->app->log->debug( "++++++++++++++++++++ 7" );
                 my $delay = shift;
                 my $res   = shift;
                 my $tx    = shift;
@@ -131,7 +138,9 @@ sub register {
                 $self->redirect_to( '/admin/products/view/' . $product_id );
             }
         );
+        $self->app->log->debug( "++++++++++++++++++++ -2" );
     }
+    $self->app->log->debug( "++++++++++++++++++++ -1" );
 }
 
 sub disable {
