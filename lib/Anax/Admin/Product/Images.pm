@@ -102,13 +102,13 @@ sub register {
         $self->app->log->debug( "++++++++++++++++++++ 5" );
 
         $self->render_later;
-#        Mojo::IOLoop->delay(
-#            sub {
+        Mojo::IOLoop->delay(
+            sub {
                 $self->app->log->debug( "++++++++++++++++++++ 6" );
                 my $delay = shift;
                 $self->cloudinary_upload( {
                     file => $self->param('file'),
-#                }, $delay->begin );
+                }, $delay->begin );
             },
             sub {
                 $self->app->log->debug( "++++++++++++++++++++ 7" );
@@ -203,13 +203,13 @@ sub do_disable {
                 
                 $dbis->commit or die $dbis->error;
                 $dbis->disconnect or die $dbis->error;
-                $self->redirect_to( "admin/products/view/$product_id" );
+                $self->redirect_to( "/admin/products/view/$product_id" );
             } );
     }
     else {
         $dbis->commit or die $dbis->error;
         $dbis->disconnect or die $dbis->error;
-        $self->redirect_to( "admin/products/view/$product_id" );
+        $self->redirect_to( "/admin/products/view/$product_id" );
     }
 }
 
@@ -226,7 +226,7 @@ sub to_thumbnail {
         or die $dbis->error;
     $dbis->commit or die $dbis->error;
     $dbis->disconnect or die $dbis->error;
-    $self->redirect_to( "admin/products/view/$product_id" );
+    $self->redirect_to( "/admin/products/view/$product_id" );
 }
 
 
@@ -241,7 +241,7 @@ sub not_thumbnail {
         or die $dbis->error;
     $dbis->commit or die $dbis->error;
     $dbis->disconnect or die $dbis->error;
-    $self->redirect_to( "admin/products/view/$product_id" );
+    $self->redirect_to( "/admin/products/view/$product_id" );
 }
 
 
