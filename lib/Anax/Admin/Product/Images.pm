@@ -281,7 +281,7 @@ sub save_to_cloudinary {
         $data->{file} = { file => $file->asset, filename => $file->filename };
     }
 
-    return call_cloudinary( 'upload', $data );
+    return $self->call_cloudinary( 'upload', $data );
 }
 
 sub remove_from_cloudinary {
