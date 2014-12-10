@@ -24,7 +24,6 @@ sub mkrandstr {
 sub startup {
     my $self = shift;
 
-    $self->app->log->level('debug');
     my $fields = { hash => {},
                    array => [
                              { value => 'textfield', label => 'テキストフィールド' },
