@@ -45,7 +45,7 @@ sub input {
         $dbis->begin_work or die $dbis->error;
         my $rslt = $dbis->select('forms', ['*'], { id => $id, is_deleted => 0 } )
             or die $dbis->error;
-        $self->render_not_found unless( $rslt->rows );
+        return $self->render_not_found unless( $rslt->rows );
         $params = $rslt->hash;
         $dbis->commit or die $dbis->error;
         $dbis->disconnect or die $dbis->error;
@@ -117,7 +117,7 @@ sub view {
 
     my $it = $dbis->select( 'forms', ['*'], { is_deleted => 0, id => $id } )
         or die $dbis->error;
-    $self->render_not_found unless( $it->rows );
+    return $self->render_not_found unless( $it->rows );
     my $data = $it->hash;
 #    my $fields_it = $dbis->select( 'form_fields', ['*'],
 #                                   { is_deleted => 0, forms_id => $data->{id} },
@@ -153,7 +153,7 @@ sub disable {
     $dbis->begin_work or die $dbis->error;
     my $it = $dbis->select( 'forms', ['*'], { is_deleted => 0, id => $id } )
         or die $dbis->error;
-    $self->render_not_found unless( $it->rows );
+    return $self->render_not_found unless( $it->rows );
     my $data = $it->hash;
 
     my $fields_it = $dbis->query( "SELECT f.*, ff.sortorder AS p_sortorder FROM fields AS f, form_fields AS ff WHERE ff.is_deleted = FALSE AND f.is_deleted = FALSE AND ff.fields_id = f.id AND ff.forms_id = ? ORDER BY ff.sortorder,f.sortorder;",

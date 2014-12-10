@@ -30,7 +30,7 @@ sub input {
         
         my $rslt = $dbis->select('product_images', ['*'], { id => $id, is_deleted => 0 } )
             or die $dbis->error;
-        $self->render_not_found unless( $rslt->rows );
+        return $self->render_not_found unless( $rslt->rows );
         $params = $rslt->hash;
         
         $dbis->commit or die $dbis->error;
@@ -54,22 +54,22 @@ sub register {
         $params->{file} = $upload->filename;
         ( $basename, $ext ) = split/\./, $upload->filename;
         $content_type = $upload->headers->content_type;
-        $self->app->log->debug( Dumper( $upload->headers ) );
+#        $self->app->log->debug( Dumper( $upload->headers ) );
     }
-    $self->app->log->info( "params : " . Dumper( $params ) );
+#    $self->app->log->info( "params : " . Dumper( $params ) );
     my $rule = [
                 name => [ [ 'not_blank', '必ず入力してください' ] ],
                 file => [ [ 'not_blank', '必ず入力してください' ] ],
                 content_type  => [ [ 'image', 'アップロードできる画像はjpgかjpegかpngです' ] ]
                ];
     my $vrslt = $vc->validate( { %{ $params }, content_type => $content_type || '' }, $rule );
-    $self->app->log->debug( Dumper( { vrslt => $vrslt, is_ok => $vrslt->is_ok } ) );
+#    $self->app->log->debug( Dumper( { vrslt => $vrslt, is_ok => $vrslt->is_ok } ) );
     unless( $vrslt->is_ok ) {
         $self->stash( missing => 1 ) if( $vrslt->has_missing );
         $self->stash( messages => $vrslt->messages_to_hash )
             if( $vrslt->has_invalid );
         $self->stash( params => $params );
-        $self->app->log->debug( Dumper( $self->stash ) );
+#        $self->app->log->debug( Dumper( $self->stash ) );
         
         $self->render( 'admin/product/images/input' );
     }
@@ -108,9 +108,18 @@ sub register {
                 my $delay = shift;
                 my $res   = shift;
                 my $tx    = shift;
-                $self->app->log->debug( Dumper( { res => $res } ) );
+#                $self->app->log->debug( Dumper( { res => $res } ) );
+                my $thumb_url = sprintf("https://res.cloudinary.com/%s/%s/%s/c_limit,h_250,w_250/v%s/%s.%s",
+                                        $self->app->config->{Cloudinary}->{cloud_name},
+                                        $res->{resource_type},
+                                        $res->{type},
+                                        $res->{version},
+                                        $res->{public_id},
+                                        $res->{format} );
+
                 $dbis->update( 'product_images',
                                { url => $res->{secure_url},
+                                 thumb_url => $thumb_url,
                                  width => $res->{width},
                                  height => $res->{height},
                                  public_id => $res->{public_id} },
@@ -157,7 +166,7 @@ sub disable {
     
     my $rslt = $dbis->select('product_images', ['*'], { id => $id, is_deleted => 0 } )
         or die $dbis->error;
-    $self->render_not_found unless( $rslt->rows );
+    return $self->render_not_found unless( $rslt->rows );
     my $data = $rslt->hash;
     $self->stash( hash => $data );
     $dbis->commit or die $dbis->error;
@@ -177,7 +186,7 @@ sub do_disable {
     $dbis->begin_work or die $dbis->error;
     my $it = $dbis->select('product_images', ['*'], { id => $id } )
         or die $dbis->error;
-    $self->render_not_found unless( $it->rows );
+    return $self->render_not_found unless( $it->rows );
     
     my $data = $it->hash;
     $dbis->delete( 'product_images', { id => $id } )
@@ -222,13 +231,29 @@ sub to_thumbnail {
 
     my $dbis = $self->dbis;
     $dbis->begin_work or die $dbis->error;
-    $dbis->update( 'product_images', { use_thumbnail => 0 }, { products_id => $product_id } )
+    $dbis->update( 'product_images', { is_thumbnail => 0 }, { products_id => $product_id } )
         or die $dbis->error;
-    $dbis->update( 'product_images', { use_thumbnail => 1 }, { id => $id } )
+    $dbis->update( 'product_images', { is_thumbnail => 1 }, { id => $id } )
         or die $dbis->error;
     $dbis->commit or die $dbis->error;
     $dbis->disconnect or die $dbis->error;
     $self->redirect_to( "admin/products/view/$product_id" );
 }
+
+
+sub not_thumbnail {
+    my $self = shift;
+    my $product_id = $self->stash('product_id');
+    my $id         = $self->stash('id');
+
+    my $dbis = $self->dbis;
+    $dbis->begin_work or die $dbis->error;
+    $dbis->update( 'product_images', { is_thumbnail => 0 }, { products_id => $product_id, id => $id } )
+        or die $dbis->error;
+    $dbis->commit or die $dbis->error;
+    $dbis->disconnect or die $dbis->error;
+    $self->redirect_to( "admin/products/view/$product_id" );
+}
+
 
 1;

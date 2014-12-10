@@ -42,7 +42,7 @@ sub input {
         $dbis->begin_work or die $dbis->error;
         my $rslt = $dbis->select('fields', ['*'], { id => $id, is_deleted => 0 } )
             or die $dbis->error;
-        $self->render_not_found unless( $rslt->rows );
+        return $self->render_not_found unless( $rslt->rows );
         $params = $rslt->hash;
         $dbis->commit or die $dbis->error;
         $dbis->disconnect or die $dbis->error;
@@ -56,7 +56,7 @@ sub register {
     my $id   = $self->stash('id');
     
     my $params = $self->req->params->to_hash;
-    $self->app->log->info( "params : " . Dumper( $params ) );
+#    $self->app->log->info( "params : " . Dumper( $params ) );
     my $rule = [
                 name => [ [ 'not_blank', '必ず入力してください' ],
                         ],
@@ -68,12 +68,12 @@ sub register {
         push( @{ $rule }, ( forms_id => [ [ 'int', 'what is up ?' ] ] ) );
     }
     my $vrslt = $vc->validate( $params, $rule );
-    $self->app->log->debug( Dumper( { vrslt => $vrslt, is_ok => $vrslt->is_ok } ) );
+#    $self->app->log->debug( Dumper( { vrslt => $vrslt, is_ok => $vrslt->is_ok } ) );
     unless( $vrslt->is_ok ) {
         $self->stash( missing => 1 ) if( $vrslt->has_missing );
         $self->stash( messages => $vrslt->messages_to_hash )
             if( $vrslt->has_invalid );
-        $self->app->log->debug( Dumper( $self->stash ) );
+#        $self->app->log->debug( Dumper( $self->stash ) );
         $self->render( template => 'admin/fields/input', params => $params );
     }
     else {
@@ -117,7 +117,7 @@ sub view {
     $dbis->begin_work or die $dbis->error;
     my $it = $dbis->select( 'fields', ['*'], { is_deleted => 0, id => $id } )
         or die $dbis->error;
-    $self->render_not_found unless( $it->rows );
+    return $self->render_not_found unless( $it->rows );
     my $data = $it->hash;
 
     if( grep( $_ eq $data->{type}, qw/checkbox radio popup select/ ) ) {
@@ -143,7 +143,7 @@ sub disable {
     $dbis->begin_work or die $dbis->error;
     my $it = $dbis->select( 'fields', ['*'], { is_deleted => 0, id => $id } )
         or die $dbis->error;
-    $self->render_not_found unless( $it->rows );
+    return $self->render_not_found unless( $it->rows );
     my $data = $it->hash;
 
     if( grep( $_ eq $data->{type}, qw/checkbox radio popup select/ ) ) {
@@ -210,7 +210,7 @@ sub do_associate {
 
     my $form_id = $self->stash('form_id');
     my $params = $self->req->params->to_hash;
-    $self->app->log->info( "params : " . Dumper( $params ) );
+#    $self->app->log->info( "params : " . Dumper( $params ) );
 
     my $dbis = DBIx::Simple->new( @{ $self->app->config->{dsn} } )
         or die DBIx::Simple->error;

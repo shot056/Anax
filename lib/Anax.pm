@@ -221,6 +221,8 @@ sub startup {
         ->via('POST')->to( controller => 'Admin::Product::Images', action => 'do_disable' );
     $r->route('/admin/product/:product_id/images/to_thumbnail/:id', product_id => qr/\d+/, id => qr/\d+/ )
         ->via('POST')->to( controller => 'Admin::Product::Images', action => 'to_thumbnail' );
+    $r->route('/admin/product/:product_id/images/not_thumbnail/:id', product_id => qr/\d+/, id => qr/\d+/ )
+        ->via('POST')->to( controller => 'Admin::Product::Images', action => 'not_thumbnail' );
     
     $r->route('/admin/mailwizard/select'   )->via('POST')->to( controller => 'Admin::MailWizard', action => 'select_target' );
     $r->route('/admin/mailwizard/template' )->via('POST')->to( controller => 'Admin::MailWizard', action => 'template_input' );

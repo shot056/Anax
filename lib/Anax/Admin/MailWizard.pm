@@ -62,7 +62,7 @@ sub template_input {
     my $rule = [ target_ids => [ [ 'not_blank', '必ず選択してください' ] ] ];
     my $vrslt = $vc->validate( $params, $rule );
     
-    $self->app->log->debug( Dumper( { vrslt => $vrslt, is_ok => $vrslt->is_ok } ) );
+#    $self->app->log->debug( Dumper( { vrslt => $vrslt, is_ok => $vrslt->is_ok } ) );
     unless( $vrslt->is_ok ) {
         $self->stash( missing => 1 ) if( $vrslt->has_missing );
         $self->stash( messages => $vrslt->messages_to_hash )
@@ -111,7 +111,7 @@ sub confirm {
                 body     => [ [ 'not_blank', '必ず入力してください' ] ],
                ];
     my $vrslt = $vc->validate( $params, $rule );
-    $self->app->log->debug( Dumper( { vrslt => $vrslt, is_ok => $vrslt->is_ok } ) );
+#    $self->app->log->debug( Dumper( { vrslt => $vrslt, is_ok => $vrslt->is_ok } ) );
     unless( $vrslt->is_ok ) {
         $self->stash( missing => 1 ) if( $vrslt->has_missing );
         $self->stash( messages => $vrslt->messages_to_hash )

@@ -31,7 +31,7 @@ sub register {
 
     my $params = $self->req->params->to_hash;
     
-    $self->app->log->debug( Dumper( $params ) );
+#    $self->app->log->debug( Dumper( $params ) );
 
     $params->{options} =~ s/\r\n/\n/g;
     my @options = split/\n/, $params->{options};

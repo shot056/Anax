@@ -66,3 +66,8 @@ body {
     min-height: 40px;
     text-align: center;
 }
+#footer {
+    bottom: 0px;
+    position: inherit;
+    left: 10px;
+}

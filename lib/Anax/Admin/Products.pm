@@ -20,7 +20,7 @@ my $vc = Validator::Custom::Anax->new;
 
 sub index {
     my $self = shift;
-    $self->app->log->debug( Dumper( $self->app->config ) );
+#    $self->app->log->debug( Dumper( $self->app->config ) );
     my $dbis = DBIx::Simple->new( @{ $self->app->config->{dsn} } )
         or die DBIx::Simple->error;
     $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
@@ -49,7 +49,7 @@ sub input {
         
         my $rslt = $dbis->select('products', ['*'], { id => $id, is_deleted => 0 } )
             or die $dbis->error;
-        $self->render_not_found unless( $rslt->rows );
+        return $self->render_not_found unless( $rslt->rows );
         $params = $rslt->hash;
         
         $dbis->commit or die $dbis->error;
@@ -65,20 +65,20 @@ sub register {
     my $id   = $self->stash('id');
     
     my $params = $self->req->params->to_hash;
-    $self->app->log->info( "params : " . Dumper( $params ) );
+#    $self->app->log->info( "params : " . Dumper( $params ) );
     my $rule = [
                 name  => [ [ 'not_blank', '必ず入力してください' ] ],
                 price => [ [ 'not_blank', '必ず入力してください' ],
                            [ 'int',       '半角英数字で入力してください' ] ]
                ];
     my $vrslt = $vc->validate( $params, $rule );
-    $self->app->log->debug( Dumper( { vrslt => $vrslt, is_ok => $vrslt->is_ok } ) );
+#    $self->app->log->debug( Dumper( { vrslt => $vrslt, is_ok => $vrslt->is_ok } ) );
     unless( $vrslt->is_ok ) {
         $self->stash( missing => 1 ) if( $vrslt->has_missing );
         $self->stash( messages => $vrslt->messages_to_hash )
             if( $vrslt->has_invalid );
         $self->stash( params => $params );
-        $self->app->log->debug( Dumper( $self->stash ) );
+#        $self->app->log->debug( Dumper( $self->stash ) );
         $self->render( 'admin/products/input' );
     }
     else {
@@ -122,7 +122,7 @@ sub view {
     
     my $it = $dbis->select( 'products', ['*'], { is_deleted => 0, id => $id } )
         or die $dbis->error;
-    $self->render_not_found unless( $it->rows );
+    return $self->render_not_found unless( $it->rows );
     my $data = $it->hash;
 
     my $images_it = $dbis->select( 'product_images', ['*'], { is_deleted => 0, products_id => $id }, { order_by => 'sortorder, id' } )
@@ -162,7 +162,7 @@ sub do_associate {
 
     my $form_id = $self->stash('form_id');
     my $params = $self->req->params->to_hash;
-    $self->app->log->info( "params : " . Dumper( $params ) );
+#    $self->app->log->info( "params : " . Dumper( $params ) );
 
 
     my $dbis = DBIx::Simple->new( @{ $self->app->config->{dsn} } )
@@ -205,7 +205,7 @@ sub get_form_products {
     my $app     = shift;
     my $form_id = shift;
 
-    $app->log->debug( Dumper( $app->config->{dsn} ) );
+#    $app->log->debug( Dumper( $app->config->{dsn} ) );
     my $dbis = DBIx::Simple->new( @{ $app->config->{dsn} } )
         or die DBIx::Simple->error;
     $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
@@ -219,11 +219,12 @@ sub get_form_products {
         my $img_it = $dbis->select( 'product_images', [ '*' ], { products_id => $line->{id}, is_deleted => 0 }, { order_by => 'sortorder, id' } );
         my $images = { has_image => 0, has_thumb => 0, has_slides => 0, slides => [] };
         while( my $img_line = $img_it->hash ) {
-            $img_line->{name} = b( $line->{name} || '' );
-            $img_line->{description} = b( $line->{description} || '' );
-            if( $img_line->{is_thumb} ) {
+#            $app->log->debug( Dumper( $img_line ) );
+            $img_line->{name} = b( $img_line->{name} || '' );
+            $img_line->{description} = b( $img_line->{description} || '' );
+            if( $img_line->{is_thumbnail} ) {
                 $images->{thumb} = $img_line;
-                $images->{has_thum} = 1;
+                $images->{has_thumb} = 1;
                 $images->{has_image} = 1;
             }
             else {

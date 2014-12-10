@@ -151,7 +151,7 @@ sub view {
     $self->stash( products => $applicant_products_it );
     $self->stash( form_setting => $form_setting );
 
-    $self->app->log->debug( Dumper( $self->stash ) );
+#    $self->app->log->debug( Dumper( $self->stash ) );
     $self->render;
     $dbis->commit or die $dbis->error;
     $dbis->disconnect or die $dbis->error;

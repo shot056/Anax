@@ -32,8 +32,8 @@ sub input {
     #$self->app->log->debug( "params : \n" . Dumper( $params ) );
     
     my $form_setting = Anax::Admin::Forms->new( $self )->get_form_setting( $self->app, $key, $params->{is_admin} );
-    #$self->app->log->debug( "settings : \n" . Dumper( $form_setting ) );
-    $self->render_not_found unless( defined $form_setting );
+    $self->app->log->debug( "settings : \n" . Dumper( $form_setting ) );
+    return $self->render_not_found unless( defined $form_setting );
     
     my $products     = Anax::Admin::Products->new( $self )->get_form_products( $self->app, $form_setting->{id} );
     $self->app->log->debug( "products : \n" . Data::Dumper->new( [ $products ] )->Sortkeys( 1 )->Dump );
@@ -71,7 +71,7 @@ sub confirm {
     
     my $form_setting = Anax::Admin::Forms->new( $self )->get_form_setting( $self->app, $key, $params->{is_admin} );
     #$self->app->log->debug( "settings : \n" . Dumper( $form_setting ) );
-    $self->render_not_found unless( defined $form_setting );
+    return $self->render_not_found unless( defined $form_setting );
     
     my $products     = Anax::Admin::Products->new( $self )->get_form_products( $self->app, $form_setting->{id} );
     
@@ -123,7 +123,7 @@ sub complete {
     
     my $form_setting = Anax::Admin::Forms->new( $self )->get_form_setting( $self->app, $key, $params->{is_admin} );
     #$self->app->log->debug( "settings : \n" . Dumper( $form_setting ) );
-    $self->render_not_found unless( defined $form_setting );
+    return $self->render_not_found unless( defined $form_setting );
     
     my $products     = Anax::Admin::Products->new( $self )->get_form_products( $self->app, $form_setting->{id} );
 
@@ -142,12 +142,12 @@ sub complete {
                   mail_from       => $self->app->config->{gmail}->{username}
                 };
     $datas->{values} = $self->replace_params2value( $form_setting, $products, $params );
-    $self->app->log->debug( "values : \n" . Dumper( $datas->{values} ) );
+#    $self->app->log->debug( "values : \n" . Dumper( $datas->{values} ) );
     
-    $self->app->log->debug( Dumper( $datas ) );
+#    $self->app->log->debug( Dumper( $datas ) );
     
     my $rule = $self->generate_rule( $form_setting->{field_list} );
-    $self->app->log->debug( "rule : \n" . Dumper( $rule ) );
+#    $self->app->log->debug( "rule : \n" . Dumper( $rule ) );
     
     my $vresult = $vc->validate( $params, $rule );
     unless( $vresult->is_ok ) {

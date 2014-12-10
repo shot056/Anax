@@ -9,6 +9,10 @@
 
     <!-- Le styles -->
 
+    <link rel="stylesheet" href="/static/lightbox/css/lightbox.css">
+    <link rel="stylesheet" href="/static/css/overcast/jquery-ui-1.11.2.min.css">
+    <link rel="stylesheet" href="/static/css/overcast/jquery-ui-1.11.2.structure.min.css">
+    <link rel="stylesheet" href="/static/css/overcast/jquery-ui-1.11.2.theme.min.css">
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
     <style type="text/css">
      body {
@@ -18,7 +22,7 @@
      }
 
      .form-input {
-       max-width: 600px;
+       max-width: 800px;
        padding: 19px 29px 29px;
        margin: 0 auto 20px;
        background-color: #fff;
@@ -44,10 +48,19 @@
      .image-slides {
        display: none;
      }
+     .one-product {
+       width: 250px;
+       float: left;
+       margin: 5px;
+       max-height: 272px;
+     }
+     .one-product label {
+       bottom: 0px;
+     }
 
     </style>
     <link href="/static/css/bootstrap-theme.min.css" rel="stylesheet">
-
+    
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
       <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
@@ -79,22 +92,34 @@
           <?pl if( length( $product_message ) ) { ?>
           <label class="col-sm-10">[= $product_message =]</label>
           <?pl }  ?>
-          <div id="products" class="col-sm-10">
+          <div id="products" class="col-sm-offset-2 col-sm-10">
           <?pl foreach my $p ( @{$product_list} ) { ?>
             <div class="one-product">
             <?pl if( $use_product_image ) { ?>
               <?pl if( $p->{images}->{has_image} ) { ?>
-                <?pl if( $p->{images}->{has_thumb} ) { ?>
-              <div class="image-thumb"><img src="[= $p->{images}->{thumb}->{url} =]" alt="[= $p->{images}->{thumb}->{name} =]" /></div>
-                <?pl } ?>
-                <?pl if( $p->{images}->{has_slides} ) { ?>
+                  <?pl my $slide_st = 0; ?>
+                  <?pl if( $p->{images}->{has_thumb} ) { ?>
+              <label><input type="checkbox" value="[= $p->{id} =]" name="products"<?pl if( grep( $_ eq $p->{id}, @{ $params->{products} } ) ) { ?> checked="checked"<?pl } ?>>[= $p->{name} =]</label>
+              <div class="image-thumb">
+                <a href="[= $p->{images}->{thumb}->{url} =]" data-lightbox="prod-[= $p->{id} =]" data-title="[= $p->{name} =]">
+                  <img src="[= $p->{images}->{thumb}->{thumb_url} =]" alt="[= $p->{images}->{thumb}->{name} =]" />
+                </a>
+              </div>
+                  <?pl } else { ?>
+                  <?pl $slide_st = 1; ?>
+              <input type="checkbox" value="[= $p->{id} =]" name="products"<?pl if( grep( $_ eq $p->{id}, @{ $params->{products} } ) ) { ?> checked="checked"<?pl } ?>>
+              <a href="[= $p->{images}->{slides}->[0]->{url} =]" data-lightbox="prod-[= $p->{id} =]" data-title="[= $p->{images}->{slides}->[0]->{name} =]">[= $p->{name} =]</a>
+                  <?pl } ?>
               <div class="image-slides">
-                  <?pl foreach my $i ( @{ $p->{images}->{slides} } ) { ?>
-                <div class="image-slide-part"><img src="[= $i->{url} =]" alt="[= $i->{name} =]" /></div>
+                  <?pl for( my $i = $slide_st; $i < scalar @{ $p->{images}->{slides} }; $i ++ ) { ?>
+                <a href="[= $p->{images}->{slides}->[$i]->{url} =]" data-lightbox="prod-[= $p->{id} =]" data-title="[= $p->{images}->{slides}->[$i]->{name} =]">[= $p->{name} =]</a>
                   <?pl } ?>
               </div>
-                <?pl } ?>
+                
+              <?pl } else { ?>
+              <label><input type="checkbox" value="[= $p->{id} =]" name="products"<?pl if( grep( $_ eq $p->{id}, @{ $params->{products} } ) ) { ?> checked="checked"<?pl } ?>>[= $p->{name} =]</label>
               <?pl } ?>
+            <?pl } else { ?>
               <label><input type="checkbox" value="[= $p->{id} =]" name="products"<?pl if( grep( $_ eq $p->{id}, @{ $params->{products} } ) ) { ?> checked="checked"<?pl } ?>>[= $p->{name} =]</label>
             <?pl } ?>
             </div>
@@ -130,8 +155,8 @@
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="/static/js/jquery-1.8.2.js"></script>
-    <script src="/static/js/jquery-ui-1.9.1.custom.min.js"></script>
+    <script src="/static/js/jquery-1.10.2.min.js"></script>
+    <script src="/static/lightbox/js/lightbox.js"></script>
     <script src="/static/js/bootstrap.min.js"></script>
 
   </body>

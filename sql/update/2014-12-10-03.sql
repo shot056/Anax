@@ -1,0 +1,1 @@
+ALTER TABLE product_images RENAME COLUMN use_thumbnail TO is_thumbnail;

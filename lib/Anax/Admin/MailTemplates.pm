@@ -28,7 +28,7 @@ sub input {
     if( my $id = $self->stash('id') ) {
         my $rslt = $dbis->select('mail_templates', ['*'], { id => $id, is_deleted => 0 } )
             or die $dbis->error;
-        $self->render_not_found unless( $rslt->rows );
+        return $self->render_not_found unless( $rslt->rows );
         $params = $rslt->hash;
     }
     $self->stash( fields => Anax::Admin::Forms->new( $self )->get_fields( $dbis, [ $params->{forms_id} ] )  );
@@ -53,12 +53,12 @@ sub register {
                               [ 'integer', '半角数字で入力してください' ] ],
                ];
     my $vrslt = $vc->validate( $params, $rule );
-    $self->app->log->debug( Dumper( { vrslt => $vrslt, is_ok => $vrslt->is_ok } ) );
+#    $self->app->log->debug( Dumper( { vrslt => $vrslt, is_ok => $vrslt->is_ok } ) );
     unless( $vrslt->is_ok ) {
         $self->stash( missing => 1 ) if( $vrslt->has_missing );
         $self->stash( messages => $vrslt->messages_to_hash )
             if( $vrslt->has_invalid );
-        $self->app->log->debug( Dumper( $self->stash ) );
+#        $self->app->log->debug( Dumper( $self->stash ) );
         $self->render( template => 'admin/mail_templates/input', params => $params );
     }
     else {

@@ -82,7 +82,7 @@
           <?pl if( length( $product_message ) ) { ?>
           <label class="col-sm-10">[= $product_message =]</label>
           <?pl }  ?>
-          <div id="products" class="col-sm-10">
+          <div id="products" class="col-sm-offset-2 col-sm-8">
           <?pl foreach my $product_id ( @{ $params->{products} } ) { ?>
             <div class="one-product">
               <label><input type="hidden" value="[= $product_id =]" name="products" />[= $products->{$product_id}->{name} =]</label>
