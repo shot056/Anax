@@ -16,6 +16,7 @@ use Data::Dumper;
 sub startup {
     my $self = shift;
 
+    $self->app->log->level('debug');
     my $fields = { hash => {},
                    array => [
                              { value => 'textfield', label => 'テキストフィールド' },
@@ -140,7 +141,7 @@ sub startup {
         my $self = shift;
 
         $self->app->log->info( "++++++++++++++++++++ Start Request ++++++++++++++++++++" );
-        $self->app->log->info( "Request: " . $self->req->url->to_string );
+        $self->app->log->info( "Request: " . $self->req->method . " " . $self->req->url->to_string );
         $self->app->log->info( "Params : \n" . Dumper( $self->req->params->to_hash ) );
         $self->app->log->info( "Session: \n" . Dumper( $self->session ) );
         

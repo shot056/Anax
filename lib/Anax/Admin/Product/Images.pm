@@ -54,22 +54,22 @@ sub register {
         $params->{file} = $upload->filename;
         ( $basename, $ext ) = split/\./, $upload->filename;
         $content_type = $upload->headers->content_type;
-#        $self->app->log->debug( Dumper( $upload->headers ) );
+        $self->app->log->debug( Dumper( $upload->headers ) );
     }
-#    $self->app->log->info( "params : " . Dumper( $params ) );
+    $self->app->log->info( "params : " . Dumper( $params ) );
     my $rule = [
                 name => [ [ 'not_blank', '必ず入力してください' ] ],
                 file => [ [ 'not_blank', '必ず入力してください' ] ],
                 content_type  => [ [ 'image', 'アップロードできる画像はjpgかjpegかpngです' ] ]
                ];
     my $vrslt = $vc->validate( { %{ $params }, content_type => $content_type || '' }, $rule );
-#    $self->app->log->debug( Dumper( { vrslt => $vrslt, is_ok => $vrslt->is_ok } ) );
+    $self->app->log->debug( Dumper( { vrslt => $vrslt, is_ok => $vrslt->is_ok } ) );
     unless( $vrslt->is_ok ) {
         $self->stash( missing => 1 ) if( $vrslt->has_missing );
         $self->stash( messages => $vrslt->messages_to_hash )
             if( $vrslt->has_invalid );
         $self->stash( params => $params );
-#        $self->app->log->debug( Dumper( $self->stash ) );
+        $self->app->log->debug( Dumper( $self->stash ) );
         
         $self->render( 'admin/product/images/input' );
     }
@@ -108,7 +108,7 @@ sub register {
                 my $delay = shift;
                 my $res   = shift;
                 my $tx    = shift;
-#                $self->app->log->debug( Dumper( { res => $res } ) );
+                $self->app->log->debug( Dumper( { res => $res } ) );
                 my $thumb_url = sprintf("https://res.cloudinary.com/%s/%s/%s/c_limit,h_250,w_250/v%s/%s.%s",
                                         $self->app->config->{Cloudinary}->{cloud_name},
                                         $res->{resource_type},
@@ -131,26 +131,6 @@ sub register {
                 $self->redirect_to( '/admin/products/view/' . $product_id );
             }
         );
-        
-#         my $file_class = 'Anax::Admin::File::' . $self->app->config->{file}->{class};
-#         $file_class->use or die "can not use $file_class : $@";
-#         my $file_obj = $file_class->new( $self->app );
-
-#         my $path = $file_obj->save( "products/$product_id/images/", "$id.$ext", $upload );
-#         $self->app->log->info( "path = $path" );
-        
-# #        my $store_dir = $self->app->home->rel_dir("public/static/products/$product_id/images/");
-# #        $self->app->log->info( "store_dir : $store_dir" );
-# #        $self->app->commands->create_dir( $store_dir )
-# #            unless( -d $store_dir );
-# #        my $target_file = $self->app->home->rel_file( "public/static/products/$product_id/images/$id.$ext" );
-# #        $self->app->log->info( "store to : $target_file" );
-# #        $upload->move_to( "public/static/products/$product_id/images/$id.$ext" );
-#         $dbis->update( 'product_images', { url => $path }, { id => $id } );
-        
-#         $dbis->commit or die $dbis->error;
-#         $dbis->disconnect or die $dbis->error;
-#         $self->redirect_to( '/admin/products/view/' . $product_id );
     }
 }
 
