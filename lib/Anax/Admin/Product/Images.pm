@@ -60,7 +60,7 @@ sub register {
     my $rule = [
                 name => [ [ 'not_blank', '必ず入力してください' ] ],
                 file => [ [ 'not_blank', '必ず入力してください' ] ],
-                content_type  => [ [ 'image', 'アップロードできる画像はjpgかjpegかpngです' ] ]
+                content_type  => [ [ 'image', 'アップロードできる画像はjpgかgifかpngです' ] ]
                ];
     my $vrslt = $vc->validate( { %{ $params }, content_type => $content_type || '' }, $rule );
     $self->app->log->debug( Dumper( { vrslt => $vrslt, is_ok => $vrslt->is_ok } ) );
