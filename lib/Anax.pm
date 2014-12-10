@@ -40,7 +40,7 @@ sub startup {
         $error_checks->{hash}->{ $e->{value} } = $e->{label};
     }
     
-    $self->secret('oJQFCAli%gfbORcj');
+    $self->secrets( [ 'oJQFCAli%gfbORcj' ] );
     
     # Documentation browser under "/perldoc"
     # $self->plugin('PODRenderer');
