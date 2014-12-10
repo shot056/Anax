@@ -159,40 +159,6 @@ sub register {
     }
 }
 
-use Cloudinary;
-
-sub save_to_cloudinary {
-    my $self = shift;
-    my $file = shift;
-
-    my $cdn = Cloudinary->new( cloud_name => $self->app->config->{Cloudinary}->{cloud_name},
-                               api_key => $self->config->{Cloudinary}->{api_key},
-                               api_secret => $self->config->{Cloudinary}->{api_secret} );
-    my $data = { api_key => $self->config->{Cloudinary}->{api_key},
-                 timestamp => time };
-    if( UNIVERSAL::isa( $file, 'Mojo::Asset' ) ) {
-        $data->{file} = { file => $file, filename => basename( $file->path ) };
-    }
-    elsif( UNIVERSAL::isa( $file, 'Mojo::Upload' ) ) {
-        $data->{file} = { file => $file->asset, filename => $file->filename };
-    }
-
-    $data->{signature} = $cdn->_api_sign_request( $data );
-    
-    my $url = join( '/', ( 'http://api.cloudinary.com/v1_1',
-                           $self->app->config->{Cloudinary}->{cloud_name},
-                           'image',
-                           'upload' ) );
-    my $headers = { 'Content-Type' => 'multipart/form-data' };
-
-#    $self->app->log->debug( "@@@ Call Cloudinary : $url" );
-#    $self->app->log->debug( "@@@ Headers : " . Data::Dumper->new( [ $headers ] )->Sortkeys( 1 )->Dump );
-#    $self->app->log->debug( "@@@ Body : " . Data::Dumper->new( [ $data ] )->Sortkeys( 1 )->Dump );
-    my $ua = Mojo::UserAgent->new;
-    my $tx = $ua->post( $url, $headers, form => $data );
-    return $tx->res->json || { error => $tx->error || 'Unknown error' };
-}
-
 sub disable {
     my $self       = shift;
     my $product_id = $self->stash('product_id');
@@ -238,23 +204,28 @@ sub do_disable {
 
     if( length( $data->{public_id} ) ) {
         $self->app->log->debug( "destory cloudinary file : $data->{public_id}" );
-        $self->render_later;
-        Mojo::IOLoop->delay(
-            sub {
-                my $delay = shift;
-                $self->cloudinary_destroy( {
-                    public_id => $data->{public_id}
-                }, $delay->begin );
-            },
-            sub {
-                my $delay = shift;
-                my $res   = shift;
-                my $tx    = shift;
-                
-                $dbis->commit or die $dbis->error;
-                $dbis->disconnect or die $dbis->error;
-                $self->redirect_to( "/admin/products/view/$product_id" );
-            } );
+        $self->remove_from_cloudinary( $data->{public_id} );
+        
+        $dbis->commit or die $dbis->error;
+        $dbis->disconnect or die $dbis->error;
+        $self->redirect_to( "/admin/products/view/$product_id" );
+#        $self->render_later;
+#        Mojo::IOLoop->delay(
+#            sub {
+#                my $delay = shift;
+#                $self->cloudinary_destroy( {
+#                    public_id => $data->{public_id}
+#                }, $delay->begin );
+#            },
+#            sub {
+#                my $delay = shift;
+#                my $res   = shift;
+#                my $tx    = shift;
+#                
+#                $dbis->commit or die $dbis->error;
+#                $dbis->disconnect or die $dbis->error;
+#                $self->redirect_to( "/admin/products/view/$product_id" );
+#            } );
     }
     else {
         $dbis->commit or die $dbis->error;
@@ -292,6 +263,57 @@ sub not_thumbnail {
     $dbis->commit or die $dbis->error;
     $dbis->disconnect or die $dbis->error;
     $self->redirect_to( "/admin/products/view/$product_id" );
+}
+
+
+
+use Cloudinary;
+
+sub save_to_cloudinary {
+    my $self = shift;
+    my $file = shift;
+
+    my $data = {};
+    if( UNIVERSAL::isa( $file, 'Mojo::Asset' ) ) {
+        $data->{file} = { file => $file, filename => basename( $file->path ) };
+    }
+    elsif( UNIVERSAL::isa( $file, 'Mojo::Upload' ) ) {
+        $data->{file} = { file => $file->asset, filename => $file->filename };
+    }
+
+    return call_cloudinary( 'upload', $data );
+}
+
+sub remove_from_cloudinary {
+    my $self      = shift;
+    my $public_id = shift;
+
+    my $data = { public_id => $public_id, type => 'upload' };
+
+    return $self->call_cloudinary( 'destroy', $data );
+}
+
+sub call_cloudinary {
+    my $self   = shift;
+    my $action = shift;
+    my $data   = shift;
+
+    my $cdn = Cloudinary->new( cloud_name => $self->app->config->{Cloudinary}->{cloud_name},
+                               api_key => $self->config->{Cloudinary}->{api_key},
+                               api_secret => $self->config->{Cloudinary}->{api_secret} );
+    $data->{api_key}   = $self->config->{Cloudinary}->{api_key};
+    $data->{timestamp} = time;
+    $data->{signature} = $cdn->_api_sign_request( $data );
+    
+    my $url = join( '/', ( 'http://api.cloudinary.com/v1_1',
+                           $self->app->config->{Cloudinary}->{cloud_name},
+                           'image',
+                           $action ) );
+    my $headers = { 'Content-Type' => 'multipart/form-data' };
+
+    my $ua = Mojo::UserAgent->new;
+    my $tx = $ua->post( $url, $headers, form => $data );
+    return $tx->res->json || { error => $tx->error || 'Unknown error' };
 }
 
 
