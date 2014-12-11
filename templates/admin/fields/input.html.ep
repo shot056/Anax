@@ -8,14 +8,16 @@
   </ul>
 
   % if( exists $params->{id} and defined $params->{id} ) {
-  <form method="POST" name="admin_fields_edit" action="/admin/fields/edit/<%= $params->{id} %>" class="form-horizontal">
+  <form method="POST" name="admin_fields_edit" action="/admin/fields/edit/<%= $params->{id} %>" class="form-input form-horizontal" role="form">
   % } else {
-  <form method="POST" name="admin_fields_add" action="/admin/fields/add" class="form-horizontal">
+  <form method="POST" name="admin_fields_add" action="/admin/fields/add" class="form-input form-horizontal" role="form">
   % }
     <div class="form-group">
-      <label class="control-label" for="field_is_global">&nbsp;</label>
-      <div class="controls">
-        <label class="checkbox"><input type="checkbox" id="field_is_global" name="is_global"<% if( $params->{is_global} ) { %> checked="checked"<% } %> />全体共通にする</label>
+      <label class="col-sm-2 control-label" for="field_is_global">&nbsp;</label>
+      <div class="col-sm-8">
+        <div class="checkbox">
+          <label><input type="checkbox" id="field_is_global" name="is_global"<% if( $params->{is_global} ) { %> checked="checked"<% } %> />全体共通にする</label>
+        </div>
         <span class="help-inline">
           % if( exists $messages->{is_global} ) {
           <p class="text-danger"><%= decode( $messages->{is_global} ) %></p>
@@ -24,9 +26,11 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="control-label" for="field_is_required">&nbsp;</label>
-      <div class="controls">
-        <label class="checkbox"><input type="checkbox" id="field_is_required" name="is_required"<% if( $params->{is_required} ) { %> checked="checked"<% } %> />必須にする</label>
+      <label class="col-sm-2 control-label" for="field_is_required">&nbsp;</label>
+      <div class="col-sm-8">
+        <div class="checkbox">
+          <label><input type="checkbox" id="field_is_required" name="is_required"<% if( $params->{is_required} ) { %> checked="checked"<% } %> />必須にする</label>
+        </div>
         <span class="help-inline">
           % if( exists $messages->{is_required} ) {
           <p class="text-danger"><%= decode( $messages->{is_required} ) %></p>
@@ -35,9 +39,9 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="control-label" for="field_name">項目名</label>
-      <div class="controls">
-        <input type="text" id="field_name" name="name" placeholder="" value="<%= decode( $params->{name} ) %>" />
+      <label class="col-sm-2 control-label" for="field_name">項目名</label>
+      <div class="col-sm-8">
+        <input class="form-control" type="text" id="field_name" name="name" placeholder="" value="<%= decode( $params->{name} ) %>" />
         <span class="help-inline">
           % if( exists $messages->{name} ) {
           <p class="text-danger"><%= decode( $messages->{name} ) %></p>
@@ -46,9 +50,9 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="control-label" for="field_type">項目種別</label>
-      <div class="controls">
-        <select id="field_type" name="type">
+      <label class="col-sm-2 control-label" for="field_type">項目種別</label>
+      <div class="col-sm-8">
+        <select class="form-control" id="field_type" name="type">
           % foreach my $f ( @{ field_types() } ) {
           <option value="<%= $f->{value} %>"<% if( exists $params->{type} and defined $params->{type} and $f->{value} eq $params->{type} ) { %> selected<% } %>><%= decode( $f->{label} ) =%></option>
           % }
@@ -61,9 +65,9 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="control-label" for="field_default">デフォルト値</label>
-      <div class="controls">
-        <input type="text" id="field_default" name="default" placeholder="" value="<%= decode( $params->{default} ) %>" />
+      <label class="col-sm-2 control-label" for="field_default">デフォルト値</label>
+      <div class="col-sm-8">
+        <input class="form-control" type="text" id="field_default" name="default" placeholder="" value="<%= decode( $params->{default} ) %>" />
         <span class="help-inline">
           % if( exists $messages->{default} ) {
           <p class="text-danger"><%= decode( $messages->{default} ) %></p>
@@ -72,9 +76,9 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="control-label" for="field_type">エラーチェック</label>
-      <div class="controls">
-        <select id="field_error_check" name="error_check">
+      <label class="col-sm-2 control-label" for="field_type">エラーチェック</label>
+      <div class="col-sm-8">
+        <select class="form-control" id="field_error_check" name="error_check">
           % foreach my $e ( @{ error_checks() } ) {
           <option value="<%= $e->{value} %>"<% if( exists $params->{error_check} and defined $params->{error_check} and $e->{value} eq $params->{error_check} ) { %> selected<% } %>><%= decode( $e->{label} ) =%></option>
           % }
@@ -86,9 +90,11 @@
         </span>
       </div>
     </div>
-    <div class="form-actions">
-      <a href="<% if( param 'forms_id' ) { %>/admin/forms/view/<%= param 'forms_id' %><% } else { %>/admin/fields<% } %>" class="btn btn-default">キャンセル</a>
-      <button type="submit" class="btn btn-primary pull-right">登録</button>
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-8">
+        <a href="<% if( param 'forms_id' ) { %>/admin/forms/view/<%= param 'forms_id' %><% } else { %>/admin/fields<% } %>" class="btn btn-default">キャンセル</a>
+        <button type="submit" class="btn btn-primary pull-right">登録</button>
+      </div>
     </div>
     % if( param 'forms_id' ) {
     <input type="hidden" name="forms_id" value="<%= param 'forms_id' %>" />

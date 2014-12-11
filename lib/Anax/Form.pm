@@ -97,7 +97,7 @@ sub confirm {
         $self->stash( messages => $vresult->messages_to_hash );
         $datas->{messages} = $vresult->messages_to_hash
             if( $vresult->has_invalid );
-        
+        $datas->{message} = $self->app->html_br( $form_setting->{messages}->{input} || '' );
         $datas->{forms} = $self->generate_forms( $form_setting->{field_list}, $params );
         
         #$self->app->log->debug( Dumper( $datas ) );
@@ -317,8 +317,7 @@ sub generate_forms {
     my %fields;
     foreach my $field ( @{ $fields } ) {
         my %mopts = ( -name => $field->{name},
-                      -default => $params->{ $field->{name} } || $field->{default} || undef,
-                      -class => "form-control" );
+                      -default => $params->{ $field->{name} } || $field->{default} || undef );
         my $label = '';
         my $method;
         next if( $is_hidden and !( exists $params->{ $field->{name} } ) );
@@ -329,6 +328,7 @@ sub generate_forms {
             delete $mopts{'-default'};
         }
         elsif( $field->{type} =~ /^text/ ) {
+            $mopts{'-class'} = "form-control";
             $method = $field->{type};
             $label = $mopts{'-default'};
         }
@@ -351,6 +351,7 @@ sub generate_forms {
                 $method = 'scrolling_list';
                 $mopts{'-size'}     = 4;
                 $mopts{'-multiple'} = 'true';
+                $mopts{'-class'} = "form-control";
             }
 
             if( defined $mopts{'-default'} ) {

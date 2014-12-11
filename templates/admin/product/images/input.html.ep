@@ -42,6 +42,9 @@
           % if( exists $messages->{file} ) {
           <p class="text-danger"><%= decode( $messages->{file} ) %></p>
           % }
+          % if( exists $messages->{content_type} ) {
+          <p class="text-danger"><%= decode( $messages->{content_type} ) %></p>
+          % }
         </span>
       </div>
     </div>

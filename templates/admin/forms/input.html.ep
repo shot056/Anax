@@ -6,14 +6,14 @@
     <li class="active">登録</li>
   </ul>
   % if( exists $params->{id} ) {
-  <form method="POST" name="admin_forms_edit" action="/admin/forms/edit/<%= $params->{id} %>" class="form-horizontal">
+  <form method="POST" name="admin_forms_edit" action="/admin/forms/edit/<%= $params->{id} %>" class="form-input form-horizontal" role="form">
   % } else {
-  <form method="POST" name="admin_forms_add" action="/admin/forms/add" class="form-horizontal">
+  <form method="POST" name="admin_forms_add" action="/admin/forms/add" class="form-input form-horizontal" role="form">
   % }
     <div class="form-group">
-      <label class="control-label" for="field_key">フォームID</label>
-      <div class="controls">
-        <input type="text" id="field_key" name="key" placeholder="myform" value="<%= $params->{key} %>" />
+      <label class="col-sm-2 control-label" for="field_key">フォームID</label>
+      <div class="col-sm-8">
+        <input class="form-control" type="text" id="field_key" name="key" placeholder="myform" value="<%= $params->{key} %>" />
         <span class="help-inline">
           フォームのURLとなる文字列を入力してください。
           % if( exists $messages->{key} ) {
@@ -23,9 +23,9 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="control-label" for="field_name">名称</label>
-      <div class="controls">
-        <input type="text" id="field_name" name="name" placeholder="私の登録フォーム" value="<%= decode( $params->{name} ) %>"  />
+      <label class="col-sm-2 control-label" for="field_name">名称</label>
+      <div class="col-sm-8">
+        <input class="form-control" type="text" id="field_name" name="name" placeholder="私の登録フォーム" value="<%= decode( $params->{name} ) %>"  />
         <span class="help-inline">
           管理用のフォーム名です。好きな名前をつけてください。
           % if( exists $messages->{name} ) {
@@ -35,9 +35,9 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="control-label" for="field_description">フォームの説明</label>
-      <div class="controls">
-        <textarea name="description" rows="6"><%= decode( $params->{description} ) %></textarea>
+      <label class="col-sm-2 control-label" for="field_description">フォームの説明</label>
+      <div class="col-sm-8">
+        <textarea class="form-control" name="description" rows="6"><%= decode( $params->{description} ) %></textarea>
         <span class="help-inline">
           入力画面・確認画面・完了画面 共通で表示されるフォームの説明です。<br />
           デフォルトフォームではページ上部に表示されます。
@@ -45,9 +45,9 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="control-label" for="field_message_input">メッセージ：入力画面</label>
-      <div class="controls">
-        <textarea name="message_input" rows="4"><%= decode( $params->{message_input} ) %></textarea>
+      <label class="col-sm-2 control-label" for="field_message_input">メッセージ：入力画面</label>
+      <div class="col-sm-8">
+        <textarea class="form-control" name="message_input" rows="4"><%= decode( $params->{message_input} ) %></textarea>
         <span class="help-inline">
           入力画面に表示されるメッセージです。<br />
           デフォルトフォームではフォームの説明の下に表示されます。
@@ -55,9 +55,9 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="control-label" for="field_message_confirm">メッセージ：確認画面</label>
-      <div class="controls">
-        <textarea name="message_confirm" rows="4"><%= decode( $params->{message_confirm} ) %></textarea>
+      <label class="col-sm-2 control-label" for="field_message_confirm">メッセージ：確認画面</label>
+      <div class="col-sm-8">
+        <textarea class="form-control" name="message_confirm" rows="4"><%= decode( $params->{message_confirm} ) %></textarea>
         <span class="help-inline">
           確認画面に表示されるメッセージです。<br />
           デフォルトフォームではフォームの説明の下に表示されます。
@@ -65,9 +65,9 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="control-label" for="field_message_complete">メッセージ：完了画面</label>
-      <div class="controls">
-        <textarea name="message_complete" rows="4"><%= decode( $params->{message_complete} ) %></textarea>
+      <label class="col-sm-2 control-label" for="field_message_complete">メッセージ：完了画面</label>
+      <div class="col-sm-8">
+        <textarea class="form-control" name="message_complete" rows="4"><%= decode( $params->{message_complete} ) %></textarea>
         <span class="help-inline">
           完了画面に表示されるメッセージです。<br />
           デフォルトフォームではフォームの説明の下に表示されます。
@@ -75,25 +75,31 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="control-label" for="field_name">商品選択の文言</label>
-      <div class="controls">
-        <input type="text" id="field_product_message" name="product_message" placeholder="注文対象" value="<%= decode( $params->{product_message} ) %>"  />
+      <label class="col-sm-2 control-label" for="field_name">商品選択の文言</label>
+      <div class="col-sm-8">
+        <input class="form-control" type="text" id="field_product_message" name="product_message" placeholder="注文対象" value="<%= decode( $params->{product_message} ) %>"  />
         <span class="help-inline">
           商品を関連付けた際にデフォルトフォームで表示される商品用文言です。<br />(日本語がマジカオス)
         </span>
       </div>
     </div>
-    <div class="control-group">
-      <label class="control-label" for="field_name">商品画像の表示</label>
-      <div class="controls">
-        <input type="checkbox" id="field_use_product_image" name="use_product_image" value="1" <% if( $params->{use_product_image} ) { %>checked="checked"<% } %> />
+    <div class="form-group">
+      <label class="col-sm-2 control-label" for="field_name">商品画像の表示</label>
+      <div class="col-sm-8">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" id="field_use_product_image" name="use_product_image" value="1" <% if( $params->{use_product_image} ) { %>checked="checked"<% } %> />画像を表示する
+          </label>
+        </div>
         <span class="help-inline">
           商品一覧に画像を表示するかどうかの設定です。
         </span>
       </div>
     </div>
-    <div class="form-actions">
-      <button type="submit" class="btn btn-primary">登録</button>
-      <a href="/admin/forms" class="btn btn-default">キャンセル</a>
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-4">
+        <a href="/admin/forms" class="btn btn-default">キャンセル</a>
+        <button type="submit" class="btn btn-primary">登録</button>
+      </div>
     </div>
   </form>
