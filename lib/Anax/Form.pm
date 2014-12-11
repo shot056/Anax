@@ -201,6 +201,7 @@ sub complete {
                 my $values = $params->{ $field->{name} };
                 $values = [ $values ] unless( ref( $values ) eq 'ARRAY' );
                 foreach my $value ( @{ $values } ) {
+                    $self->app->log->debug( Dumper( { %hash, value => $value } ) );
                     $dbis->insert('applicant_data', { %hash, field_options_id => $value } )
                         or die $dbis->error;
                 }
@@ -364,7 +365,10 @@ sub generate_forms {
         }
         $self->app->log->debug( Dumper( \%mopts ) );
         if( $is_hidden ) {
-            $fields{ $field->{name} } = $cgi->hidden( -name => $mopts{'-name'}, -value => "$mopts{'-default'}" );
+            my $value = $mopts{'-default'};
+            $value = "$value"
+                unless( ref( $value ) eq 'ARRAY' or ref( $value ) eq 'SCALAR' );
+            $fields{ $field->{name} } = $cgi->hidden( -name => $mopts{'-name'}, -value => $value );
             $label = CGI::escapeHTML( $label );
             if( defined $label ) {
                 $label =~ s/\r\n/\n/g;
