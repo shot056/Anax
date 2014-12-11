@@ -24,7 +24,7 @@ $(function() {
       $("#form_admin_forms_applicant_index").submit();
       $("#form_admin_forms_applicant_index").attr("action", old_action );
     } );
-} );
+      } );
       //-->
     </script>
     <ul class="breadcrumb">
@@ -85,26 +85,36 @@ $(function() {
           <!--<th>更新日時</th>-->
           <!--<th>メールアドレス</th>-->
           <th>フォーム名</th>
+          % foreach my $field ( @{ $fields } ) {
+          <th><%= $field->{name} %></th>
+          % }
           <th>詳細</th>
           <!--
           <th>編集</th>
-          <th>削除</th>
           -->
+          <th>削除</th>
         </tr>
       </thead>
       <tbody>
-      % while( my $line = $datas->hash ) {
+      % foreach my $line ( @{ $datas } ) {
         <tr>
           <td><%= $line->{id} %></td>
           <td><%= date( $line->{date_created} ) %></td>
           <!--<td><%= date( $line->{date_updated} ) %></td>-->
           <!--<td><%= decode( $line->{email} ) %></td>-->
           <td><a href="/admin/forms/view/<%= $line->{forms_id} %>"><%= decode( $forms->{labels}->{ $line->{forms_id} } ) %></a></td>
+          % foreach my $field ( @{ $fields } ) {
+            % if( $field->{type} =~ /^text/ ) {
+          <td><%= $line->{fields}->{ $field->{id} } %></td>
+            % } else {
+          <td><%= join(", ", map { $field_options->{ $field->{id} }->{ $_ } } @{ $line->{fields}->{ $field->{id} } } ) %></td>
+            % }
+          % }
           <td><a href="/admin/applicants/view/<%= $line->{id} %>/<%= $line->{forms_id} %>">詳細</a></td>
           <!--
           <td><a href="/admin/applicants/edit/<%= $line->{id} %>/<%= $line->{forms_id} %>">編集</a></td>
-          <td><a href="/admin/applicants/disable/<%= $line->{id} %>/<%= $line->{forms_id} %>">削除</a></td>
           -->
+          <td><a href="/admin/applicants/disable/<%= $line->{id} %>/<%= $line->{forms_id} %>">削除</a></td>
         </tr>
       % }
       </tbody>

@@ -62,9 +62,80 @@ sub index {
         }
         $self->stash( product_numbers => $product_numbers );
     }
-    $self->render( template => 'admin/applicants/index', datas => $rslt );
+    my $data = [];
+    if( $rslt->rows ) {
+        my $alldata = $rslt->hashes;
+        my $fields_data = $self->get_field_data( $self->app, $dbis, [ map { { id => $_->{id}, forms_id => $_->{forms_id} } } @{ $alldata } ] );
+        foreach my $line ( @{ $alldata } ) {
+            $line->{fields} = $fields_data->{ $line->{id} . "_" . $line->{forms_id} } || {};
+            push( @{ $data }, $line );
+        }
+    }
+    my $global_fields = $self->get_global_fields( $dbis );
+    my $global_field_options = $self->get_global_field_options( $dbis );
+    
+    $self->render( template => 'admin/applicants/index', datas => $data, fields => $global_fields, field_options => $global_field_options );
     $dbis->commit;
     $dbis->disconnect or die $dbis->error;
+}
+
+sub get_global_fields {
+    my $self = shift;
+    my $dbis = shift;
+
+    my $rslt = $dbis->select( 'fields', [ qw/id name type/ ],
+                              { is_deleted => 0,
+                                is_global => 1 } ) or die b( $dbis->error );
+    return $rslt->hashes;
+}
+
+sub get_global_field_options {
+    my $self = shift;
+    my $dbis = shift;
+
+    my $rslt = $dbis->query( "SELECT id, fields_id, name FROM field_options WHERE is_deleted = FALSE AND fields_id IN ( SELECT id FROM fields WHERE is_global = TRUE AND is_deleted = FALSE ) ORDER BY fields_id, sortorder;" ) or die b( $dbis->error );
+    my %fos;
+    while( my $line = $rslt->hash ) {
+        $fos{ $line->{fields_id} } = {}
+            unless( exists $fos{ $line->{fields_id} } );
+        $fos{ $line->{fields_id} }->{ $line->{id} } = $line->{name};
+    }
+    return \%fos;
+}
+
+sub get_field_data {
+    my $self = shift;
+    my $app  = shift;
+    my $dbis = shift;
+    my $targets = shift;
+
+    my @target_ids;
+    my @forms_id;
+    foreach my $line ( @{ $targets } ) {
+        push( @target_ids, $line->{id} );
+        push( @forms_id, $line->{id} );
+    }
+
+    my $rslt = $dbis->select( 'applicant_data', [ qw/id applicants_id forms_id fields_id text field_options_id/ ],
+                              { is_deleted => 0,
+                                forms_id => { IN => \@forms_id },
+                                applicants_id => { IN => \@target_ids }
+                            } ) or die b( $dbis->error );
+    my %retval;
+    while ( my $line = $rslt->hash ) {
+        $retval{ $line->{applicants_id} . "_" . $line->{forms_id} } = {}
+            unless( exists $retval{ $line->{applicants_id} . "_" . $line->{forms_id} } );
+        
+        if( defined $line->{field_options_id} and $line->{field_options_id} =~ /^\d+$/ ) {
+            $retval{ $line->{applicants_id} . "_" . $line->{forms_id} }->{ $line->{fields_id} } = []
+                unless( exists $retval{ $line->{applicants_id} . "_" . $line->{forms_id} }->{ $line->{fields_id} } );
+            push( @{ $retval{ $line->{applicants_id} . "_" . $line->{forms_id} }->{ $line->{fields_id} } }, $line->{field_options_id} );
+        }
+        else {
+            $retval{ $line->{applicants_id} . "_" . $line->{forms_id} }->{ $line->{fields_id} } = $line->{text}
+        }
+    }
+    return \%retval;
 }
 
 sub get_forms {
@@ -124,26 +195,40 @@ sub view {
     my $id = $self->stash('id');
     my $form_id = $self->stash('form_id');
     
-    my $dbis = DBIx::Simple->new( @{ $self->app->config->{dsn} } )
-        or die DBIx::Simple->error;
-    $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
+    my $dbis = $self->dbis;
     $dbis->begin_work or die $dbis->error;
+
+    return $self->render_not_found
+        unless( $self->load_view_data_to_stash( $dbis, $id, $form_id ) );
+    $self->app->log->debug( Dumper( $self->stash ) );
+    $self->render;
+    
+    $dbis->commit or die $dbis->error;
+    $dbis->disconnect or die $dbis->error;
+}
+
+sub load_view_data_to_stash {
+    my $self    = shift;
+    my $dbis    = shift;
+    my $id      = shift;
+    my $form_id = shift;
+
 
     my $applicants_it = $dbis->select('applicants', ['*'], { is_deleted => 0, id => $id } )
         or die $dbis->error;
-    return $self->render_not_found unless( $applicants_it->rows );
+    return 0 unless( $applicants_it->rows );
     my $applicant = $applicants_it->hash;
 
     my $forms_it = $dbis->select('forms', ['*'], { is_deleted => 0, id => $form_id } )
         or die $dbis->error;
-    return $self->render_not_found unless( $forms_it->rows );
+    return 0 unless( $forms_it->rows );
     my $form = $forms_it->hash;
 
     my $datas = $self->get_applicant_data( $dbis, $id, $form_id );
     $datas->{products} = {};
     my $applicant_products_it = $dbis->query("SELECT afp.id, afp.number, p.id AS product_id, p.name, p.price, p.description FROM applicant_form_products AS afp, products AS p WHERE afp.is_deleted = FALSE AND p.is_deleted = FALSE AND afp.products_id=p.id AND afp.applicants_id=? AND afp.forms_id=?;", $id, $form_id )
         or die $dbis->error;
-    
+
     my $form_setting = Anax::Admin::Forms->new( $self )->get_form_setting( $self->app, $form_id, 1 );
 
     $self->stash( hash => $applicant );
@@ -151,10 +236,7 @@ sub view {
     $self->stash( products => $applicant_products_it );
     $self->stash( form_setting => $form_setting );
 
-#    $self->app->log->debug( Dumper( $self->stash ) );
-    $self->render;
-    $dbis->commit or die $dbis->error;
-    $dbis->disconnect or die $dbis->error;
+    return 1;
 }
 
 sub get_applicant_data {
@@ -180,6 +262,43 @@ sub get_applicant_data {
         }
     }
     return $datas;
+}
+
+
+sub disable {
+    my $self = shift;
+    
+    my $id = $self->stash('id');
+    my $form_id = $self->stash('form_id');
+
+    my $dbis = $self->dbis;
+    $dbis->begin_work or die $dbis->error;
+    
+    return $self->render_not_found
+        unless( $self->load_view_data_to_stash( $dbis, $id, $form_id ) );
+
+    $self->render;
+    $dbis->commit or die $dbis->error;
+    $dbis->disconnect or die $dbis->error;
+}
+
+sub do_disable {
+    my $self = shift;
+
+    my $id = $self->stash('id');
+    my $form_id = $self->stash('form_id');
+
+    my $dbis = $self->dbis;
+    $dbis->begin_work or die $dbis->error;
+
+    $dbis->update( 'applicant_data', { is_deleted => 1 }, { applicants_id => $id, forms_id => $form_id } ) or die $dbis->error;
+    $dbis->update( 'applicant_form_products', { is_deleted => 1 }, { applicants_id => $id, forms_id => $form_id } ) or die $dbis->error;
+    $dbis->update( 'applicant_form', { is_deleted => 1 }, { applicants_id => $id, forms_id => $form_id } ) or die $dbis->error;
+    $dbis->update( 'applicants', { is_deleted => 1 }, { id => $id } ) or die $dbis->error;
+
+    $self->redirect_to( '/admin/applicants' );
+    $dbis->commit or die $dbis->error;
+    $dbis->disconnect or die $dbis->error;
 }
 
 1;

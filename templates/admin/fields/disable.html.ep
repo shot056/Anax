@@ -6,7 +6,12 @@
     <li class="active">削除<span class="divider">/</span></li>
     <li><%= $hash->{id} %></li>
   </ul>
- 
+
+  <h4>項目削除</h4>
+  <div class="actions">
+    <a href="<% if( param 'forms_id' ) { %>/admin/forms/view/<%= param 'forms_id' %><% } else { %>/admin/fields<% } %>" class="btn btn-default">一覧へ戻る</a> 
+    <a href="/admin/fields/edit/<%= $hash->{id} %><% if( param 'forms_id' ) { %>?forms_id=<%= param 'forms_id' %><% } %>" class="btn btn-primary">編集</a>
+  </div>
   <table class="table table-striped table-hover">
     <tr>
       <th>ID</th><td><%= $hash->{id} %></td>

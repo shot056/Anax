@@ -7,6 +7,11 @@
     <li><%= $hash->{id} %></li>
   </ul>
 
+  <h4>フォーム削除</h4>
+  <div class="actions">
+    <a href="/admin/forms" class="btn btn-default">一覧へ戻る</a> 
+    <a href="/admin/forms/edit/<%= $hash->{id} %>" class="btn btn-primary">編集</a>
+  </div>
   <table class="table table-striped table-hover">
     <tr>
       <th>ID</th><td><%= $hash->{id} %></td>

@@ -186,7 +186,7 @@ sub do_disable {
         or die $dbis->error;
     $dbis->commit or die $dbis->error;
     $dbis->disconnect or die $dbis->error;
-    $self->redirect_to( 'admin/forms' );
+    $self->redirect_to( '/admin/forms' );
 }
 
 

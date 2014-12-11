@@ -239,9 +239,11 @@ sub startup {
     $r->route('/admin/mailwizard/confirm'  )->via('POST')->to( controller => 'Admin::MailWizard', action => 'confirm' );
     $r->route('/admin/mailwizard/send'     )->via('POST')->to( controller => 'Admin::MailWizard', action => 'send_mail' );
     
-    $r->route('/admin/applicants'                                                      )->via('GET' )->to( controller => 'Admin::Applicants', action => 'index' );
-    $r->route('/admin/applicants'                                                      )->via('POST')->to( controller => 'Admin::Applicants', action => 'index' );
-    $r->route('/admin/applicants/view/:id/:form_id', id => qr/\d+/, form_id => qr/\d+/ )->via('GET' )->to( controller => 'Admin::Applicants', action => 'view' );
+    $r->route('admin/applicants'                                                             )->via('GET' )->to( controller => 'Admin::Applicants', action => 'index' );
+    $r->route('admin/applicants'                                                             )->via('POST')->to( controller => 'Admin::Applicants', action => 'index' );
+    $r->route('admin/applicants/view/:id/:form_id',    id => qr/\d+/, form_id => qr/\d+/ )->via('GET' )->to( controller => 'Admin::Applicants', action => 'view' );
+    $r->route('admin/applicants/disable/:id/:form_id', id => qr/\d+/, form_id => qr/\d+/ )->via('GET' )->to( controller => 'Admin::Applicants', action => 'disable' );
+    $r->route('admin/applicants/disable/:id/:form_id', id => qr/\d+/, form_id => qr/\d+/ )->via('POST')->to( controller => 'Admin::Applicants', action => 'do_disable' );
 
 
 }
