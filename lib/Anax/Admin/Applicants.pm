@@ -71,10 +71,10 @@ sub index {
             push( @{ $data }, $line );
         }
     }
-    my $global_fields = $self->get_fields( $dbis );
-    my $global_field_options = $self->get_field_options( $dbis );
-    
-    $self->render( template => 'admin/applicants/index', datas => $data, fields => $global_fields, field_options => $global_field_options );
+    my $fields = $self->get_fields( $dbis );
+    my $field_options = $self->get_field_options( $dbis );
+    $self->app->log->debug( Data::Dumper->new( [ { data => $data, fields => $fields, field_options => $field_options } ] )->Sortkeys( 1 )->Dump );
+    $self->render( template => 'admin/applicants/index', datas => $data, fields => $fields, field_options => $field_options );
     $dbis->commit;
     $dbis->disconnect or die $dbis->error;
 }
