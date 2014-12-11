@@ -110,11 +110,11 @@ sub get_field_data {
     my $dbis = shift;
     my $targets = shift;
 
-    my @target_ids;
-    my @forms_id;
+    my %target_ids;
+    my %forms_id;
     foreach my $line ( @{ $targets } ) {
-        push( @target_ids, $line->{id} );
-        push( @forms_id, $line->{id} );
+        $target_ids{ $line->{id} } = 1;
+        $forms_id{ $line->{forms_id} } = 1;
     }
 
     my $stmt = SQL::Maker::Select->new;
@@ -122,8 +122,8 @@ sub get_field_data {
     $stmt->add_select( join( ", ", qw/id applicants_id forms_id fields_id text field_options_id/ ) );
     $stmt->add_from( 'applicant_data' );
     $stmt->add_where( is_deleted => 0 );
-    $stmt->add_where( forms_id => { IN => \@forms_id } );
-    $stmt->add_where( applicants_id => { IN => \@target_ids } );
+    $stmt->add_where( forms_id => { IN => [ keys %forms_id ] } );
+    $stmt->add_where( applicants_id => { IN => [ keys %target_ids ] } );
     
     my $tf_stmt = SQL::Maker::Select->new;
     $tf_stmt->{new_line} = ' ';
@@ -132,10 +132,13 @@ sub get_field_data {
     $tf_stmt->add_where( is_deleted => 0 );
     $tf_stmt->add_where( show_in_list => 1 );
     my $tf_sql = "( " . $tf_stmt->as_sql . " )";
+#    my $tf_sql = "( SELECT id FROM fields WHERE is_deleted = FALSE AND show_in_list = TRUE )";
     $stmt->add_where( fields_id => { IN => \$tf_sql } );
     
     $self->app->log->debug( "[SQL] " . $stmt->as_sql . "; ( " . join( ', ', $stmt->bind, $tf_stmt->bind ) . " )" );
+#    $self->app->log->debug( "[SQL] " . $stmt->as_sql . "; ( " . join( ', ', $stmt->bind ) . " )" );
     my $rslt = $dbis->query( $stmt->as_sql, $stmt->bind, $tf_stmt->bind );
+#    my $rslt = $dbis->query( $stmt->as_sql, $stmt->bind );
 #    my $rslt = $dbis->select( 'applicant_data', [ qw/id applicants_id forms_id fields_id text field_options_id/ ],
 #                              { is_deleted => 0,
 #                                forms_id => { IN => \@forms_id },
