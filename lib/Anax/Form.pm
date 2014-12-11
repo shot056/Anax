@@ -87,7 +87,8 @@ sub confirm {
                   product_message => $form_setting->{product_message} || '',
                   has_products    => scalar @{$products->{list}} ? 1 : 0,
                   params          => $params,
-                  mail_from       => $self->app->config->{gmail}->{username}
+                  mail_from       => $self->app->config->{gmail}->{username},
+                  use_product_image => $form_setting->{use_product_image}
                 };
     my $rule = $self->generate_rule( $form_setting->{field_list} );
     
@@ -139,7 +140,8 @@ sub complete {
                   product_message => $form_setting->{product_message} || '',
                   has_products    => scalar @{$products->{list}} ? 1 : 0,
                   params          => $params,
-                  mail_from       => $self->app->config->{gmail}->{username}
+                  mail_from       => $self->app->config->{gmail}->{username},
+                  use_product_image => $form_setting->{use_product_image}
                 };
     $datas->{values} = $self->replace_params2value( $form_setting, $products, $params );
 #    $self->app->log->debug( "values : \n" . Dumper( $datas->{values} ) );
