@@ -71,7 +71,22 @@
         Internal Server Error
       </div>
       <div style="display: none">
-        
+      
+      <div id="nothing" class="box spaced"></div>
+      % my $cv = begin
+        % my ($key, $value, $i) = @_;
+        %= tag 'tr', $i ? (class => 'important') : undef, begin
+          <td class="key"><%= $key %></td>
+          <td class="value"><pre class="prettyprint"><%= $value %></pre></td>
+        % end
+      % end
+      % my $kv = begin
+        % my ($key, $value) = @_;
+        <tr>
+          <td class="key"><%= $key %>:</td>
+          <td class="striped value"><pre><%= $value %></pre></td>
+        </tr>
+      % end
       <div id="showcase" class="box code spaced">
         <pre><%= $exception->message %></pre>
         <div id="context">
