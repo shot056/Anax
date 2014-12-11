@@ -362,7 +362,7 @@ sub generate_forms {
                 $label = join(", ", map { $mopts{'-labels'}->{ $_ } } @{ $mopts{'-default'} } );
             }
         }
-        #$self->app->log->debug( Dumper( \%mopts ) );
+        $self->app->log->debug( Dumper( \%mopts ) );
         if( $is_hidden ) {
             $fields{ $field->{name} } = $cgi->hidden( -name => $mopts{'-name'}, -value => $mopts{'-default'} );
             $label = CGI::escapeHTML( $label );
