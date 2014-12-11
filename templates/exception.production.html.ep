@@ -9,6 +9,10 @@
 
     <!-- Le styles -->
 
+    <script src="/static/js/jquery-1.10.2.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    %= javascript '/mojo/prettify/run_prettify.js'
+    
     <link rel="stylesheet" href="/static/lightbox/css/lightbox.css">
     <link rel="stylesheet" href="/static/css/overcast/jquery-ui-1.11.2.min.css">
     <link rel="stylesheet" href="/static/css/overcast/jquery-ui-1.11.2.structure.min.css">
@@ -194,10 +198,6 @@
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="/static/js/jquery-1.10.2.min.js"></script>
-    <script src="/static/js/jquery-ui-1.11.2.min.js"></script>
-    <script src="/static/lightbox/js/lightbox.js"></script>
-    <script src="/static/js/bootstrap.min.js"></script>
 
   </body>
 
