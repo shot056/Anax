@@ -249,31 +249,7 @@
           %= $kv->(URL => $url->to_string)
           %= $kv->('Base URL' => $url->base->to_string)
           %= $kv->(Parameters => dumper $req->params->to_hash)
-          %= $kv->(Stash => dumper $snapshot)
-          %= $kv->(Session => dumper session)
-          %= $kv->(Version => $req->version)
-          % for my $name (sort @{$self->req->headers->names}) {
-            % my $value = $self->req->headers->header($name);
-            %= $kv->($name, $value)
-          % }
         </table>
-      </div>
-      <div id="more" class="box infobox spaced">
-        <div id="infos">
-          <table>
-            %= $kv->(Perl => "$^V ($^O)")
-            % my $version  = $Mojolicious::VERSION;
-            % my $codename = $Mojolicious::CODENAME;
-            %= $kv->(Mojolicious => "$version ($codename)")
-            %= $kv->(Home => app->home)
-            %= $kv->(Include => dumper \@INC)
-            %= $kv->(PID => $$)
-            %= $kv->(Name => $0)
-            %= $kv->(Executable => $^X)
-            %= $kv->(Time => scalar localtime(time))
-          </table>
-        </div>
-        <div class="tap">tap for more</div>
       </div>
       </div>
     </div> <!-- /container -->
