@@ -364,7 +364,7 @@ sub generate_forms {
         }
         $self->app->log->debug( Dumper( \%mopts ) );
         if( $is_hidden ) {
-            $fields{ $field->{name} } = $cgi->hidden( -name => $mopts{'-name'}, -value => $mopts{'-default'} );
+            $fields{ $field->{name} } = $cgi->hidden( -name => $mopts{'-name'}, -value => "$mopts{'-default'}" );
             $label = CGI::escapeHTML( $label );
             if( defined $label ) {
                 $label =~ s/\r\n/\n/g;
