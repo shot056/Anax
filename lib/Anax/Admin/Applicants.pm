@@ -71,29 +71,30 @@ sub index {
             push( @{ $data }, $line );
         }
     }
-    my $global_fields = $self->get_global_fields( $dbis );
-    my $global_field_options = $self->get_global_field_options( $dbis );
+    my $global_fields = $self->get_fields( $dbis );
+    my $global_field_options = $self->get_field_options( $dbis );
     
     $self->render( template => 'admin/applicants/index', datas => $data, fields => $global_fields, field_options => $global_field_options );
     $dbis->commit;
     $dbis->disconnect or die $dbis->error;
 }
 
-sub get_global_fields {
+sub get_fields {
     my $self = shift;
     my $dbis = shift;
 
     my $rslt = $dbis->select( 'fields', [ qw/id name type/ ],
                               { is_deleted => 0,
-                                is_global => 1 } ) or die b( $dbis->error );
+                                show_in_list => 1 },
+                              { order_by => 'sortorder' } ) or die b( $dbis->error );
     return $rslt->hashes;
 }
 
-sub get_global_field_options {
+sub get_field_options {
     my $self = shift;
     my $dbis = shift;
 
-    my $rslt = $dbis->query( "SELECT id, fields_id, name FROM field_options WHERE is_deleted = FALSE AND fields_id IN ( SELECT id FROM fields WHERE is_global = TRUE AND is_deleted = FALSE ) ORDER BY fields_id, sortorder;" ) or die b( $dbis->error );
+    my $rslt = $dbis->query( "SELECT id, fields_id, name FROM field_options WHERE is_deleted = FALSE AND fields_id IN ( SELECT id FROM fields WHERE show_in_list = TRUE AND is_deleted = FALSE ) ORDER BY fields_id, sortorder;" ) or die b( $dbis->error );
     my %fos;
     while( my $line = $rslt->hash ) {
         $fos{ $line->{fields_id} } = {}
@@ -116,11 +117,30 @@ sub get_field_data {
         push( @forms_id, $line->{id} );
     }
 
-    my $rslt = $dbis->select( 'applicant_data', [ qw/id applicants_id forms_id fields_id text field_options_id/ ],
-                              { is_deleted => 0,
-                                forms_id => { IN => \@forms_id },
-                                applicants_id => { IN => \@target_ids }
-                            } ) or die b( $dbis->error );
+    my $stmt = SQL::Maker::Select->new;
+    $stmt->{new_line} = ' ';
+    $stmt->add_select( join( ", ", qw/id applicants_id forms_id fields_id text field_options_id/ ) );
+    $stmt->add_from( 'applicant_data' );
+    $stmt->add_where( is_deleted => 0 );
+    $stmt->add_where( forms_id => { IN => \@forms_id } );
+    $stmt->add_where( applicants_id => { IN => \@target_ids } );
+    
+    my $tf_stmt = SQL::Maker::Select->new;
+    $tf_stmt->{new_line} = ' ';
+    $tf_stmt->add_select( 'id' );
+    $tf_stmt->add_from( 'fields' );
+    $tf_stmt->add_where( is_deleted => 0 );
+    $tf_stmt->add_where( show_in_list => 1 );
+    my $tf_sql = "( " . $tf_stmt->as_sql . " )";
+    $stmt->add_where( fields_id => { IN => \$tf_sql } );
+    
+    $self->app->log->debug( "[SQL] " . $stmt->as_sql . "; ( " . join( ', ', $stmt->bind, $tf_stmt->bind ) . " )" );
+    my $rslt = $dbis->query( $stmt->as_sql, $stmt->bind, $tf_stmt->bind );
+#    my $rslt = $dbis->select( 'applicant_data', [ qw/id applicants_id forms_id fields_id text field_options_id/ ],
+#                              { is_deleted => 0,
+#                                forms_id => { IN => \@forms_id },
+#                                applicants_id => { IN => \@target_ids }
+#                            } ) or die b( $dbis->error );
     my %retval;
     while ( my $line = $rslt->hash ) {
         $retval{ $line->{applicants_id} . "_" . $line->{forms_id} } = {}

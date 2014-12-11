@@ -56,7 +56,7 @@
             <li<% if( stash->{controller} eq 'Admin::Products' ) { %> class="active"<% } %>><a href="/admin/products">商品</a></li>
           </ul>
           <p class="nav navbar-nav navbar-right">
-            <a href="/admin/logout" class="btn btn-default navbar-btn">ログアウト</a>
+            <a href="/admin/logout" class="btn navbar-btn">ログアウト</a>
           </p>
         </div><!-- /.navbar-collapse -->
       </div><!-- /.container-fluid -->

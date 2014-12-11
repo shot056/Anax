@@ -85,7 +85,8 @@ sub register {
                      type => $params->{type} || '',
                      default => $params->{default} || '',
                      is_global => $params->{is_global} ? 1 : 0,
-                     is_required => $params->{is_required} ? 1 : 0
+                     is_required => $params->{is_required} ? 1 : 0,
+                     show_in_list => $params->{show_in_list} ? 1 : 0
                    };
         if( defined $id and $id =~ /^\d+$/ ) {
             $hash->{date_updated} = 'now';

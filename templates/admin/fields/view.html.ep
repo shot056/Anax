@@ -25,7 +25,13 @@
       <th>更新日時</th><td><%= date( $hash->{date_updated} ) %></td>
     </tr>
     <tr>
+      <th>必須</th><td><% if( $hash->{is_required} ) { %>必須<% } else { %>空白可<% } %></td>
+    </tr>
+    <tr>
       <th>共用</th><td><% if( $hash->{is_global} ) { %>全体共用<% } else { %>フォーム専用<% } %></td>
+    </tr>
+    <tr>
+      <th>一覧表示</th><td><% if( $hash->{show_in_list} ) { %>表示する<% } else { %>表示しない<% } %></td>
     </tr>
     <tr>
       <th>項目名</th><td><%= decode( $hash->{name} ) %></td>
