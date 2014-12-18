@@ -79,7 +79,7 @@
 
     <div class="container">
 
-      <form class="form-input form-horizontal" method="POST" action="[= $action_base =]/confirm" role="form">
+      <form id="form1" class="form-input form-horizontal" method="POST" action="[= $action_base =]/confirm" role="form">
         <h2 class="form-signin-heading">[= $name =]</h2>
         <?pl if( length( $description ) ) { ?>
         <blockquote><p>[== $description =]</p></blockquote>
@@ -142,7 +142,7 @@
         <?pl } ?>
         <div class="form-group">
           <div class="col-sm-offset-4 col-sm-4">
-            <button class="btn btn-block btn-primary" type="submit">確認</button>
+            <button id="btn-submit" class="btn btn-block btn-primary" type="submit">確認</button>
           </div>
         </div>
         <?pl if( $params->{is_admin} ) { ?>
@@ -159,6 +159,14 @@
     <script src="/static/js/jquery-ui-1.11.2.min.js"></script>
     <script src="/static/lightbox/js/lightbox.js"></script>
     <script src="/static/js/bootstrap.min.js"></script>
+    <script type="text/javascript" lang="javascript">
+    $( document ).ready( function() {
+      $("#form1").submit( function() {
+        $("#btn-submit").attr("disabled","disabled");
+        return true;
+      } );
+    } );
+    </script>
 
   </body>
 

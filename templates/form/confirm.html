@@ -69,7 +69,7 @@
 
     <div class="container">
 
-      <form class="form-input form-horizontal" method="POST" action="[= $action_base =]/complete" role="form">
+      <form id="form1" class="form-input form-horizontal" method="POST" action="[= $action_base =]/complete" role="form">
         <h2 class="form-signin-heading">[= $name =]</h2>
         <?pl if( length( $description ) ) { ?>
         <blockquote><p>[== $description =]</p></blockquote>
@@ -104,7 +104,7 @@
             <button class="btn btn-block" type="button" onClick="goBack( this.form );">戻る</button>
           </div>
           <div class="col-sm-4">
-            <button class="btn btn-block btn-primary" type="submit">登録</button>
+            <button id="btn-submit" class="btn btn-block btn-primary" type="submit">登録</button>
           </div>
         </div>
         <?pl if( $params->{is_admin} ) { ?>
@@ -117,9 +117,17 @@
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="/static/js/jquery-1.10.2.js"></script>
-    <script src="/static/js/jquery-ui-1.9.1.custom.min.js"></script>
+    <script src="/static/js/jquery-1.10.2.min.js"></script>
+    <script src="/static/js/jquery-ui-1.11.2.custom.min.js"></script>
     <script src="/static/js/bootstrap.min.js"></script>
+    <script type="text/javascript" lang="javascript">
+    $( document ).ready( function() {
+      $("#form1").submit( function() {
+        $("#btn-submit").attr("disabled","disabled");
+        return true;
+      } );
+    } );
+    </script>
 
   </body>
 
