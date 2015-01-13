@@ -38,8 +38,10 @@ sub get_thumbs {
     
     my $thumb_asset = Mojo::Asset::File->new;
     $thumb_asset->handle;#->close;
-    
-    $img->write( file => $thumb_asset->path, type => $ext );
+
+    my $data;
+    $img->write( data => $data, type => $ext );
+    $thumb_asset->add_chunk( $data );
     return $thumb_asset;
 }
 
