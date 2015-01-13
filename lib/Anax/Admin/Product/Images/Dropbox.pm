@@ -33,7 +33,7 @@ sub get_thumbs {
     }
     my $img = Imager->new;
     $img->read( file => $file->asset->path ) or die $img->errstr;
-    $img = $img->scale( xpixels => 250, ypixels => 250 );
+    $img = $img->scale( xpixels => 250, ypixels => 250, type => 'min' );
     $img->filter( type => 'unsharpmask', stddev => 1 );
     
     my $thumb_asset = Mojo::Asset::File->new;
