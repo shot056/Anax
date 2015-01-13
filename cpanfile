@@ -171,4 +171,4 @@ requires 'LWP::Protocol::https', '== 6.06';
 requires 'WebService::Dropbox', '== 1.22';
 
 # Image::Magick
-requires 'Image::Magick', '== 6.89';
+requires 'Imager', '== 1.001';

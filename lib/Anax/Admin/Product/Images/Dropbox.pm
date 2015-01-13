@@ -7,7 +7,7 @@ use base qw/Class::Accessor::Fast/;
 
 use WebService::Dropbox;
 
-use Image::Magick;
+use Imager;
 use Data::Dumper;
 
 sub new {
@@ -30,15 +30,14 @@ sub get_thumbs {
         $asset->add_chunk( $file->slurp );
         $file->asset( $asset );
     }
-    my $img = Image::Magick->new;
-    $img->Read( $file->asset->path );
-    $img->Resize(
-        geometry => "250x250",
-    );
+    my $img = Imager->new;
+    $img->read( file => $file->asset->path ) or die $img->errstr;
+    $img = $img->scale( xpixels => 250, ypixels => 250 );
+    
     my $thumb_asset = Mojo::Asset::File->new;
     $thumb_asset->handle;#->close;
     
-    $img->Write( $thumb_asset->path );
+    $img->write( $thumb_asset->path );
     return $thumb_asset;
 }
 
@@ -104,10 +103,9 @@ sub get_wh {
         $asset->add_chunk( $file->slurp );
         $file->asset( $asset );
     }
-    my $img = Image::Magick->new;
-    $img->Read( $file->asset->path );
-    my ( $width, $height ) = $img->Get( 'width', 'height' );
-    return ( $width, $height );
+    my $img = Imager->new;
+    $img->read( file => $file->asset->path );
+    return ( $img->getwidth, $img->getheight );
 }
 
 sub get_dropbox {
