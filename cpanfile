@@ -154,3 +154,21 @@ requires 'UNIVERSAL::require', '== 0.17';
 # Mojolicious::Plugin::Cloudinary
 requires 'Cloudinary', '== 0.14';
 
+
+# WebService::Dropbox
+requires 'Class::Data::Inheritable', '== 0.08';
+requires 'File::Listing', '== 6.04';
+requires 'HTTP::Daemon', '== 6.01';
+requires 'Net::HTTP', '== 6.07';
+requires 'HTTP::Cookies', '== 6.01';
+requires 'HTTP::Negotiate', '== 6.01';
+requires 'WWW::RobotRules', '== 6.02';
+requires 'LWP', '== 6.08';
+requires 'Digest::SHA1', '== 2.13';
+requires 'Net::OAuth', '== 0.28';
+requires 'JSON', '== 2.90';
+requires 'LWP::Protocol::https', '== 6.06';
+requires 'WebService::Dropbox', '== 1.22';
+
+# Image::Magick
+requires 'Image::Magick', '== 6.89';

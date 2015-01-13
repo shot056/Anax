@@ -142,6 +142,10 @@ sub startup {
                        $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
                        return $dbis;
                    } );
+    $self->helper( dumper => sub {
+                       my $self = shift;
+                       return $self->app->log->debug( Data::Dumper->new( \@_ )->Sortkeys( 1 )->Dump );
+                   } );
     $self->app->sessions->cookie_name('anax_session');
     # Router
     my $r = $self->routes;
