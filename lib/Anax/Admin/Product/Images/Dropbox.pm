@@ -33,16 +33,18 @@ sub get_thumbs {
     }
     my $img = Imager->new;
     $img->read( file => $file->asset->path ) or die $img->errstr;
-    $img = $img->scale( xpixels => 250, ypixels => 250, type => 'min' );
-    $img->filter( type => 'unsharpmask', stddev => 1 );
+    if( $img->getwidth > 250 or $img->getheight > 250 ) {
+        $img = $img->scale( xpixels => 250, ypixels => 250, type => 'min' );
+        $img->filter( type => 'unsharpmask', stddev => 1 );
+    }
     
-    my $thumb_asset = Mojo::Asset::File->new;
-    $thumb_asset->handle;#->close;
-
-    my $data;
-    $img->write( data => $data, type => $ext );
-    $thumb_asset->add_chunk( $data );
-    return $thumb_asset;
+    my $fname = "/tmp/thumb_" . $$.".".time().rand( 999 );
+    
+    $img->write( file => $fname, type => $ext eq 'jpg' ? 'jpeg' : $ext ) or die "Cannot write:" . $img->errstr;
+    my $tmp_asset = Mojo::Asset::File->new( path => $fname );
+    my $rt = Mojo::Asset::File->new->add_chunk( $tmp_asset->slurp );
+    unlink $fname;
+    return $rt;
 }
 
 sub save {
