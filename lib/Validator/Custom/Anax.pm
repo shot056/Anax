@@ -38,7 +38,7 @@ sub new {
                                    my $val = shift;
                                    return 1 unless( defined $val and length( $val ) );
                                    my $is_valid;
-                                   $is_valid = 1 if( grep( $val eq $_, qw!image/jpeg image/png image/gif! ) );
+                                   $is_valid = 1 if( grep( $val eq $_, qw!image/jpeg image/png! ) );
                                    return $is_valid;
                                }
                               );
