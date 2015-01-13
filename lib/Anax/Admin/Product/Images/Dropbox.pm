@@ -24,6 +24,7 @@ sub new {
 sub get_thumbs {
     my $self = shift;
     my $file = shift;
+    my $ext  = shift;
     
     unless( $file->asset->is_file ) {
         my $asset = Mojo::Asset::File->new;
@@ -33,11 +34,12 @@ sub get_thumbs {
     my $img = Imager->new;
     $img->read( file => $file->asset->path ) or die $img->errstr;
     $img = $img->scale( xpixels => 250, ypixels => 250 );
+    $img->filter( type => 'unsharpmask', stddev => 1 );
     
     my $thumb_asset = Mojo::Asset::File->new;
     $thumb_asset->handle;#->close;
     
-    $img->write( $thumb_asset->path );
+    $img->write( file => $thumb_asset->path, type => $ext );
     return $thumb_asset;
 }
 
@@ -70,7 +72,7 @@ sub save {
         $params->{public_id} = $base_file->{path};
     }
     {
-        my $thumb = $self->get_thumbs( $file );
+        my $thumb = $self->get_thumbs( $file, $ext );
 #        $self->app->dumper( { thumb => $thumb } );
         my $thumb_fh = $thumb->handle;
         my $thumb_file = $dropbox->files_put( "thumbs/" . $id . "." . $ext, $thumb_fh ) or die $dropbox->error;
