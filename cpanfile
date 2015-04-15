@@ -80,7 +80,7 @@ requires 'Data::Visitor', '== 0.30';
 requires 'Test::Class', '== 0.48';
 requires 'Class::Accessor', '== 0.34';
 requires 'Path::Class', '== 0.35';
-requires 'String::Random', '== 0.26';
+requires 'String::Random', '== 0.28';
 requires 'Mojolicious::Plugin::CSRFDefender';
 
 # Email::Valid
@@ -90,7 +90,7 @@ requires 'Net::DNS', '== 0.83';
 requires 'Email::Valid', '== 1.195';
 
 # Validator::Custom
-requires 'Object::Simple', '== 3.13';
+requires 'Object::Simple', '== 3.14';
 requires 'Validator::Custom', '== 0.22';
 
 # DBD::Pg
@@ -139,9 +139,9 @@ requires 'Email::Address', '== 1.905';
 
 # Email::Send::SMTP::TLS
 requires 'Return::Value', '== 1.666004';
-requires 'Mozilla::CA', '== 20130114';
-requires 'Net::SSLeay', '== 1.66';
-requires 'IO::Socket::SSL', '== 2.007';
+requires 'Mozilla::CA', '== 20141217';
+requires 'Net::SSLeay', '== 1.68';
+requires 'IO::Socket::SSL', '== 2.012';
 requires 'Digest::HMAC', '== 1.03';
 requires 'Net::SMTP::TLS::ButMaintained', '== 0.24';
 requires 'Module::Pluggable', '== 5.1';
