@@ -86,6 +86,7 @@ requires 'Mojolicious::Plugin::CSRFDefender';
 # Email::Valid
 requires 'Date::Parse', '== 2.30';
 requires 'Mail::Send', '== 2.14';
+requires 'Net::DNS', '== 0.83';
 requires 'Email::Valid', '== 1.195';
 
 # Validator::Custom
