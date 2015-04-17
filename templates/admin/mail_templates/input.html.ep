@@ -2,13 +2,13 @@
 % title 'メールテンプレート登録';
 
   <ul class="breadcrumb">
-    <li><a href="/admin/forms">フォーム</a><span class="divider">/</span></li>
+    <li><a href="<%= get_path('/admin/forms') %>">フォーム</a><span class="divider">/</span></li>
     <li class="active">メールテンプレート登録</li>
   </ul>
   % if( exists $params->{id} ) {
-  <form method="POST" name="admin_mail_templates_edit" action="/admin/mailtemplates/edit/<%= $params->{id} %>" class="form-horizontal">
+  <form method="POST" name="admin_mail_templates_edit" action="<%= get_path('/admin/mailtemplates/edit/', $params->{id} ) %>" class="form-horizontal">
   % } else {
-  <form method="POST" name="admin_mail_templates_add" action="/admin/mailtemplates/add" class="form-horizontal">
+  <form method="POST" name="admin_mail_templates_add" action="<%= get_path('/admin/mailtemplates/add') %>" class="form-horizontal">
   % }
     
     %= include 'admin/mail_templates/form'
@@ -18,6 +18,6 @@
     % }
     <div class="form-actions">
       <button type="submit" class="btn btn-primary">登録</button>
-      <a href="/admin/forms/view/<%= $params->{forms_id} %>" class="btn btn-default">キャンセル</a>
+      <a href="<%= get_path('/admin/forms/view/', $params->{forms_id} ) %>" class="btn btn-default">キャンセル</a>
     </div>
   </form>

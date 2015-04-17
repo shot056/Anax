@@ -319,7 +319,7 @@ sub do_disable {
     $dbis->update( 'applicant_form', { is_deleted => 1 }, { applicants_id => $id, forms_id => $form_id } ) or die $dbis->error;
     $dbis->update( 'applicants', { is_deleted => 1 }, { id => $id } ) or die $dbis->error;
 
-    $self->redirect_to( '/admin/applicants' );
+    $self->redirect_to( $self->get_path( '/admin/applicants' ) );
     $dbis->commit or die $dbis->error;
     $dbis->disconnect or die $dbis->error;
 }

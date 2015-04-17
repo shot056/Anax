@@ -2,15 +2,15 @@
 % title '項目詳細';
 
   <ul class="breadcrumb">
-    <li><a href="/admin/fields">項目</a><span class="divider">/</span></li>
+    <li><a href="<%= get_path('/admin/fields') %>">項目</a><span class="divider">/</span></li>
     <li class="active">削除<span class="divider">/</span></li>
     <li><%= $hash->{id} %></li>
   </ul>
 
   <h4>項目削除</h4>
   <div class="actions">
-    <a href="<% if( param 'forms_id' ) { %>/admin/forms/view/<%= param 'forms_id' %><% } else { %>/admin/fields<% } %>" class="btn btn-default">一覧へ戻る</a> 
-    <a href="/admin/fields/edit/<%= $hash->{id} %><% if( param 'forms_id' ) { %>?forms_id=<%= param 'forms_id' %><% } %>" class="btn btn-primary">編集</a>
+    <a href="<% if( param 'forms_id' ) { %><%= get_path('/admin/forms/view/', param 'forms_id' ) %><% } else { %><%= get_path('/admin/fields') %><% } %>" class="btn btn-default">一覧へ戻る</a> 
+    <a href="<%= get_path('/admin/fields/edit/', $hash->{id} ) %><% if( param 'forms_id' ) { %>?forms_id=<%= param 'forms_id' %><% } %>" class="btn btn-primary">編集</a>
   </div>
   <table class="table table-striped table-hover">
     <tr>
@@ -38,9 +38,9 @@
     % }
   </table>
   
-  <form method="POST" name="admin_field_disable" action="/admin/fields/disable/<%= $hash->{id} %>">
+  <form method="POST" name="admin_field_disable" action="<%= get_path('/admin/fields/disable/', $hash->{id} ) %>">
     <div class="form-actions">
-      <a href="<% if( param 'forms_id' ) { %>/admin/forms/view/<%= param 'forms_id' %><% } else { %>/admin/fields<% } %>" class="btn btn-default">キャンセル</a>
+      <a href="<% if( param 'forms_id' ) { %><%= get_path('/admin/forms/view/', param 'forms_id' ) %><% } else { %><%= get_path('/admin/fields') %><% } %>" class="btn btn-default">キャンセル</a>
       <button type="submit" class="btn btn-danger pull-right">削除</button>
     </div>
     % if( param 'forms_id' ) {

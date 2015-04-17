@@ -102,7 +102,7 @@ sub register {
         }
         $dbis->commit or die $dbis->error;
         $dbis->disconnect or die $dbis->error;
-        $self->redirect_to( '/admin/forms' );
+        $self->redirect_to( $self->get_path( '/admin/forms' ) );
     }
 }
 
@@ -186,7 +186,7 @@ sub do_disable {
         or die $dbis->error;
     $dbis->commit or die $dbis->error;
     $dbis->disconnect or die $dbis->error;
-    $self->redirect_to( '/admin/forms' );
+    $self->redirect_to( $self->get_path( '/admin/forms' ) );
 }
 
 
@@ -205,7 +205,7 @@ sub change_status {
     
     $dbis->commit or die $dbis->error;
     $dbis->disconnect or die $dbis->error;
-    $self->redirect_to( '/admin/forms/view/' . $id );
+    $self->redirect_to( $self->get_path( '/admin/forms/view/' . $id ) );
 }
 
 sub get_form_setting {

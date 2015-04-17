@@ -8,7 +8,7 @@
     
     <ul class="nav nav-pills">
       <li class="active">
-        <a href="/admin/fields/add">新規作成</a>
+        <a href="<%= get_path('/admin/fields/add') %>">新規作成</a>
       </li>
     </ul>
     
@@ -34,12 +34,12 @@
           <td><%= date( $line->{date_created} ) %></td>
           <td><%= date( $line->{date_updated} ) %></td>
           <td><% if( $line->{is_global} ) { %>共用<% } else { %>----<% } %></td>
-          <td><a href="/admin/fields/view/<%= $line->{id} %>"><%= decode( $line->{name} ) %></a></td>
+          <td><a href="<%= get_path('/admin/fields/view/', $line->{id} ) %>"><%= decode( $line->{name} ) %></a></td>
           <td><%= decode( field_types( $line->{type} ) ) %></td>
           <td><%= decode( $line->{default} ) %></td>
           <td><% if( $line->{is_required} ) { %>必須<% } else { %>----<% } %></td>
-          <td><a href="/admin/fields/edit/<%= $line->{id} %>">編集</a></td>
-          <td><a href="/admin/fields/disable/<%= $line->{id} %>">削除</a></td>
+          <td><a href="<%= get_path('/admin/fields/edit/', $line->{id} ) %>">編集</a></td>
+          <td><a href="<%= get_path('/admin/fields/disable/', $line->{id} ) %>">削除</a></td>
         </tr>
       % }
       </tbody>

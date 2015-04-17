@@ -8,6 +8,7 @@ use Mojo::ByteStream;
 use DateTime::Format::Pg;
 use CGI qw/:any/;
 use Data::Visitor::Callback;
+use Mojo::Path;
 
 use Data::Dumper;
 
@@ -146,6 +147,16 @@ sub startup {
                        my $self = shift;
                        return $self->app->log->debug( Data::Dumper->new( \@_ )->Sortkeys( 1 )->Dump );
                    } );
+    $self->helper( get_path => sub {
+                       my $self = shift;
+                       my @paths = @_;
+                       my $path = Mojo::Path->new( $ENV{MOJO_PREFIX} || '' )->leading_slash( 1 );
+                       foreach my $p ( @paths ) {
+                           $self->dumper( { p => $p, path => $path } );
+                           $path = $path->trailing_slash( 1 )->merge( Mojo::Path->new( $p )->leading_slash( 0 ) )
+                       }
+                       return $path->to_abs_string;
+                   } );
     $self->app->sessions->cookie_name('anax_session');
     # Router
     my $r = $self->routes;
@@ -164,7 +175,7 @@ sub startup {
             return 1;
         }
         else {
-            $self->redirect_to( '/admin/login' );
+            $self->redirect_to( $self->get_path( '/admin/login' ) );
             return 0;
         }
     } );

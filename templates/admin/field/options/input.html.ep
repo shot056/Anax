@@ -3,12 +3,12 @@
 
 
   <ul class="breadcrumb">
-    <li><a href="/admin/fields">項目</a><span class="divider">/</span></li>
+    <li><a href="<%= get_path('/admin/fields') %>">項目</a><span class="divider">/</span></li>
     <li>選択肢<span class="divider">/</span></li>
     <li class="active">登録</li>
   </ul>
 
-  <form method="POST" name="admin_field_options_add" action="/admin/field/<%= stash 'field_id' %>/options/add" class="form-input form-horizontal" role="form">
+  <form method="POST" name="admin_field_options_add" action="<%= get_path('/admin/field/', ( stash 'field_id' ), '/options/add' ) %>" class="form-input form-horizontal" role="form">
     <div class="form-group">
       <label class="col-sm-2 control-label" for="field_default">選択肢リスト</label>
       <div class="col-sm-8">
@@ -22,7 +22,7 @@
     </div>
     <div class="form-group">
       <div class="col-sm-offset-2 col-sm-4">
-        <a href="/admin/fields/view/<%= param 'field_id' %><% if( param 'forms_id' ) { %>?forms_id=<%= param 'forms_id' %><% } %>" class="btn btn-default">キャンセル</a>
+        <a href="<%= get_path('/admin/fields/view/', param 'field_id' ) %><% if( param 'forms_id' ) { %>?forms_id=<%= param 'forms_id' %><% } %>" class="btn btn-default">キャンセル</a>
         <button type="submit" class="btn btn-primary pull-right">登録</button>
       </div>
     </div>

@@ -85,7 +85,7 @@ sub register {
         }
         $dbis->commit or die $dbis->error;
         $dbis->disconnect or die $dbis->error;
-        $self->redirect_to( '/admin/forms/view/' . $params->{forms_id} );
+        $self->redirect_to( $self->get_path( '/admin/forms/view/' . $params->{forms_id} ) );
     }
 }
 

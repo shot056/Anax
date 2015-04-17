@@ -31,7 +31,7 @@ sub do_login {
         and length( $self->app->config->{password} ) > 0 and $params->{password} eq $self->app->config->{password} ) {
 
         $self->session( is_logged_in => 1 );
-        $self->redirect_to( '/admin' );
+        $self->redirect_to( $self->get_path( '/admin' ) );
     }
     else {
         $self->stash( failure => 1 );
@@ -43,7 +43,7 @@ sub logout {
     my $self = shift;
 
     $self->session( is_logged_in => 0 );
-    $self->redirect_to( '/admin/login' );
+    $self->redirect_to( $self->get_path( '/admin/login' ) );
 }
 
 

@@ -125,7 +125,7 @@ sub register {
         }
         $dbis->commit or die $dbis->error;
         $dbis->disconnect or die $dbis->error;
-        $self->redirect_to( '/admin/products/view/' . $product_id );
+        $self->redirect_to( $self->get_path( '/admin/products/view/', $product_id ) );
     }
 }
 
@@ -207,7 +207,7 @@ sub do_disable {
 #            } );
     $dbis->commit or die $dbis->error;
     $dbis->disconnect or die $dbis->error;
-    $self->redirect_to( "/admin/products/view/$product_id" );
+    $self->redirect_to( $self->get_path( "/admin/products/view/$product_id" ) );
 }
 
 sub to_thumbnail {
@@ -223,7 +223,7 @@ sub to_thumbnail {
         or die $dbis->error;
     $dbis->commit or die $dbis->error;
     $dbis->disconnect or die $dbis->error;
-    $self->redirect_to( "/admin/products/view/$product_id" );
+    $self->redirect_to( $self->get_path( "/admin/products/view/$product_id" ) );
 }
 
 
@@ -238,7 +238,7 @@ sub not_thumbnail {
         or die $dbis->error;
     $dbis->commit or die $dbis->error;
     $dbis->disconnect or die $dbis->error;
-    $self->redirect_to( "/admin/products/view/$product_id" );
+    $self->redirect_to( $self->get_path( "/admin/products/view/$product_id" ) );
 }
 
 

@@ -3,14 +3,14 @@
 
 
   <ul class="breadcrumb">
-    <li><a href="/admin/products">商品</a><span class="divider">/</span></li>
+    <li><a href="<%= get_path('/admin/products') %>">商品</a><span class="divider">/</span></li>
     <li class="active">登録</li>
   </ul>
 
   % if( exists $params->{id} and defined $params->{id} ) {
-  <form method="POST" name="admin_products_edit" action="/admin/products/edit/<%= $params->{id} %>" class="form-horizontal">
+  <form method="POST" name="admin_products_edit" action="<%= get_path('/admin/products/edit/', $params->{id} ) %>" class="form-horizontal">
     % } else {
-  <form method="POST" name="admin_products_add" action="/admin/products/add" class="form-horizontal">
+  <form method="POST" name="admin_products_add" action="<%= get_path('/admin/products/add') %>" class="form-horizontal">
   % }
     <div class="form-group">
       <label class="control-label" for="field_name">商品名</label>
@@ -49,7 +49,7 @@
       </div>
     </div>
     <div class="form-actions">
-      <a href="<% if( param 'forms_id' ) { %>/admin/forms/view/<%= param 'forms_id' %><% } else { %>/admin/products<% } %>" class="btn btn-default">キャンセル</a>
+      <a href="<% if( param 'forms_id' ) { %><%= get_path('/admin/forms/view/', ( param 'forms_id' ) ) %><% } else { %><%= get_path('/admin/products') %><% } %>" class="btn btn-default">キャンセル</a>
       <button type="submit" class="btn btn-primary pull-right">登録</button>
     </div>
     % if( exists $params->{id} and $params->{id} =~ /^\d+$/ ) {

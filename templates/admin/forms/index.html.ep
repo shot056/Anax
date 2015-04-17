@@ -8,7 +8,7 @@
     
     <ul class="nav nav-pills">
       <li class="active">
-        <a href="/admin/forms/add">新規作成</a>
+        <a href="<%= get_path('/admin/forms/add') %>">新規作成</a>
       </li>
     </ul>
     
@@ -32,12 +32,12 @@
           <td><%= $line->{key} %></td>
           <td><%= date( $line->{date_created} ) %></td>
           <td><%= date( $line->{date_updated} ) %></td>
-          <td><a href="/admin/forms/view/<%= $line->{id} %>"><%= decode( $line->{name} ) %></a></td>
+          <td><a href="<%= get_path('/admin/forms/view/', $line->{id} ) %>"><%= decode( $line->{name} ) %></a></td>
           <td><% if( $line->{is_published} ) { %>公開済み<% } else { %>未公開<% } %></td>
           <td><%= date( $line->{date_published} ) %></td>
-          <td><a href="/admin/forms/edit/<%= $line->{id} %>">編集</a></td>
-          <td><a href="/admin/forms/disable/<%= $line->{id} %>">削除</a></td>
-          <td><a href="/form/<%= $line->{key} %>?is_admin=1" target="_blank">表示</a></td>
+          <td><a href="<%= get_path('/admin/forms/edit/', $line->{id} ) %>">編集</a></td>
+          <td><a href="<%= get_path('/admin/forms/disable/', $line->{id} ) %>">削除</a></td>
+          <td><a href="<%= get_path('/form/', $line->{key} ) %>?is_admin=1" target="_blank">表示</a></td>
         </tr>
       % }
       </tbody>

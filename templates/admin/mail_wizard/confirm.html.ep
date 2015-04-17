@@ -10,7 +10,7 @@
     下記の内容でメールを送信します。<br />
     よろしければ[ 送信 ]ボタンを押してください。
   </div>
-  <form method="POST" action="/admin/mailwizard/send" name="form_mailwizard_confirm" id="form_mailwizard_confirm" class="form-horizontal">
+  <form method="POST" action="<%= get_path('/admin/mailwizard/send') %>" name="form_mailwizard_confirm" id="form_mailwizard_confirm" class="form-horizontal">
     <blockquote><p>メール内容</p></blockquote>
     <dl class="dl-horizontal">
       <dt>送信者 ( From )</dt>

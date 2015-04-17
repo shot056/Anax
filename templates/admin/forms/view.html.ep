@@ -2,22 +2,22 @@
 % title 'フォーム詳細';
 
   <ul class="breadcrumb">
-    <li><a href="/admin/forms">フォーム</a><span class="divider">/</span></li>
+    <li><a href="<%= get_path('/admin/forms') %>">フォーム</a><span class="divider">/</span></li>
     <li class="active">詳細<span class="divider">/</span></li>
     <li><%= $hash->{id} %></li>
   </ul>
 
   <h4>フォーム詳細</h4>
   <div class="actions">
-    <a href="/admin/forms" class="btn btn-default">一覧へ戻る</a> 
-    <a href="/admin/forms/edit/<%= $hash->{id} %>" class="btn btn-primary">編集</a>
-    <a href="/admin/forms/disable/<%= $hash->{id} %>" class="btn btn-danger">削除</a>
-    <a href="/form/<%= $hash->{key} %>?is_admin=1" target="_blank" class="btn btn-info pull-right">プレビュー</a>
+    <a href="<%= get_path('/admin/forms') %>" class="btn btn-default">一覧へ戻る</a> 
+    <a href="<%= get_path('/admin/forms/edit/', $hash->{id} ) %>" class="btn btn-primary">編集</a>
+    <a href="<%= get_path('/admin/forms/disable/', $hash->{id} ) %>" class="btn btn-danger">削除</a>
+    <a href="<%= get_path('/form/', $hash->{key} ) %>?is_admin=1" target="_blank" class="btn btn-info pull-right">プレビュー</a>
     
     % if( $hash->{is_published} ) {
-    <a href="/admin/forms/changestatus/<%= $hash->{id} %>/private" class="btn btn-warning pull-right">非公開にする</a>
+    <a href="<%= get_path('/admin/forms/changestatus/', $hash->{id}, 'private') %>" class="btn btn-warning pull-right">非公開にする</a>
     % } else {
-    <a href="/admin/forms/changestatus/<%= $hash->{id} %>/publish" class="btn btn-success pull-right">公開する</a>
+    <a href="<%= get_path('/admin/forms/changestatus/', $hash->{id}, 'publish') %>" class="btn btn-success pull-right">公開する</a>
     % }
   </div>
 
@@ -63,8 +63,8 @@
 
   <h4>項目一覧</h4>
   <div class="actions">
-    <a href="/admin/fields/add?forms_id=<%= $hash->{id} %>" class="btn btn-primary">新規項目追加</a>
-    <a href="/admin/fields/associate/<%= $hash->{id} %>" class="btn btn-info">共通項目関連付け編集</a>
+    <a href="<%= get_path('/admin/fields/add' ) %>?forms_id=<%= $hash->{id} %>" class="btn btn-primary">新規項目追加</a>
+    <a href="<%= get_path('/admin/fields/associate/', $hash->{id} ) %>" class="btn btn-info">共通項目関連付け編集</a>
   </div>
   
   <table class="table table-striped table-hover">
@@ -90,15 +90,15 @@
         <td><%= date( $line->{date_updated} ) %></td>
         <td><% if( $line->{is_global} ) { %>共用<% } else { %> ---- <% } %></td>
         <td><% if( $line->{is_required} ) { %>必須<% } else { %>----<% } %></td>
-        <td><a href="/admin/fields/view/<%= $line->{id} %>?forms_id=<%= $hash->{id} %>"><%= decode( $line->{name} ) %></a></td>
+        <td><a href="<%= get_path('/admin/fields/view/', $line->{id} ) %>?forms_id=<%= $hash->{id} %>"><%= decode( $line->{name} ) %></a></td>
         <td><%= decode( field_types( $line->{type} ) ) %></td>
         <td><%= decode( $line->{default} ) %></td>
         % if( $line->{is_global} ) {
         <td>----</td>
         <td>----</td>
         % } else {
-        <td><a href="/admin/fields/edit/<%= $line->{id} %>?forms_id=<%= $hash->{id} %>">編集</a></td>
-        <td><a href="/admin/fields/disable/<%= $line->{id} %>?forms_id=<%= $hash->{id} %>">削除</a></td>
+        <td><a href="<%= get_path('/admin/fields/edit/', $line->{id} ) %>?forms_id=<%= $hash->{id} %>">編集</a></td>
+        <td><a href="<%= get_path('/admin/fields/disable/', $line->{id} ) %>?forms_id=<%= $hash->{id} %>">削除</a></td>
         % }
       </tr>
     % }
@@ -108,8 +108,8 @@
 
   <h4>関連付け商品一覧</h4>
   <div class="actions">
-    <a href="/admin/products/add?forms_id=<%= $hash->{id} %>" class="btn btn-primary">新規商品追加</a>
-    <a href="/admin/products/associate/<%= $hash->{id} %>" class="btn btn-info">編集</a>
+    <a href="<%= get_path('/admin/products/add' ) %>?forms_id=<%= $hash->{id} %>" class="btn btn-primary">新規商品追加</a>
+    <a href="<%= get_path('/admin/products/associate/', $hash->{id} ) %>" class="btn btn-info">編集</a>
   </div>
   <table class="table table-striped table-hover">
     <thead>
@@ -127,7 +127,7 @@
         <td><%= $line->{id} %></td>
         <td><%= date( $line->{date_created} ) %></td>
         <td><%= date( $line->{date_updated} ) %></td>
-        <td><a href="/admin/products/view/<%= $line->{id} %>?forms_id=<%= $hash->{id} %>"><%= decode( $line->{name} ) %></a></td>
+        <td><a href="<%= get_path('/admin/products/view/', $line->{id} ) %>?forms_id=<%= $hash->{id} %>"><%= decode( $line->{name} ) %></a></td>
         <td>￥<%= decode( $line->{price} ) %></a></td>
       </tr>
     % }
@@ -138,11 +138,11 @@
   <h4>自動返信メール</h4>
   % unless( $mail_template ) {
   <div class="actions">
-    <a href="/admin/mailtemplates/add?forms_id=<%= $hash->{id} %>" class="btn btn-primary">新規登録</a>
+    <a href="<%= get_path('/admin/mailtemplates/add' ) %>?forms_id=<%= $hash->{id} %>" class="btn btn-primary">新規登録</a>
   </div>
   % } else {
   <div class="actions">
-    <a href="/admin/mailtemplates/edit/<%= $mail_template->{id} %>" class="btn btn-info">編集</a>
+    <a href="<%= get_path('/admin/mailtemplates/edit/', $mail_template->{id} ) %>" class="btn btn-info">編集</a>
   </div>
   <table class="table table-striped table-hover">
     <tr>

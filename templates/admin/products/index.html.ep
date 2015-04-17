@@ -8,7 +8,7 @@
     
     <ul class="nav nav-pills">
       <li class="active">
-        <a href="/admin/products/add">新規作成</a>
+        <a href="<%= get_path('/admin/products/add') %>">新規作成</a>
       </li>
     </ul>
     
@@ -30,10 +30,10 @@
           <td><%= $line->{id} %></td>
           <td><%= date( $line->{date_created} ) %></td>
           <td><%= date( $line->{date_updated} ) %></td>
-          <td><a href="/admin/products/view/<%= $line->{id} %>"><%= decode( $line->{name} ) %></a></td>
+          <td><a href="<%= get_path('/admin/products/view/', $line->{id} ) %>"><%= decode( $line->{name} ) %></a></td>
           <td>￥<%= decode( $line->{price} ) %></td>
-          <td><a href="/admin/products/edit/<%= $line->{id} %>">編集</a></td>
-          <td><a href="/admin/products/disable/<%= $line->{id} %>">削除</a></td>
+          <td><a href="<%= get_path('/admin/products/edit/', $line->{id} ) %>">編集</a></td>
+          <td><a href="<%= get_path('/admin/products/disable/', $line->{id} ) %>">削除</a></td>
         </tr>
       % }
       </tbody>

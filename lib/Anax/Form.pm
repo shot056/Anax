@@ -53,7 +53,8 @@ sub input {
                   has_products    => scalar @{$products->{list}} ? 1 : 0,
                   params          => $params,
                   mail_from       => $self->app->config->{gmail}->{username},
-                  use_product_image => $form_setting->{use_product_image}
+                  use_product_image => $form_setting->{use_product_image},
+                  get_path => sub { return $self->get_path( @_ ) }
                 };
     #$self->app->log->debug( Dumper( $datas ) );
     $self->render( text => $self->render_template( $key, 'input', $datas ) );
@@ -88,7 +89,8 @@ sub confirm {
                   has_products    => scalar @{$products->{list}} ? 1 : 0,
                   params          => $params,
                   mail_from       => $self->app->config->{gmail}->{username},
-                  use_product_image => $form_setting->{use_product_image}
+                  use_product_image => $form_setting->{use_product_image},
+                  get_path => sub { return $self->get_path( @_ ) }
                 };
     my $rule = $self->generate_rule( $form_setting->{field_list} );
     
@@ -141,7 +143,8 @@ sub complete {
                   has_products    => scalar @{$products->{list}} ? 1 : 0,
                   params          => $params,
                   mail_from       => $self->app->config->{gmail}->{username},
-                  use_product_image => $form_setting->{use_product_image}
+                  use_product_image => $form_setting->{use_product_image},
+                  get_path => sub { return $self->get_path( @_ ) }
                 };
     $datas->{values} = $self->replace_params2value( $form_setting, $products, $params );
 #    $self->app->log->debug( "values : \n" . Dumper( $datas->{values} ) );

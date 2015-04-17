@@ -10,7 +10,7 @@
     <li>メールウィザード<span class="divider">/</span></li>
     <li class="active">テンプレート入力</li>
   </ul>
-  <form method="POST" action="/admin/mailwizard/confirm" name="form_mailwizard_template" id="form_mailwizard_template" class="form-horizontal">
+  <form method="POST" action="<%= get_path('/admin/mailwizard/confirm') %>" name="form_mailwizard_template" id="form_mailwizard_template" class="form-horizontal">
     
     %=include 'admin/mail_templates/form'
     

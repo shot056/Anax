@@ -107,7 +107,7 @@ sub register {
         }
         $dbis->commit or die $dbis->error;
         $dbis->disconnect or die $dbis->error;
-        $self->redirect_to( $params->{forms_id} ? '/admin/forms/view/' . $params->{forms_id} : '/admin/products' );
+        $self->redirect_to( $self->get_path( $params->{forms_id} ? '/admin/forms/view/' . $params->{forms_id} : '/admin/products' ) );
     }
 }
 
@@ -197,7 +197,7 @@ sub do_associate {
     }
     $dbis->commit or die $dbis->error;
     $dbis->disconnect or die $dbis->error;
-    $self->redirect_to( '/admin/forms/view/' . $form_id );
+    $self->redirect_to( $self->get_path( '/admin/forms/view/' . $form_id ) );
 }
 
 sub get_form_products {
