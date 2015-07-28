@@ -72,7 +72,7 @@ sub main {
     }
     # SELECT a.id, a.email, af.date_created FROM applicants AS a, applicant_form AS af WHERE a.is_deleted = FALSE AND af.is_deleted = FALSE AND af.applicants_id = a.id ORDER BY af.date_created;
     my $rslt = exec_sql( $dbis, "SELECT a.id, a.email, af.date_created FROM applicants AS a, applicant_form AS af WHERE af.forms_id = ? AND a.is_deleted = FALSE AND af.is_deleted = FALSE AND af.applicants_id = a.id ORDER BY af.date_created;", $forms_id );
-    printf('"email","date_created"');
+    printf('"id","email","date_created"');
     foreach my $f ( @fields ) {
         printf(',"%s"', encode( 'utf-8', $f->{name} ) );
     }
@@ -81,7 +81,7 @@ sub main {
     }
     print "\n";
     while( my $line = $rslt->hash ) {
-        printf('"%s","%s"', $line->{email} || '', $line->{date_created} || '' );
+        printf('%d,"%s","%s"', $line->{id}, $line->{email} || '', $line->{date_created} || '' );
         foreach my $f ( @fields ) {
             printf(',"%s"', ( exists $applicants_data{ $line->{id} } and exists $applicants_data{ $line->{id} }->{ $f->{id} } )
                             ? ( ( $f->{type} =~ /^text/ ? ( encode( 'utf-8', $applicants_data{ $line->{id} }->{ $f->{id} }->{text} ) || '' )

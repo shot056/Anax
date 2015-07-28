@@ -157,6 +157,7 @@ sub startup {
                        }
                        return $path->to_abs_string;
                    } );
+    $self->app->sessions->secure( 1 );
     $self->app->sessions->cookie_name('anax_session');
     # Router
     my $r = $self->routes;
@@ -166,8 +167,8 @@ sub startup {
 
         $self->app->log->info( "++++++++++++++++++++ Start Request ++++++++++++++++++++" );
         $self->app->log->info( "Request: " . $self->req->method . " " . $self->req->url->to_string );
-        $self->app->log->info( "Params : \n" . Dumper( $self->req->params->to_hash ) );
-        $self->app->log->info( "Session: \n" . Dumper( $self->session ) );
+        $self->app->log->info( "Params : \n" . Data::Dumper->new( [ $self->req->params->to_hash ] )->Sortkeys( 1 )->Dump );
+        $self->app->log->info( "Session: \n" . Data::Dumper->new( [ $self->session ] )->Sortkeys( 1 )->Dump );
         
         return 1 unless( $self->req->url->to_string =~ m!^/admin! );
         return 1 if( $self->req->url->to_string eq '/admin/login' );
