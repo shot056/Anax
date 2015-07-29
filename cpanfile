@@ -175,4 +175,12 @@ requires 'WebService::Dropbox', '== 1.22';
 requires 'Imager', '== 1.001';
 
 # Amazon::S3
-requires 'Amazon::S3';
+requires 'LWP::UserAgent::Determined', '== 1.07';
+requires 'XML::NamespaceSupport', '== 1.11';
+requires 'XML::SAX::Base', '== 1.08';
+requires 'XML::SAX', '== 0.99';
+requires 'XML::Parser', '== 2.44';
+requires 'XML::SAX::Expat', '== 0.51';
+requires 'XML::Simple', '== 2.20';
+requires 'Digest::MD5::File', '== 0.08';
+requires 'Amazon::S3', '== 0.45';
