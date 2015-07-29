@@ -42,8 +42,8 @@ sub input {
     
     my $datas = { action_base     => "/form/$key",
                   name            => $form_setting->{name} || '',
-                  description     => $self->app->html_br( $form_setting->{description} || '' ),
-                  message         => $self->app->html_br( $form_setting->{messages}->{input} || '' ),
+                  description     => $form_setting->{description} || '',
+                  message         => $form_setting->{messages}->{input} || '',
                   forms           => $forms,
                   field_list      => $form_setting->{field_list},
                   fields          => $form_setting->{fields},
@@ -54,10 +54,12 @@ sub input {
                   params          => $params,
                   mail_from       => $self->app->config->{gmail}->{username},
                   use_product_image => $form_setting->{use_product_image},
-                  get_path => sub { return $self->get_path( @_ ) }
+                  use_tag           => $form_setting->{use_tag},
+                  get_path => sub { return $self->get_path( @_ ) },
+                  html_br => sub { return $self->app->html_br( @_ ) }
                 };
-    #$self->app->log->debug( Dumper( $datas ) );
-    $self->render( text => $self->render_template( $key, 'input', $datas ) );
+    $self->app->log->debug( Dumper( $datas ) );
+    $self->render( text => $self->render_template( $key, 'input', $self->app->v_decode( $datas ) ) );
 }
 
 sub confirm {
@@ -79,8 +81,9 @@ sub confirm {
     
     my $datas = { action_base     => "/form/$key",
                   name            => $form_setting->{name} || '',
-                  description     => $self->app->html_br( $form_setting->{description} || '' ),
-                  message         => $self->app->html_br( $form_setting->{messages}->{confirm} || '' ),
+                  use_tag         => $form_setting->{use_tag},
+                  description     => $form_setting->{description} || '',
+                  message         => $form_setting->{messages}->{confirm} || '',
                   field_list      => $form_setting->{field_list},
                   fields          => $form_setting->{fields},
                   product_list    => $products->{list},
@@ -90,7 +93,8 @@ sub confirm {
                   params          => $params,
                   mail_from       => $self->app->config->{gmail}->{username},
                   use_product_image => $form_setting->{use_product_image},
-                  get_path => sub { return $self->get_path( @_ ) }
+                  get_path => sub { return $self->get_path( @_ ) },
+                  html_br => sub { return $self->app->html_br( @_ ) }
                 };
     my $rule = $self->generate_rule( $form_setting->{field_list} );
     
@@ -100,11 +104,11 @@ sub confirm {
         $self->stash( messages => $vresult->messages_to_hash );
         $datas->{messages} = $vresult->messages_to_hash
             if( $vresult->has_invalid );
-        $datas->{message} = $self->app->html_br( $form_setting->{messages}->{input} || '' );
+        $datas->{message} = $form_setting->{messages}->{input} || '';
         $datas->{forms} = $self->generate_forms( $form_setting->{field_list}, $params );
         
         #$self->app->log->debug( Dumper( $datas ) );
-        $self->render( text => $self->render_template( $key, 'input', $datas ) );
+        $self->render( text => $self->render_template( $key, 'input', $datas) );
     }
     else {
         $datas->{forms} = $self->generate_forms( $form_setting->{field_list}, $params, 1 );
@@ -133,8 +137,8 @@ sub complete {
     my $datas = { action_base     => "/form/$key",
                   key             => $key,
                   name            => $form_setting->{name},
-                  description     => $self->app->html_br( $form_setting->{description} || '' ),
-                  message         => $self->app->html_br( $form_setting->{messages}->{complete} || '' ),
+                  description     => $form_setting->{description} || '',
+                  message         => $form_setting->{messages}->{complete} || '',
                   field_list      => $form_setting->{field_list},
                   fields          => $form_setting->{fields},
                   product_list    => $products->{list},
@@ -144,7 +148,10 @@ sub complete {
                   params          => $params,
                   mail_from       => $self->app->config->{gmail}->{username},
                   use_product_image => $form_setting->{use_product_image},
-                  get_path => sub { return $self->get_path( @_ ) }
+                  use_tag           => $form_setting->{use_tag},
+                  use_tag           => $form_setting->{use_tag},
+                  get_path => sub { return $self->get_path( @_ ) },
+                  html_br => sub { return $self->app->html_br( @_ ) }
                 };
     $datas->{values} = $self->replace_params2value( $form_setting, $products, $params );
 #    $self->app->log->debug( "values : \n" . Dumper( $datas->{values} ) );
@@ -197,7 +204,7 @@ sub complete {
             next unless( exists $params->{ $field->{name} } );
             #$self->app->log->debug( "\$params->{ \$field->{name} } : $field->{name} : \n" . Dumper( $params->{ $field->{name} } ) );
             if( $field->{type} =~ /^text/ ) {
-                $dbis->insert('applicant_data', { %hash, text => $params->{ $field->{name} } } )
+                $dbis->insert('applicant_data', $self->v_encode( { %hash, text => $params->{ $field->{name} } } ) )
                     or die $dbis->error;
             }
             else {
@@ -408,7 +415,7 @@ sub render_template {
 
     my ( $dir, $file ) = $self->get_template_file( $key, $type );
     my $tenjin = Tenjin->new( { path => [ "$dir" ] } );
-    return $tenjin->render( $file, $data );
+    return $tenjin->render( $file, $self->v_decode( $data ) );
 #    return Mojo::ByteStream->new( $out )->decode;
 }
 

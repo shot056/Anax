@@ -39,6 +39,7 @@ sub sendmail {
     my $parts   = shift;
     my $key     = shift;
 
+    return 0 unless( exists $parts->{to} and defined $parts->{to} and length( $parts->{to} ) > 0 );
     $charset = 'utf8' unless ( grep( $charset eq $_, qw/utf8 iso_2022_jp/ ) );
 
     my %header = (
@@ -145,8 +146,8 @@ sub _render {
     my $data = shift;
     
     my $tenjin_template = Tenjin::Template->new;
-    $tenjin_template->convert( $tmpl, $name );
-    return $tenjin_template->render( $data );
+    $tenjin_template->convert( $self->app->decode( $tmpl ), $name );
+    return $tenjin_template->render( $self->app->v_decode( $data ) );
 }
 
 sub load {

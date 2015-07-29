@@ -38,6 +38,11 @@
       <label class="col-sm-2 control-label" for="field_description">フォームの説明</label>
       <div class="col-sm-8">
         <textarea class="form-control" name="description" rows="6"><%= decode( $params->{description} ) %></textarea>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" id="use_tag_in_description" name="use_tag_in_description" value="1" <% if( $params->{use_tag_in_description} ) { %>checked="checked"<% } %> />HTMLタグを使用する
+          </label>
+        </div>
         <span class="help-inline">
           入力画面・確認画面・完了画面 共通で表示されるフォームの説明です。<br />
           デフォルトフォームではページ上部に表示されます。
@@ -48,6 +53,11 @@
       <label class="col-sm-2 control-label" for="field_message_input">メッセージ：入力画面</label>
       <div class="col-sm-8">
         <textarea class="form-control" name="message_input" rows="4"><%= decode( $params->{message_input} ) %></textarea>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" id="use_tag_in_message_input" name="use_tag_in_message_input" value="1" <% if( $params->{use_tag_in_message_input} ) { %>checked="checked"<% } %> />HTMLタグを使用する
+          </label>
+        </div>
         <span class="help-inline">
           入力画面に表示されるメッセージです。<br />
           デフォルトフォームではフォームの説明の下に表示されます。
@@ -58,6 +68,11 @@
       <label class="col-sm-2 control-label" for="field_message_confirm">メッセージ：確認画面</label>
       <div class="col-sm-8">
         <textarea class="form-control" name="message_confirm" rows="4"><%= decode( $params->{message_confirm} ) %></textarea>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" id="use_tag_in_message_confirm" name="use_tag_in_message_confirm" value="1" <% if( $params->{use_tag_in_message_confirm} ) { %>checked="checked"<% } %> />HTMLタグを使用する
+          </label>
+        </div>
         <span class="help-inline">
           確認画面に表示されるメッセージです。<br />
           デフォルトフォームではフォームの説明の下に表示されます。
@@ -68,6 +83,11 @@
       <label class="col-sm-2 control-label" for="field_message_complete">メッセージ：完了画面</label>
       <div class="col-sm-8">
         <textarea class="form-control" name="message_complete" rows="4"><%= decode( $params->{message_complete} ) %></textarea>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" id="use_tag_in_message_complete" name="use_tag_in_message_complete" value="1" <% if( $params->{use_tag_in_message_complete} ) { %>checked="checked"<% } %> />HTMLタグを使用する
+          </label>
+        </div>
         <span class="help-inline">
           完了画面に表示されるメッセージです。<br />
           デフォルトフォームではフォームの説明の下に表示されます。

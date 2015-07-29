@@ -81,23 +81,28 @@ sub register {
             or die DBIx::Simple->error;
         $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
         $dbis->begin_work or die $dbis->error;
-        my $hash = { key => $params->{key},
-                     name => $params->{name},
-                     description => $params->{description},
-                     product_message => $params->{product_message},
-                     message_input => $params->{message_input},
-                     message_confirm => $params->{message_confirm},
-                     message_complete => $params->{message_complete},
-                     use_product_image => $params->{use_product_image},
+        my $hash = { key => $params->{key} || '',
+                     name => $params->{name} || '',
+                     description => $params->{description} || '',
+                     product_message => $params->{product_message} || '',
+                     message_input => $params->{message_input} || '',
+                     message_confirm => $params->{message_confirm} || '',
+                     message_complete => $params->{message_complete} || '',
+                     use_product_image => $params->{use_product_image} || 0,
+                     use_tag_in_description => $params->{use_tag_in_description} || 0,
+                     use_tag_in_message_input => $params->{use_tag_in_message_input} || 0,
+                     use_tag_in_message_confirm => $params->{use_tag_in_message_confirm} || 0,
+                     use_tag_in_message_complete => $params->{use_tag_in_message_complete} || 0,
 #                     is_published => $params->{is_published}
                    };
         if( defined $id and $id =~ /^\d+$/ ) {
             $hash->{date_updated} = 'now';
-            $dbis->update( 'forms', $hash, { id => $id } )
+            $dbis->update( 'forms', $self->v_encode( $hash ), { id => $id } )
                 or die $dbis->error;
         }
         else {
-            $dbis->insert( 'forms', $hash )
+            $self->dumper( { hash => $hash, v_hash => $self->v_encode( $hash ) } );
+            $dbis->insert( 'forms', $self->v_encode( $hash ) )
                 or die $dbis->error;
         }
         $dbis->commit or die $dbis->error;
@@ -243,19 +248,26 @@ sub get_form_setting {
     
     my $setting = { id => $form->{id},
                     key => $form->{key},
-#                    name => $form->{name},
-#                    description => $form->{description} || '',
-#                    product_message => $form->{product_message} || '',
-#                    messages => { input => $form->{message_input} || '',
-#                                  confirm => $form->{message_confirm} || '',
-#                                  complete => $form->{message_complete} || '' },
-                    name => b( $form->{name} || '' ),
-                    description => b( $form->{description} || '' ),
-                    product_message => b( $form->{product_message} || '' ),
+                    use_tag => { description => $form->{use_tag_in_description} || 0,
+                                 message_input => $form->{use_tag_in_message_input} || 0,
+                                 message_confirm => $form->{use_tag_in_message_confirm} || 0,
+                                 message_complete => $form->{use_tag_in_message_complete} || 0 },
                     use_product_image => $form->{use_product_image} || 0,
-                    messages => { input => b( $form->{message_input} || '' ),
-                                  confirm => b( $form->{message_confirm} || '' ),
-                                  complete => b( $form->{message_complete} || '' ) },
+                    
+                    name => $form->{name},
+                    description => $form->{description} || '',
+                    product_message => $form->{product_message} || '',
+                    messages => { input => $form->{message_input} || '',
+                                  confirm => $form->{message_confirm} || '',
+                                  complete => $form->{message_complete} || '' },
+
+                    # name => b( $form->{name} || '' ),
+                    # description => b( $form->{description} || '' ),
+                    # product_message => b( $form->{product_message} || '' ),
+                    # messages => { input => b( $form->{message_input} || '' ),
+                    #               confirm => b( $form->{message_confirm} || '' ),
+                    #               complete => b( $form->{message_complete} || '' ) },
+                    
                     # name => b( $form->{name} )->decode->to_string,
                     # description => b( $form->{description} || '' )->decode->to_string,
                     # product_message => b( $form->{product_message} || '' )->decode->to_string,
@@ -296,13 +308,17 @@ sub get_field_data {
 
     my $field = { id          => $line->{id},
                   name        => "field_" . $line->{id},
-#                  desc        => $line->{name},
-#                  desc        => b( $line->{name} )->decode->to_string,
-                  desc        => b( $line->{name} || '' ),
                   type        => $line->{type},
-                  default     => $line->{default} || undef,
-                  default     => b( $line->{default} || '' ),
-#                  default     => b( $line->{default} )->decode->to_string || undef,
+                  
+                  desc        => $line->{name},
+                  default     => $line->{default} || '',
+                  
+                  # desc        => b( $line->{name} || '' ),
+                  # default     => b( $line->{default} || '' ),
+                  
+                  # desc        => b( $line->{name} )->decode->to_string,
+                  # default     => b( $line->{default} )->decode->to_string || undef,
+                  
                   is_required => $line->{is_required},
                   is_global   => $line->{is_global},
                   error_check => $line->{error_check} };
@@ -324,14 +340,14 @@ sub get_field_options {
     my $options = [];
     my $options_hash = {};
     while( my $line = $it->hash ) {
-        my $option = { name => b( $line->{name} || '' ),
-#        my $option = { name => b( $line->{name} )->decode->to_string,
-#        my $option = { name => $line->{name},
+        my $option = { name => $line->{name},
+        # my $option = { name => b( $line->{name} || '' ),
+        # my $option = { name => b( $line->{name} )->decode->to_string,
                        value => $line->{id} };
         push( @{ $options }, $option );
-#        $options_hash->{ $line->{id} } = $line->{name};
-        $options_hash->{ $line->{id} } = b( $line->{name} || '' );
-#        $options_hash->{ $line->{id} } = b( $line->{name} )->decode->to_string;
+        $options_hash->{ $line->{id} } = $line->{name};
+        # $options_hash->{ $line->{id} } = b( $line->{name} || '' );
+        # $options_hash->{ $line->{id} } = b( $line->{name} )->decode->to_string;
     }
     return ( $options, $options_hash );
 }

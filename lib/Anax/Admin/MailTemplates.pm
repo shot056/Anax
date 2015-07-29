@@ -31,7 +31,8 @@ sub input {
         return $self->render_not_found unless( $rslt->rows );
         $params = $rslt->hash;
     }
-    $self->stash( fields => Anax::Admin::Forms->new( $self )->get_fields( $dbis, [ $params->{forms_id} ] )  );
+    $self->stash( fields => $self->app->v_decode( Anax::Admin::Forms->new( $self )->get_fields( $dbis, [ $params->{forms_id} ] ) ) );
+    $self->dumper( { stash => [ $self->stash ] } );
     $self->stash( messages => {}, params => $params );
     $self->render;
     
@@ -76,11 +77,11 @@ sub register {
                    };
         if( defined $id and $id =~ /^\d+$/ ) {
             $hash->{date_updated} = 'now';
-            $dbis->update( 'mail_templates', $hash, { id => $id } )
+            $dbis->update( 'mail_templates', $self->v_encode( $hash), { id => $id } )
                 or die $dbis->error;
         }
         else {
-            $dbis->insert( 'mail_templates', $hash )
+            $dbis->insert( 'mail_templates', $self->v_encode( $hash ) )
                 or die $dbis->error;
         }
         $dbis->commit or die $dbis->error;

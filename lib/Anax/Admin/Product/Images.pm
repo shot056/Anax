@@ -16,6 +16,7 @@ use Data::Dumper;
 
 use Anax::Admin::Product::Images::Cloudinary;
 use Anax::Admin::Product::Images::Dropbox;
+use Anax::Admin::Product::Images::AmazonS3;
 
 my $vc = Validator::Custom::Anax->new;
 
@@ -96,11 +97,11 @@ sub register {
                    };
         if( defined $id and $id =~ /^\d+$/ ) {
             $hash->{date_updated} = 'now';
-            $dbis->update( 'product_images', $hash, { id => $id } )
+            $dbis->update( 'product_images', $self->v_encode( $hash ), { id => $id } )
                 or die $dbis->error;
         }
         else {
-            $dbis->insert( 'product_images', $hash )
+            $dbis->insert( 'product_images', $self->v_encode( $hash ) )
                 or die $dbis->error;
             $id = $dbis->last_insert_id( undef, 'public', 'product_images', 'id' ) or die $dbis->error;
         }
@@ -111,6 +112,9 @@ sub register {
         }
         elsif( $self->app->config->{useDropbox} ) {
             $obj = Anax::Admin::Product::Images::Dropbox->new( $self->app );
+        }
+        elsif( $self->app->config->{useAmazonS3} ) {
+            $obj = Anax::Admin::Product::Images::AmazonS3->new( $self->app );
         }
         if( defined $obj ) {
             my $params = $obj->save( $self->param('file'), $id, $ext );
@@ -183,6 +187,12 @@ sub do_disable {
         if( length( $data->{public_id} ) ) {
             $self->app->log->debug( "remove dropbox file : $data->{public_id}" );
             $obj = Anax::Admin::Product::Images::Dropbox->new( $self->app );
+        }
+    }
+    elsif( $self->app->config->{useAmazonS3} ) {
+        if( length( $data->{public_id} ) ) {
+            $self->app->log->debug( "remove amazon s3 file : $data->{public_id}" );
+            $obj = Anax::Admin::Product::Images::AmazonS3->new( $self->app );
         }
     }
     if( defined $obj ) {

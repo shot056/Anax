@@ -72,10 +72,22 @@
       <form id="form1" class="form-input form-horizontal" method="POST" action="[= $get_path->( $action_base, '/complete') =]" role="form">
         <h2 class="form-signin-heading">[= $name =]</h2>
         <?pl if( length( $description ) ) { ?>
-        <blockquote><p>[== $description =]</p></blockquote>
+        <blockquote><p>
+            <?pl if( $use_tag->{description} ) { ?>
+            [== $description =]
+            <?pl } else { ?>
+            [== $html_br->( $description ) =]
+            <?pl } ?>
+        </p></blockquote>
         <?pl } ?>
         <?pl if( length( $message ) ) { ?>
-        <blockquote><p>[== $message =]</p></blockquote>
+        <blockquote><p>
+            <?pl if( $use_tag->{message_confirm} ) { ?>
+            [== $message =]
+            <?pl } else { ?>
+            [== $html_br->( $message ) =]
+            <?pl } ?>
+        </p></blockquote>
         <?pl } ?>
         <?pl if( $has_products ) { ?>
         <div class="form-group">

@@ -82,10 +82,22 @@ my $_buf = ""; my $_V;  $_buf .= q`<!DOCTYPE html>
       <form id="form1" class="form-input form-horizontal" method="POST" action="` . escape_xml( $get_path->($action_base, '/confirm') ) . q`" role="form">
         <h2 class="form-signin-heading">` . escape_xml( $name ) . q`</h2>
 `;         if( length( $description ) ) {
- $_buf .= q`        <blockquote><p>` . ( $description ) . q`</p></blockquote>
+ $_buf .= q`        <blockquote><p>
+`;             if( $use_tag->{description} ) {
+ $_buf .= q`            ` . ( $description ) . q`
+`;             } else {
+ $_buf .= q`            ` . ( $html_br->( $description ) ) . q`
+`;             }
+ $_buf .= q`        </p></blockquote>
 `;         }
         if( length( $message ) ) {
- $_buf .= q`        <blockquote><p>` . ( $message ) . q`</p></blockquote>
+ $_buf .= q`        <blockquote><p>
+`;             if( $use_tag->{message_input} ) {
+ $_buf .= q`            ` . ( $message ) . q`
+`;             } else {
+ $_buf .= q`            ` . ( $html_br->( $message ) ) . q`
+`;             }
+ $_buf .= q`        </p></blockquote>
 `;         }
         if( $has_products ) {
  $_buf .= q`        <div class="form-group">

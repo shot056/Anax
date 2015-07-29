@@ -85,6 +85,43 @@ sub startup {
                                                     return "$ret";
                                                 }
                                                );
+    $self->helper( v_decode => sub {
+                       my $self = shift;
+                       my $data = shift;
+                       return $v_decode->visit( $data );
+                   } );
+    $self->helper( encode => sub {
+                       my $self = shift;
+                       my $str  = shift;
+                       return '' unless( defined $str and length( $str ) );
+                       my $undef = undef;
+                       my $ret = Mojo::ByteStream->new( $str )->encode->to_string;
+                       return ( ( defined $ret and length( $ret ) ) ? $ret : $str );
+                   } );
+    my $v_encode = Data::Visitor::Callback->new(
+                                                scalar => sub {},
+                                                plain_value => sub {
+                                                    my $str = shift;
+                                                    my $ret = &{$self->renderer->helpers->{encode}}( $self, $_ );
+                                                    return "$ret";
+                                                }
+                                               );
+    $self->helper( v_encode => sub {
+                       my $self = shift;
+                       my $data = shift;
+                       return $v_encode->visit( $data );
+                   } );
+    my $v_b = Data::Visitor::Callback->new(
+                                           scalar => sub {},
+                                           plain_value => sub {
+                                               my $str = shift;
+                                               return &{$self->renderer->helpers->{b}}( $self, $_ );
+                                           } );
+    $self->helper( v_b => sub {
+                       my $self = shift;
+                       my $data = shift;
+                       return $v_b->visit( $data );
+                   } );
     $self->helper( date => sub {
                        my $self = shift;
                        my $date = shift;
@@ -152,12 +189,13 @@ sub startup {
                        my @paths = @_;
                        my $path = Mojo::Path->new( $ENV{MOJO_PREFIX} || '' )->leading_slash( 1 );
                        foreach my $p ( @paths ) {
-                           $self->dumper( { p => $p, path => $path } );
+#                           $self->dumper( { p => $p, path => $path } );
                            $path = $path->trailing_slash( 1 )->merge( Mojo::Path->new( $p )->leading_slash( 0 ) )
                        }
                        return $path->to_abs_string;
                    } );
-    $self->app->sessions->secure( 1 );
+    $self->app->sessions->secure( 1 )
+        unless( $self->app->config->{unsecure_session} );
     $self->app->sessions->cookie_name('anax_session');
     # Router
     my $r = $self->routes;

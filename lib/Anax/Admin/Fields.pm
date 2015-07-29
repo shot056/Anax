@@ -90,11 +90,11 @@ sub register {
                    };
         if( defined $id and $id =~ /^\d+$/ ) {
             $hash->{date_updated} = 'now';
-            $dbis->update( 'fields', $hash, { id => $id } )
+            $dbis->update( 'fields', $self->v_encode( $hash ), { id => $id } )
                 or die $dbis->error;
         }
         else {
-            $dbis->insert( 'fields', $hash )
+            $dbis->insert( 'fields', $self->v_encode( $hash ) )
                 or die $dbis->error;
             if( exists $params->{forms_id} and $params->{forms_id} =~ /^\d+$/ ) {
                 my $fields_id = $dbis->last_insert_id( undef, 'public', 'fields', 'id' ) or die $dbis->error;

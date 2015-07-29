@@ -173,3 +173,6 @@ requires 'WebService::Dropbox', '== 1.22';
 
 # Image::Magick
 requires 'Imager', '== 1.001';
+
+# Amazon::S3
+requires 'Amazon::S3';

@@ -76,10 +76,22 @@
       <div class="form-input form-horizontal">
         <h2 class="form-signin-heading">[= $name =]</h2>
         <?pl if( length( $description ) ) { ?>
-        <blockquote><p>[== $description =]</p></blockquote>
+        <blockquote><p>
+            <?pl if( $use_tag->{description} ) { ?>
+            [== $description =]
+            <?pl } else { ?>
+            [== $html_br->( $description ) =]
+            <?pl } ?>
+        </p></blockquote>
         <?pl } ?>
         <?pl if( length( $message ) ) { ?>
-        <blockquote><p>[== $message =]</p></blockquote>
+        <blockquote><p>
+            <?pl if( $use_tag->{message_complete} ) { ?>
+            [== $message =]
+            <?pl } else { ?>
+            [== $html_br->( $message ) =]
+            <?pl } ?>
+        </p></blockquote>
         <?pl } ?>
       </div>
     </div> <!-- /container -->

@@ -93,11 +93,11 @@ sub register {
                    };
         if( defined $id and $id =~ /^\d+$/ ) {
             $hash->{date_updated} = 'now';
-            $dbis->update( 'products', $hash, { id => $id } )
+            $dbis->update( 'products', $self->v_encode( $hash ), { id => $id } )
                 or die $dbis->error;
         }
         else {
-            $dbis->insert( 'products', $hash )
+            $dbis->insert( 'products', $self->v_encode( $hash ) )
                 or die $dbis->error;
             if( exists $params->{forms_id} and $params->{forms_id} =~ /^\d+$/ ) {
                 my $products_id = $dbis->last_insert_id( undef, 'public', 'products', 'id' ) or die $dbis->error;
@@ -220,8 +220,8 @@ sub get_form_products {
         my $images = { has_image => 0, has_thumb => 0, has_slides => 0, slides => [] };
         while( my $img_line = $img_it->hash ) {
 #            $app->log->debug( Dumper( $img_line ) );
-            $img_line->{name} = b( $img_line->{name} || '' );
-            $img_line->{description} = b( $img_line->{description} || '' );
+            $img_line->{name} = $img_line->{name} || '';
+            $img_line->{description} = $img_line->{description} || '';
             if( $img_line->{is_thumbnail} ) {
                 $images->{thumb} = $img_line;
                 $images->{has_thumb} = 1;
@@ -235,8 +235,8 @@ sub get_form_products {
         }
 #        $products->{hash}->{ $line->{id} } = $line;
         $products->{hash}->{ $line->{id} } = { map { $_ => $line->{$_} } qw/id price sortorder p_sortorder name description/ };
-        $products->{hash}->{ $line->{id} }->{name} = b( $line->{name} || '' );
-        $products->{hash}->{ $line->{id} }->{description} = b( $line->{description} || '' );
+        $products->{hash}->{ $line->{id} }->{name} = $line->{name} || '';
+        $products->{hash}->{ $line->{id} }->{description} = $line->{description} || '';
 #       $products->{hash}->{ $line->{id} }->{name} = b( $line->{name} )->decode->to_string;
 #       $products->{hash}->{ $line->{id} }->{description} = b( $line->{description} )->decode->to_string;
         $products->{hash}->{ $line->{id} }->{images} = $images;

@@ -71,10 +71,10 @@ sub index {
             push( @{ $data }, $line );
         }
     }
-    my $fields = $self->get_fields( $dbis );
-    my $field_options = $self->get_field_options( $dbis );
+    my $fields = [ map { $self->v_decode( $_ ) } @{ $self->get_fields( $dbis ) } ];
+    my $field_options = $self->v_decode( $self->get_field_options( $dbis ) );
     $self->app->log->debug( Data::Dumper->new( [ { data => $data, fields => $fields, field_options => $field_options } ] )->Sortkeys( 1 )->Dump );
-    $self->render( template => 'admin/applicants/index', datas => $data, fields => $fields, field_options => $field_options );
+    $self->render( template => 'admin/applicants/index', datas => [ map { $self->v_decode( $_ ) } @{ $data } ], fields => $fields, field_options => $field_options );
     $dbis->commit;
     $dbis->disconnect or die $dbis->error;
 }
@@ -252,7 +252,7 @@ sub load_view_data_to_stash {
     my $applicant_products_it = $dbis->query("SELECT afp.id, afp.number, p.id AS product_id, p.name, p.price, p.description FROM applicant_form_products AS afp, products AS p WHERE afp.is_deleted = FALSE AND p.is_deleted = FALSE AND afp.products_id=p.id AND afp.applicants_id=? AND afp.forms_id=?;", $id, $form_id )
         or die $dbis->error;
 
-    my $form_setting = Anax::Admin::Forms->new( $self )->get_form_setting( $self->app, $form_id, 1 );
+    my $form_setting = $self->v_decode( Anax::Admin::Forms->new( $self )->get_form_setting( $self->app, $form_id, 1 ) );
 
     $self->stash( hash => $applicant );
     $self->stash( datas => $datas );
