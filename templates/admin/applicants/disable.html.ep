@@ -8,7 +8,7 @@
   </ul>
 
   <h4>申込削除</h4>
-  <form method="POST" name="admin_applicants_disable" action="<$= get_path('/admin/applicants/disable/', $hash->{id}, $form_setting->{id} ) %>">
+  <form method="POST" name="admin_applicants_disable" action="<%= get_path('/admin/applicants/disable/', $hash->{id}, $form_setting->{id} ) %>">
     <div class="actions">
       <a href="<%= get_path('/admin/applicants') %>" class="btn btn-default">一覧へ戻る</a>
       <button type="submit" class="btn btn-danger pull-right">削除</button>
