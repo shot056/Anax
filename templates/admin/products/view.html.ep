@@ -37,6 +37,7 @@
 
   <div class="actions">
     <a href="<%= get_path('/admin/product/', $hash->{id}, '/images/add' ) %>" class="btn btn-primary">画像追加</a>
+    <a href="<%= get_path('/admin/sort/product_images/', $hash->{id} ) %>?from=<%= get_path( url_with ) %>" class="btn btn-info">並び替え</a>
   </div>
 
   <ul class="thumbnails">

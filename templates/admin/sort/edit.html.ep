@@ -1,0 +1,48 @@
+% layout 'admin';
+% title '並び替え';
+
+  <style>
+  #sortable {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 60%;
+    padding: 10px;
+    border: 1px dashed;
+    margin-bottom: 20px;
+  }
+  #sortable li {
+    margin: 0 3px 3px 3px;
+    padding: 0.4em;
+    padding-left: 1.5em;
+    height: 34px;
+  }
+  #sortable li span {
+    position: absolute;
+    margin-left: -1.3em; }
+  </style>
+  <script>
+  $(document).ready( function() {
+    $( "#sortable" ).sortable();
+    $( "#sortable" ).disableSelection();
+  } );
+  </script>
+  <ul class="breadcrumb">
+    <li>並び替え</li>
+  </ul>
+  <form method="POST" name="admin_sort_edit" action="<%= get_path('/admin/sort/' . $target . '/' . $id ) %>" class="form-input form-horizontal" role="form">
+    <input type="hidden" name="from" value="<%= $from %>" />
+    <ul id="sortable">
+      % while( my $line = $result->hash ) {
+      <li class="ui-state-default">
+        <span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
+        <a href="<%= $line->{link} %>"><%= $line->{id} %></a> : <%= decode( $line->{name} ) %>
+        <input type="hidden" name="ids" value="<%= $line->{id} %>" />
+      </li>
+      % }
+    </ul>
+    <div class="form-actions">
+      <a href="<%= ( length( $from ) > 0 ) ? $from : 'javascript: window.history.back();' %>" class="btn btn-default">戻る</a>
+      <button type="submit" class="btn btn-danger pull-right">登録</button>
+    </div>
+  </form>

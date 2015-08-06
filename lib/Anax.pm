@@ -9,6 +9,8 @@ use DateTime::Format::Pg;
 use CGI qw/:any/;
 use Data::Visitor::Callback;
 use Mojo::Path;
+use DBIx::Simple;
+use SQL::Maker;
 
 use Data::Dumper;
 
@@ -299,7 +301,8 @@ sub startup {
     $r->route('admin/applicants/disable/:id/:form_id', id => qr/\d+/, form_id => qr/\d+/ )->via('GET' )->to( controller => 'Admin::Applicants', action => 'disable' );
     $r->route('admin/applicants/disable/:id/:form_id', id => qr/\d+/, form_id => qr/\d+/ )->via('POST')->to( controller => 'Admin::Applicants', action => 'do_disable' );
 
-
+    $r->route('admin/sort/:target/:id', id => qr/\d+/, target => qr/[a-z_]+/ )->via('GET' )->to( controller => 'Admin::Sort', action => 'edit' );
+    $r->route('admin/sort/:target/:id', id => qr/\d+/, target => qr/[a-z_]+/ )->via('POST')->to( controller => 'Admin::Sort', action => 'do_edit' );
 }
 
 1;
