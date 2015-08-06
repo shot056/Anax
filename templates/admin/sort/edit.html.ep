@@ -1,29 +1,34 @@
 % layout 'admin';
 % title '並び替え';
-
+  <script src="<%= get_path('/static/js/jquery.multisortable.js') %>"></script>
   <style>
-  #sortable {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    width: 60%;
-    padding: 10px;
-    border: 1px dashed;
-    margin-bottom: 20px;
-  }
-  #sortable li {
-    margin: 0 3px 3px 3px;
-    padding: 0.4em;
-    padding-left: 1.5em;
-    height: 34px;
-  }
-  #sortable li span {
-    position: absolute;
-    margin-left: -1.3em; }
+   #sortable {
+     list-style-type: none;
+     margin: 0;
+     padding: 0;
+     width: 60%;
+     padding: 10px;
+     border: 1px dashed;
+     margin-bottom: 20px;
+   }
+   #sortable li {
+     margin: 0 3px 3px 3px;
+     padding: 0.4em;
+     padding-left: 1.5em;
+     height: 34px;
+   }
+   #sortable li span {
+     position: absolute;
+     margin-left: -1.3em;
+   }
+   #sortable li.selected {
+     outline: 1px solid;
+   }
+   
   </style>
   <script>
   $(document).ready( function() {
-    $( "#sortable" ).sortable();
+    $( "#sortable" ).multisortable();
     $( "#sortable" ).disableSelection();
   } );
   </script>

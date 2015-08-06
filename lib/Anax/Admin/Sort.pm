@@ -13,7 +13,8 @@ my $target_map = {
                   'product_images' => { s => 'product_images',
                                         l => 'products_id' },
                   'field_options'  => { s => 'field_options',
-                                        l => 'fields_id' }
+                                        l => 'fields_id' },
+                  'products' => { s => 'products' }
                  };
 sub edit {
     my $self = shift;
@@ -27,10 +28,10 @@ sub edit {
     my $method = "_" . $target . "_load";
     my $stmt;
     if( $self->can( $method ) ) {
-        $stmt = $self->$method( $dbis, $id );
+        $stmt = $self->$method( $dbis, $id || undef );
     }
     elsif( exists $target_map->{ $target } ) {
-        $stmt = $self->_common_load( $dbis, $target, $id );
+        $stmt = $self->_common_load( $dbis, $target, $id || undef );
     }
     if( $stmt ) {
         $self->app->log->debug( "[SQL] " . $stmt->as_sql . "; ( " . join( ", ", $stmt->bind ) . " )" );
@@ -61,7 +62,7 @@ sub do_edit {
         $result = $self->$method( $dbis, $id, $self->req->params->to_hash->{ids} || [] );
     }
     elsif( exists $target_map->{ $target } ) {
-        $result = $self->_common_save( $dbis, $target, $id, $self->req->params->to_hash->{ids} || [] );
+        $result = $self->_common_save( $dbis, $target, $id || undef, $self->req->params->to_hash->{ids} || [] );
     }
     $dbis->commit or die $dbis->error;
     $dbis->disconnect or die $dbis->error;
@@ -90,7 +91,8 @@ sub _common_load {
         $stmt->add_select( join(', ', qw/id name/ ) );
         $stmt->add_from( $table );
         $stmt->add_where( is_deleted => 0 );
-        $stmt->add_where( $link_field => $id );
+        $stmt->add_where( $link_field => $id )
+            if( defined $link_field and length( $link_field ) );
         $stmt->add_order_by( sortorder => 'ASC' );
     }
     else {
@@ -133,7 +135,10 @@ sub _common_save {
         $link_field = sprintf('%s_id', $table_b );
     }
     for( my $i = 0; $i < scalar @{ $ids }; $i ++ ) {
-        $dbis->update( $table, { sortorder => $i + 1 }, { id => $ids->[ $i ], $link_field => $id } );
+        my $wheres = { id => $ids->[ $i ] };
+        $wheres->{ $link_field } = $id
+            if( defined $link_field and length( $link_field ) );
+        $dbis->update( $table, { sortorder => $i + 1 }, $wheres );
     }
     return 1;
 }

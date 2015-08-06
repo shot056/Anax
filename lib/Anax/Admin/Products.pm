@@ -26,7 +26,7 @@ sub index {
     $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
     $dbis->begin_work or die $dbis->error;
     
-    my $rslt = $dbis->select( 'products', ['*'], { is_deleted => 0 } )
+    my $rslt = $dbis->select( 'products', ['*'], { is_deleted => 0 }, { order_by => 'sortorder, id ASC' } )
         or die $dbis->error;
     
     $self->stash( datas => $rslt );
