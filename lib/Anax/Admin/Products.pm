@@ -89,7 +89,8 @@ sub register {
         
         my $hash = { price => $params->{price},
                      name => $params->{name},
-                     description => $params->{description}
+                     description => $params->{description},
+                     use_tag_in_description => $params->{use_tag_in_description} || 0
                    };
         if( defined $id and $id =~ /^\d+$/ ) {
             $hash->{date_updated} = 'now';
@@ -240,6 +241,7 @@ sub get_form_products {
 #       $products->{hash}->{ $line->{id} }->{name} = b( $line->{name} )->decode->to_string;
 #       $products->{hash}->{ $line->{id} }->{description} = b( $line->{description} )->decode->to_string;
         $products->{hash}->{ $line->{id} }->{images} = $images;
+        $products->{hash}->{ $line->{id} }->{use_tag_in_description} = $line->{use_tag_in_description};
         push( @{ $products->{list} }, $products->{hash}->{ $line->{id} } );
     }
 #    $app->log->debug( Data::Dumper->new( [ { products => $products } ] )->Sortkeys( 1 )->Dump );

@@ -1,0 +1,1 @@
+ALTER TABLE forms ADD COLUMN use_product_detail BOOLEAN DEFAULT FALSE;

@@ -41,6 +41,11 @@
       <label class="control-label" for="field_description">商品説明</label>
       <div class="controls">
         <textarea rows="10" id="field_description" name="description"><%= decode( $params->{description} ) %></textarea>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" id="use_tag_in_description" name="use_tag_in_description" value="1" <% if( $params->{use_tag_in_description} ) { %>checked="checked"<% } %> />HTMLタグを使用する
+          </label>
+        </div>
         <span class="help-inline">
           % if( exists $messages->{description} ) {
           <p class="text-danger"><%= decode( $messages->{description} ) %></p>

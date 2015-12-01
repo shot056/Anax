@@ -52,7 +52,7 @@ my $_buf = ""; my $_V;  $_buf .= q`<!DOCTYPE html>
        width: 250px;
        float: left;
        margin: 5px;
-       max-height: 280px;
+       /*max-height: 280px;*/
        min-height: 200px;
      }
      .one-product label {
@@ -103,55 +103,66 @@ my $_buf = ""; my $_V;  $_buf .= q`<!DOCTYPE html>
         if( $has_products ) {
  $_buf .= q`        <div class="form-group">
 `;           if( length( $product_message ) ) {
- $_buf .= q`          <label class="col-sm-10">` . escape_xml( $product_message ) . q`</label>
+ $_buf .= q`            <label class="col-sm-10">` . escape_xml( $product_message ) . q`</label>
 `;           } 
  $_buf .= q`          <div id="products" class="col-sm-offset-2 col-sm-10">
 `;           foreach my $p ( @{$product_list} ) {
  $_buf .= q`            <div class="one-product">
 `;             if( $use_product_image ) {
               if( $p->{images}->{has_image} ) {
-                  my $slide_st = 0;
-                  if( $p->{images}->{has_thumb} ) {
- $_buf .= q`              <label><input type="checkbox" value="` . escape_xml( $p->{id} ) . q`" name="products"`; if( grep( $_ eq $p->{id}, @{ $params->{products} } ) ) { $_buf .= q` checked="checked"`; } $_buf .= q`>` . escape_xml( $p->{name} ) . q`</label>
-              <div class="image-thumb">
-                <a href="` . escape_xml( $p->{images}->{thumb}->{url} ) . q`" data-lightbox="prod-` . escape_xml( $p->{id} ) . q`" data-title="` . escape_xml( $p->{name} ) . q`">
-                  <img src="` . escape_xml( $p->{images}->{thumb}->{thumb_url} ) . q`" alt="` . escape_xml( $p->{images}->{thumb}->{name} ) . q`" />
-                </a>
-              </div>
-`;                   } else {
+                my $slide_st = 0;
+                if( $p->{images}->{has_thumb} ) {
+ $_buf .= q`                  <label><input type="checkbox" value="` . escape_xml( $p->{id} ) . q`" name="products"`; if( grep( $_ eq $p->{id}, @{ $params->{products} } ) ) { $_buf .= q` checked="checked"`; } $_buf .= q`>` . escape_xml( $p->{name} ) . q`</label>
+                  <div class="image-thumb">
+                    <a href="` . escape_xml( $p->{images}->{thumb}->{url} ) . q`" data-lightbox="prod-` . escape_xml( $p->{id} ) . q`" data-title="` . escape_xml( $p->{name} ) . q`">
+                      <img src="` . escape_xml( $p->{images}->{thumb}->{thumb_url} ) . q`" alt="` . escape_xml( $p->{images}->{thumb}->{name} ) . q`" />
+                    </a>
+                  </div>
+`;                 } else {
                   $slide_st = 1;
- $_buf .= q`              <input type="checkbox" value="` . escape_xml( $p->{id} ) . q`" name="products"`; if( grep( $_ eq $p->{id}, @{ $params->{products} } ) ) { $_buf .= q` checked="checked"`; } $_buf .= q`>
-              <a href="` . escape_xml( $p->{images}->{slides}->[0]->{url} ) . q`" data-lightbox="prod-` . escape_xml( $p->{id} ) . q`" data-title="` . escape_xml( $p->{images}->{slides}->[0]->{name} ) . q`">` . escape_xml( $p->{name} ) . q`</a>
-`;                   }
- $_buf .= q`              <div class="image-slides">
-`;                   for( my $i = $slide_st; $i < scalar @{ $p->{images}->{slides} }; $i ++ ) {
- $_buf .= q`                <a href="` . escape_xml( $p->{images}->{slides}->[$i]->{url} ) . q`" data-lightbox="prod-` . escape_xml( $p->{id} ) . q`" data-title="` . escape_xml( $p->{images}->{slides}->[$i]->{name} ) . q`">` . escape_xml( $p->{name} ) . q`</a>
-`;                   }
- $_buf .= q`              </div>
+ $_buf .= q`                  <input type="checkbox" value="` . escape_xml( $p->{id} ) . q`" name="products"`; if( grep( $_ eq $p->{id}, @{ $params->{products} } ) ) { $_buf .= q` checked="checked"`; } $_buf .= q`>
+                  <a href="` . escape_xml( $p->{images}->{slides}->[0]->{url} ) . q`" data-lightbox="prod-` . escape_xml( $p->{id} ) . q`" data-title="` . escape_xml( $p->{images}->{slides}->[0]->{name} ) . q`">` . escape_xml( $p->{name} ) . q`</a>
+`;                 }
+ $_buf .= q`                <div class="image-slides">
+`;                 for( my $i = $slide_st; $i < scalar @{ $p->{images}->{slides} }; $i ++ ) {
+ $_buf .= q`                  <a href="` . escape_xml( $p->{images}->{slides}->[$i]->{url} ) . q`" data-lightbox="prod-` . escape_xml( $p->{id} ) . q`" data-title="` . escape_xml( $p->{images}->{slides}->[$i]->{name} ) . q`">` . escape_xml( $p->{name} ) . q`</a>
+`;                 }
+ $_buf .= q`                </div>
                 
 `;               } else {
- $_buf .= q`              <label><input type="checkbox" value="` . escape_xml( $p->{id} ) . q`" name="products"`; if( grep( $_ eq $p->{id}, @{ $params->{products} } ) ) { $_buf .= q` checked="checked"`; } $_buf .= q`>` . escape_xml( $p->{name} ) . q`</label>
+ $_buf .= q`                <label><input type="checkbox" value="` . escape_xml( $p->{id} ) . q`" name="products"`; if( grep( $_ eq $p->{id}, @{ $params->{products} } ) ) { $_buf .= q` checked="checked"`; } $_buf .= q`>` . escape_xml( $p->{name} ) . q`</label>
 `;               }
             } else {
  $_buf .= q`              <label><input type="checkbox" value="` . escape_xml( $p->{id} ) . q`" name="products"`; if( grep( $_ eq $p->{id}, @{ $params->{products} } ) ) { $_buf .= q` checked="checked"`; } $_buf .= q`>` . escape_xml( $p->{name} ) . q`</label>
 `;             }
+            if( $use_product_detail ) {
+              if( length( $p->{description} ) > 0 ) {
+ $_buf .= q`                <div>
+`;                   if( $p->{use_tag_in_description} ) {
+ $_buf .= q`                    ` . ( $p->{description} ) . q`
+`;                   } else {
+ $_buf .= q`                    ` . ( $html_br->( $p->{description} ) ) . q`
+`;                   }
+ $_buf .= q`                </div>
+`;               }
+            }
  $_buf .= q`            </div>
 `;           }
  $_buf .= q`          </div>
         </div>
 `;         }
         foreach my $f ( @{$field_list} ) {
- $_buf .= q`        <div class="form-group">
-          <label class="col-sm-2 control-label" for="` . escape_xml( $f->{name} ) . q`">` . escape_xml( $f->{desc} ) . q`</label>
-          <div class="col-sm-8">
-            ` . ( $forms->{ $f->{name} } ) . q`
-            <span class="help-inline">
-`;               if( exists $messages->{ $f->{name} } ) {
- $_buf .= q`              <p class="text-danger">` . escape_xml( $messages->{ $f->{name} } ) . q`</p>
-`;               }
- $_buf .= q`            </span>
+ $_buf .= q`          <div class="form-group">
+            <label class="col-sm-2 control-label" for="` . escape_xml( $f->{name} ) . q`">` . escape_xml( $f->{desc} ) . q`</label>
+            <div class="col-sm-8">
+              ` . ( $forms->{ $f->{name} } ) . q`
+              <span class="help-inline">
+`;                 if( exists $messages->{ $f->{name} } ) {
+ $_buf .= q`                  <p class="text-danger">` . escape_xml( $messages->{ $f->{name} } ) . q`</p>
+`;                 }
+ $_buf .= q`              </span>
+            </div>
           </div>
-        </div>
 `;         }
  $_buf .= q`        <div class="form-group">
           <div class="col-sm-offset-4 col-sm-4">
@@ -159,7 +170,7 @@ my $_buf = ""; my $_V;  $_buf .= q`<!DOCTYPE html>
           </div>
         </div>
 `;         if( $params->{is_admin} ) {
- $_buf .= q`        <input type="hidden" name="is_admin" value="1" />
+ $_buf .= q`          <input type="hidden" name="is_admin" value="1" />
 `;         }
  $_buf .= q`      </form>
 

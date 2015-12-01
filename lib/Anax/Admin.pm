@@ -26,8 +26,8 @@ sub do_login {
 
     my $params = $self->req->params->to_hash;
     my %h;
-    $h{ $params->{login_id} . " eq " . $self->app->config->{login_id} } = $params->{login_id} eq $self->app->config->{login_id};
-    $h{ $params->{password} . " eq " .  $self->app->config->{password} } = $params->{password} eq $self->app->config->{password};
+    $h{ "id :" . $params->{login_id} . " eq " . $self->app->config->{login_id} } = $params->{login_id} eq $self->app->config->{login_id};
+    $h{ "pwd:" . $params->{password} . " eq " .  $self->app->config->{password} } = $params->{password} eq $self->app->config->{password};
     $self->app->dumper( \%h );
     if( exists $params->{login_id} and defined $params->{login_id}
         and length( $self->app->config->{login_id} ) > 0 and $params->{login_id} eq $self->app->config->{login_id}

@@ -30,7 +30,12 @@
       <th>価格</th><td>￥<%= decode( $hash->{price} ) %></td>
     </tr>
     <tr>
-      <th>商品説明</th><td><%== html_br( decode( $hash->{description} ) ) %></td>
+      <th>商品説明</th>
+      <td><%== html_br( decode( $hash->{description} ) ) %></td>
+    </tr>
+    <tr>
+      <th>HTMLタグの使用</th>
+      <td><% if( $hash->{use_tag_in_description} ) {  %>はい<% } else { %>いいえ<% } %></td>
     </tr>
   </table>
   <hr />

@@ -89,6 +89,7 @@ sub register {
                      message_confirm => $params->{message_confirm} || '',
                      message_complete => $params->{message_complete} || '',
                      use_product_image => $params->{use_product_image} || 0,
+                     use_product_detail => $params->{use_product_detail} || 0,
                      use_tag_in_description => $params->{use_tag_in_description} || 0,
                      use_tag_in_message_input => $params->{use_tag_in_message_input} || 0,
                      use_tag_in_message_confirm => $params->{use_tag_in_message_confirm} || 0,
@@ -253,6 +254,7 @@ sub get_form_setting {
                                  message_confirm => $form->{use_tag_in_message_confirm} || 0,
                                  message_complete => $form->{use_tag_in_message_complete} || 0 },
                     use_product_image => $form->{use_product_image} || 0,
+                    use_product_detail => $form->{use_product_detail} || 0,
                     
                     name => $form->{name},
                     description => $form->{description} || '',
