@@ -55,6 +55,7 @@ sub input {
                   mail_from       => $self->app->config->{gmail}->{username},
                   use_product_image => $form_setting->{use_product_image},
                   use_product_detail => $form_setting->{use_product_detail},
+                  use_product_price => $form_setting->{use_product_price},
                   use_tag           => $form_setting->{use_tag},
                   get_path => sub { return $self->get_path( @_ ) },
                   html_br => sub { return $self->app->html_br( @_ ) }
@@ -95,6 +96,7 @@ sub confirm {
                   mail_from       => $self->app->config->{gmail}->{username},
                   use_product_image => $form_setting->{use_product_image},
                   use_product_detail => $form_setting->{use_product_detail},
+                  use_product_price => $form_setting->{use_product_price},
                   get_path => sub { return $self->get_path( @_ ) },
                   html_br => sub { return $self->app->html_br( @_ ) }
                 };
@@ -151,6 +153,7 @@ sub complete {
                   mail_from       => $self->app->config->{gmail}->{username},
                   use_product_image => $form_setting->{use_product_image},
                   use_product_detail => $form_setting->{use_product_detail},
+                  use_product_price => $form_setting->{use_product_price},
                   use_tag           => $form_setting->{use_tag},
                   use_tag           => $form_setting->{use_tag},
                   get_path => sub { return $self->get_path( @_ ) },

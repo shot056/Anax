@@ -41,6 +41,12 @@
        margin-bottom: 15px;
        padding: 7px 9px;
      }
+     .one-product .one-price {
+       font-size: 13px;
+       color: rgb(255, 0, 0);
+       font-weight: 700;
+       margin-right: 30px;
+     }
 
     </style>
     <link href="[= $get_path->('/static/css/bootstrap-theme.min.css') =]" rel="stylesheet">
@@ -98,6 +104,9 @@
           <?pl foreach my $product_id ( @{ $params->{products} } ) { ?>
             <div class="one-product">
               <label><input type="hidden" value="[= $product_id =]" name="products" />[= $products->{$product_id}->{name} =]</label>
+              <?pl if( $use_product_price and length( $products->{ $product_id }->{price} || '' ) > 0 ) { ?>
+                <span class="one-price">￥[== $products->{ $product_id }->{price} ==]</span>
+              <?pl } ?>
             </div>
           <?pl } ?>
           </div>

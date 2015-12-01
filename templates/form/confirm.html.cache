@@ -41,6 +41,12 @@ my $_buf = ""; my $_V;  $_buf .= q`<!DOCTYPE html>
        margin-bottom: 15px;
        padding: 7px 9px;
      }
+     .one-product .one-price {
+       font-size: 13px;
+       color: rgb(255, 0, 0);
+       font-weight: 700;
+       margin-right: 30px;
+     }
 
     </style>
     <link href="` . escape_xml( $get_path->('/static/css/bootstrap-theme.min.css') ) . q`" rel="stylesheet">
@@ -98,7 +104,10 @@ my $_buf = ""; my $_V;  $_buf .= q`<!DOCTYPE html>
 `;           foreach my $product_id ( @{ $params->{products} } ) {
  $_buf .= q`            <div class="one-product">
               <label><input type="hidden" value="` . escape_xml( $product_id ) . q`" name="products" />` . escape_xml( $products->{$product_id}->{name} ) . q`</label>
-            </div>
+`;               if( $use_product_price and length( $products->{ $product_id }->{price} || '' ) > 0 ) {
+ $_buf .= q`                <span class="one-price">￥` . ( $products->{ $product_id }->{price} ) . q`</span>
+`;               }
+ $_buf .= q`            </div>
 `;           }
  $_buf .= q`          </div>
         </div>

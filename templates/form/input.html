@@ -58,6 +58,15 @@
      .one-product label {
        bottom: 0px;
      }
+     .one-product .one-price {
+       font-size: 13px;
+       color: rgb(255, 0, 0);
+       font-weight: 700;
+       margin-right: 30px;
+     }
+     .one-product .one-description {
+       font-size: 13px;
+     }
 
     </style>
     <link href="[= $get_path->('/static/css/bootstrap-theme.min.css') =]" rel="stylesheet">
@@ -108,43 +117,37 @@
           <div id="products" class="col-sm-offset-2 col-sm-10">
           <?pl foreach my $p ( @{$product_list} ) { ?>
             <div class="one-product">
-            <?pl if( $use_product_image ) { ?>
-              <?pl if( $p->{images}->{has_image} ) { ?>
-                <?pl my $slide_st = 0; ?>
-                <?pl if( $p->{images}->{has_thumb} ) { ?>
-                  <label><input type="checkbox" value="[= $p->{id} =]" name="products"<?pl if( grep( $_ eq $p->{id}, @{ $params->{products} } ) ) { ?> checked="checked"<?pl } ?>>[= $p->{name} =]</label>
-                  <div class="image-thumb">
-                    <a href="[= $p->{images}->{thumb}->{url} =]" data-lightbox="prod-[= $p->{id} =]" data-title="[= $p->{name} =]">
-                      <img src="[= $p->{images}->{thumb}->{thumb_url} =]" alt="[= $p->{images}->{thumb}->{name} =]" />
-                    </a>
-                  </div>
-                <?pl } else { ?>
-                  <?pl $slide_st = 1; ?>
-                  <input type="checkbox" value="[= $p->{id} =]" name="products"<?pl if( grep( $_ eq $p->{id}, @{ $params->{products} } ) ) { ?> checked="checked"<?pl } ?>>
-                  <a href="[= $p->{images}->{slides}->[0]->{url} =]" data-lightbox="prod-[= $p->{id} =]" data-title="[= $p->{images}->{slides}->[0]->{name} =]">[= $p->{name} =]</a>
-                <?pl } ?>
-                <div class="image-slides">
-                <?pl for( my $i = $slide_st; $i < scalar @{ $p->{images}->{slides} }; $i ++ ) { ?>
-                  <a href="[= $p->{images}->{slides}->[$i]->{url} =]" data-lightbox="prod-[= $p->{id} =]" data-title="[= $p->{images}->{slides}->[$i]->{name} =]">[= $p->{name} =]</a>
-                <?pl } ?>
-                </div>
-                
-              <?pl } else { ?>
-                <label><input type="checkbox" value="[= $p->{id} =]" name="products"<?pl if( grep( $_ eq $p->{id}, @{ $params->{products} } ) ) { ?> checked="checked"<?pl } ?>>[= $p->{name} =]</label>
-              <?pl } ?>
-            <?pl } else { ?>
               <label><input type="checkbox" value="[= $p->{id} =]" name="products"<?pl if( grep( $_ eq $p->{id}, @{ $params->{products} } ) ) { ?> checked="checked"<?pl } ?>>[= $p->{name} =]</label>
+            <?pl if( $use_product_price and length( $p->{price} ) > 0 ) { ?>
+              <span class="one-price">￥[== $p->{price} ==]</span>
             <?pl } ?>
-            <?pl if( $use_product_detail ) { ?>
-              <?pl if( length( $p->{description} ) > 0 ) { ?>
-                <div>
-                  <?pl if( $p->{use_tag_in_description} ) { ?>
-                    [== $p->{description} ==]
-                  <?pl } else { ?>
-                    [== $html_br->( $p->{description} ) ==]
-                  <?pl } ?>
+            <?pl if( $use_product_image and $p->{images}->{has_image} ) { ?>
+              <?pl my $slide_st = 0; ?>
+              <?pl if( $p->{images}->{has_thumb} ) { ?>
+                <div class="image-thumb">
+                  <a href="[= $p->{images}->{thumb}->{url} =]" data-lightbox="prod-[= $p->{id} =]" data-title="[= $p->{name} =]">
+                    <img src="[= $p->{images}->{thumb}->{thumb_url} =]" alt="[= $p->{images}->{thumb}->{name} =]" />
+                  </a>
                 </div>
+              <?pl } else { ?>
+                <?pl $slide_st = 1; ?>
+                <input type="checkbox" value="[= $p->{id} =]" name="products"<?pl if( grep( $_ eq $p->{id}, @{ $params->{products} } ) ) { ?> checked="checked"<?pl } ?>>
+                <a href="[= $p->{images}->{slides}->[0]->{url} =]" data-lightbox="prod-[= $p->{id} =]" data-title="[= $p->{images}->{slides}->[0]->{name} =]">[= $p->{name} =]</a>
               <?pl } ?>
+              <div class="image-slides">
+              <?pl for( my $i = $slide_st; $i < scalar @{ $p->{images}->{slides} }; $i ++ ) { ?>
+                <a href="[= $p->{images}->{slides}->[$i]->{url} =]" data-lightbox="prod-[= $p->{id} =]" data-title="[= $p->{images}->{slides}->[$i]->{name} =]">[= $p->{name} =]</a>
+              <?pl } ?>
+              </div>
+            <?pl } ?>
+            <?pl if( $use_product_detail and length( $p->{description} ) > 0 ) { ?>
+              <div class="one-description">
+                <?pl if( $p->{use_tag_in_description} ) { ?>
+                  [== $p->{description} ==]
+                <?pl } else { ?>
+                  [== $html_br->( $p->{description} ) ==]
+                <?pl } ?>
+              </div>
             <?pl } ?>
             </div>
           <?pl } ?>

@@ -59,6 +59,9 @@
       <th>商品説明の表示</th><td><% if( $hash->{use_product_detail} ) { %>表示する<% } else { %>表示しない<% } %></td>
     </tr>
     <tr>
+      <th>商品金額の表示</th><td><% if( $hash->{use_product_price} ) { %>表示する<% } else { %>表示しない<% } %></td>
+    </tr>
+    <tr>
       <th>状態</th><td><% if( $hash->{is_published} ) { %>公開済み<% } else { %>非公開<% } %></td>
     </tr>
   </table>
