@@ -149,6 +149,17 @@ my $_buf = ""; my $_V;  $_buf .= q`<!DOCTYPE html>
 `;                 }
  $_buf .= q`              </div>
 `;             }
+            if( $use_product_detail ) {
+              if( length( $p->{description} ) > 0 ) {
+ $_buf .= q`                <div>
+`;                   if( $p->{use_tag_in_description} ) {
+ $_buf .= q`                    ` . ( $p->{description} ) . q`
+`;                   } else {
+ $_buf .= q`                    ` . ( $html_br->( $p->{description} ) ) . q`
+`;                   }
+ $_buf .= q`                </div>
+`;               }
+            }
  $_buf .= q`            </div>
 `;           }
  $_buf .= q`          </div>

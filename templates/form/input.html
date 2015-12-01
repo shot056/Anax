@@ -149,6 +149,17 @@
                 <?pl } ?>
               </div>
             <?pl } ?>
+            <?pl if( $use_product_detail ) { ?>
+              <?pl if( length( $p->{description} ) > 0 ) { ?>
+                <div>
+                  <?pl if( $p->{use_tag_in_description} ) { ?>
+                    [== $p->{description} ==]
+                  <?pl } else { ?>
+                    [== $html_br->( $p->{description} ) ==]
+                  <?pl } ?>
+                </div>
+              <?pl } ?>
+            <?pl } ?>
             </div>
           <?pl } ?>
           </div>

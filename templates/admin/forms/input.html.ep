@@ -139,6 +139,11 @@
         </div>
         <span class="help-inline">
           商品一覧に金額を表示するかどうかの設定です。
+            <input type="checkbox" id="field_use_product_detail" name="use_product_detail" value="1" <% if( $params->{use_product_detail} ) { %>checked="checked"<% } %> />画像を表示する
+          </label>
+        </div>
+        <span class="help-inline">
+          商品一覧に画像を表示するかどうかの設定です。
         </span>
       </div>
     </div>
