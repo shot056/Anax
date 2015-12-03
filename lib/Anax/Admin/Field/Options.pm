@@ -45,13 +45,13 @@ sub register {
     for( my $i = 0; $i < scalar @options; $i ++ ) {
         $dbis->insert( 'field_options', { fields_id => $field_id,
                                           sortorder => $i + 1,
-                                          name      => $self->encode( $options[ $i ] ) } )
+                                          name      => $options[ $i ] } )
             or die $dbis->error;
     }
     
     $dbis->commit or die $dbis->error;
     $dbis->disconnect or die $dbis->error;
-    $self->redirect_to( $self->get_path( '/admin/fields/view/' . $field_id . ( $params->{forms_id} ? '?forms_id=' . $params->{forms_id} : '' ) ) );
+    $self->redirect_to( $self->get_path( '/admin/fields/view/' . $field_id ) . ( $params->{forms_id} ? '?forms_id=' . $params->{forms_id} : '' ) );
 }
 
 
