@@ -97,11 +97,11 @@ sub register {
                    };
         if( defined $id and $id =~ /^\d+$/ ) {
             $hash->{date_updated} = 'now';
-            $dbis->update( 'product_images', $self->v_encode( $hash ), { id => $id } )
+            $dbis->update( 'product_images', $self->v_decode( $hash ), { id => $id } )
                 or die $dbis->error;
         }
         else {
-            $dbis->insert( 'product_images', $self->v_encode( $hash ) )
+            $dbis->insert( 'product_images', $self->v_decode( $hash ) )
                 or die $dbis->error;
             $id = $dbis->last_insert_id( undef, 'public', 'product_images', 'id' ) or die $dbis->error;
         }

@@ -94,11 +94,11 @@ sub register {
                    };
         if( defined $id and $id =~ /^\d+$/ ) {
             $hash->{date_updated} = 'now';
-            $dbis->update( 'products', $self->v_encode( $hash ), { id => $id } )
+            $dbis->update( 'products', $self->v_decode( $hash ), { id => $id } )
                 or die $dbis->error;
         }
         else {
-            $dbis->insert( 'products', $self->v_encode( $hash ) )
+            $dbis->insert( 'products', $self->v_decode( $hash ) )
                 or die $dbis->error;
             if( exists $params->{forms_id} and $params->{forms_id} =~ /^\d+$/ ) {
                 my $products_id = $dbis->last_insert_id( undef, 'public', 'products', 'id' ) or die $dbis->error;

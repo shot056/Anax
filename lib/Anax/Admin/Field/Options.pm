@@ -45,7 +45,7 @@ sub register {
     for( my $i = 0; $i < scalar @options; $i ++ ) {
         $dbis->insert( 'field_options', { fields_id => $field_id,
                                           sortorder => $i + 1,
-                                          name      => $options[ $i ] } )
+                                          name      => $self->decode( $options[ $i ] ) } )
             or die $dbis->error;
     }
     

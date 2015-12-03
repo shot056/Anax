@@ -77,11 +77,11 @@ sub register {
                    };
         if( defined $id and $id =~ /^\d+$/ ) {
             $hash->{date_updated} = 'now';
-            $dbis->update( 'mail_templates', $self->v_encode( $hash), { id => $id } )
+            $dbis->update( 'mail_templates', $self->v_decode( $hash), { id => $id } )
                 or die $dbis->error;
         }
         else {
-            $dbis->insert( 'mail_templates', $self->v_encode( $hash ) )
+            $dbis->insert( 'mail_templates', $self->v_decode( $hash ) )
                 or die $dbis->error;
         }
         $dbis->commit or die $dbis->error;

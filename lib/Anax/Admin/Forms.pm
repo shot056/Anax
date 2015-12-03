@@ -99,12 +99,12 @@ sub register {
                    };
         if( defined $id and $id =~ /^\d+$/ ) {
             $hash->{date_updated} = 'now';
-            $dbis->update( 'forms', $self->v_encode( $hash ), { id => $id } )
+            $dbis->update( 'forms', $self->v_decode( $hash ), { id => $id } )
                 or die $dbis->error;
         }
         else {
-            $self->dumper( { hash => $hash, v_hash => $self->v_encode( $hash ) } );
-            $dbis->insert( 'forms', $self->v_encode( $hash ) )
+            $self->dumper( { hash => $hash, v_hash => $self->v_decode( $hash ) } );
+            $dbis->insert( 'forms', $self->v_decode( $hash ) )
                 or die $dbis->error;
         }
         $dbis->commit or die $dbis->error;
@@ -258,19 +258,19 @@ sub get_form_setting {
                     use_product_detail => $form->{use_product_detail} || 0,
                     use_product_price => $form->{use_product_price} || 0,
                     
-                    name => $form->{name},
-                    description => $form->{description} || '',
-                    product_message => $form->{product_message} || '',
-                    messages => { input => $form->{message_input} || '',
-                                  confirm => $form->{message_confirm} || '',
-                                  complete => $form->{message_complete} || '' },
+                    # name => $form->{name},
+                    # description => $form->{description} || '',
+                    # product_message => $form->{product_message} || '',
+                    # messages => { input => $form->{message_input} || '',
+                    #               confirm => $form->{message_confirm} || '',
+                    #               complete => $form->{message_complete} || '' },
 
-                    # name => b( $form->{name} || '' ),
-                    # description => b( $form->{description} || '' ),
-                    # product_message => b( $form->{product_message} || '' ),
-                    # messages => { input => b( $form->{message_input} || '' ),
-                    #               confirm => b( $form->{message_confirm} || '' ),
-                    #               complete => b( $form->{message_complete} || '' ) },
+                    name => b( $form->{name} || '' ),
+                    description => b( $form->{description} || '' ),
+                    product_message => b( $form->{product_message} || '' ),
+                    messages => { input => b( $form->{message_input} || '' ),
+                                  confirm => b( $form->{message_confirm} || '' ),
+                                  complete => b( $form->{message_complete} || '' ) },
                     
                     # name => b( $form->{name} )->decode->to_string,
                     # description => b( $form->{description} || '' )->decode->to_string,
@@ -314,11 +314,11 @@ sub get_field_data {
                   name        => "field_" . $line->{id},
                   type        => $line->{type},
                   
-                  desc        => $line->{name},
-                  default     => $line->{default} || '',
+                  # desc        => $line->{name},
+                  # default     => $line->{default} || '',
                   
-                  # desc        => b( $line->{name} || '' ),
-                  # default     => b( $line->{default} || '' ),
+                  desc        => b( $line->{name} || '' ),
+                  default     => b( $line->{default} || '' ),
                   
                   # desc        => b( $line->{name} )->decode->to_string,
                   # default     => b( $line->{default} )->decode->to_string || undef,
@@ -344,13 +344,13 @@ sub get_field_options {
     my $options = [];
     my $options_hash = {};
     while( my $line = $it->hash ) {
-        my $option = { name => $line->{name},
-        # my $option = { name => b( $line->{name} || '' ),
+        # my $option = { name => $line->{name},
+        my $option = { name => b( $line->{name} || '' ),
         # my $option = { name => b( $line->{name} )->decode->to_string,
                        value => $line->{id} };
         push( @{ $options }, $option );
-        $options_hash->{ $line->{id} } = $line->{name};
-        # $options_hash->{ $line->{id} } = b( $line->{name} || '' );
+        # $options_hash->{ $line->{id} } = $line->{name};
+        $options_hash->{ $line->{id} } = b( $line->{name} || '' );
         # $options_hash->{ $line->{id} } = b( $line->{name} )->decode->to_string;
     }
     return ( $options, $options_hash );

@@ -210,7 +210,7 @@ sub complete {
             next unless( exists $params->{ $field->{name} } );
             #$self->app->log->debug( "\$params->{ \$field->{name} } : $field->{name} : \n" . Dumper( $params->{ $field->{name} } ) );
             if( $field->{type} =~ /^text/ ) {
-                $dbis->insert('applicant_data', $self->v_encode( { %hash, text => $params->{ $field->{name} } } ) )
+                $dbis->insert('applicant_data', $self->v_decode( { %hash, text => $params->{ $field->{name} } } ) )
                     or die $dbis->error;
             }
             else {
