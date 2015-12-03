@@ -37,39 +37,44 @@ sub index {
         }
         $self->stash( products => { values => $values, labels => $labels, datas => $datas } );
     }
-    
-    my $stmt = $self->get_stmt( $self->app, $dbis, $params );
-    my $rslt = $dbis->query( $stmt->as_sql, $stmt->bind ) or die $dbis->error;
-    {
-        my $afp_stmt = SQL::Maker::Select->new;
-        $afp_stmt->{new_line} = ' ';
-        $afp_stmt->add_select( "products_id, SUM( number ) AS numbers" );
-        $afp_stmt->add_from( "applicant_form_products" );
-        $afp_stmt->add_where( "is_deleted" => 0 );
-        $stmt->{select} = [];
-        $stmt->{select_map} = {};
-        $stmt->{select_map_reverse} = {};
-        $stmt->add_select('a.id');
-        my $stmt_sql = "( " . $stmt->as_sql . " )";
-        $afp_stmt->add_where( "applicants_id" => { IN => \$stmt_sql } );
-        $afp_stmt->add_group_by( "products_id" );
-        $self->app->log->debug( "[SQL] " . $afp_stmt->as_sql . "; ( " . join(", ", $afp_stmt->bind, $stmt->bind ) . " )" );
-        my $pn_rslt = $dbis->query( $afp_stmt->as_sql, $afp_stmt->bind, $stmt->bind )
-            or die $dbis->error;
-        my $product_numbers = {};
-        while( my $line = $pn_rslt->hash ) {
-            $product_numbers->{ $line->{products_id} } = $line->{numbers};
-        }
-        $self->stash( product_numbers => $product_numbers );
-    }
+
     my $data = [];
-    if( $rslt->rows ) {
-        my $alldata = $rslt->hashes;
-        my $fields_data = $self->get_field_data( $self->app, $dbis, [ map { { id => $_->{id}, forms_id => $_->{forms_id} } } @{ $alldata } ] );
-        foreach my $line ( @{ $alldata } ) {
-            $line->{fields} = $fields_data->{ $line->{id} . "_" . $line->{forms_id} } || {};
-            push( @{ $data }, $line );
+    if( $self->req->method eq 'POST' ) {
+        my $stmt = $self->get_stmt( $self->app, $dbis, $params );
+        my $rslt = $dbis->query( $stmt->as_sql, $stmt->bind ) or die $dbis->error;
+        {
+            my $afp_stmt = SQL::Maker::Select->new;
+            $afp_stmt->{new_line} = ' ';
+            $afp_stmt->add_select( "products_id, SUM( number ) AS numbers" );
+            $afp_stmt->add_from( "applicant_form_products" );
+            $afp_stmt->add_where( "is_deleted" => 0 );
+            $stmt->{select} = [];
+            $stmt->{select_map} = {};
+            $stmt->{select_map_reverse} = {};
+            $stmt->add_select('a.id');
+            my $stmt_sql = "( " . $stmt->as_sql . " )";
+            $afp_stmt->add_where( "applicants_id" => { IN => \$stmt_sql } );
+            $afp_stmt->add_group_by( "products_id" );
+            $self->app->log->debug( "[SQL] " . $afp_stmt->as_sql . "; ( " . join(", ", $afp_stmt->bind, $stmt->bind ) . " )" );
+            my $pn_rslt = $dbis->query( $afp_stmt->as_sql, $afp_stmt->bind, $stmt->bind )
+                or die $dbis->error;
+            my $product_numbers = {};
+            while( my $line = $pn_rslt->hash ) {
+                $product_numbers->{ $line->{products_id} } = $line->{numbers};
+            }
+            $self->stash( product_numbers => $product_numbers );
         }
+        if( $rslt->rows ) {
+            my $alldata = $rslt->hashes;
+            my $fields_data = $self->get_field_data( $self->app, $dbis, [ map { { id => $_->{id}, forms_id => $_->{forms_id} } } @{ $alldata } ] );
+            foreach my $line ( @{ $alldata } ) {
+                $line->{fields} = $fields_data->{ $line->{id} . "_" . $line->{forms_id} } || {};
+                push( @{ $data }, $line );
+            }
+        }
+    }
+    else {
+        $self->stash( product_numbers => {} );
     }
     my $fields = [ map { $self->v_decode( $_ ) } @{ $self->get_fields( $dbis ) } ];
     my $field_options = $self->v_decode( $self->get_field_options( $dbis ) );
