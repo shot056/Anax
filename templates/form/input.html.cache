@@ -149,15 +149,22 @@ my $_buf = ""; my $_V;  $_buf .= q`<!DOCTYPE html>
 `;                 }
  $_buf .= q`              </div>
 `;             }
-            if( $use_product_detail ) {
-              if( length( $p->{description} ) > 0 ) {
- $_buf .= q`                <div>
-`;                   if( $p->{use_tag_in_description} ) {
- $_buf .= q`                    ` . ( $p->{description} ) . q`
-`;                   } else {
- $_buf .= q`                    ` . ( $html_br->( $p->{description} ) ) . q`
-`;                   }
- $_buf .= q`                </div>
+            if( $use_product_image and $p->{images}->{has_image} ) {
+              my $slide_st = 0;
+              if( $p->{images}->{has_thumb} ) {
+ $_buf .= q`                <div class="image-thumb">
+                  <a href="` . escape_xml( $p->{images}->{thumb}->{url} ) . q`" data-lightbox="prod-` . escape_xml( $p->{id} ) . q`" data-title="` . escape_xml( $p->{name} ) . q`">
+                    <img src="` . escape_xml( $p->{images}->{thumb}->{thumb_url} ) . q`" alt="` . escape_xml( $p->{images}->{thumb}->{name} ) . q`" />
+                  </a>
+                </div>
+`;               } else {
+                $slide_st = 1;
+ $_buf .= q`                <input type="checkbox" value="` . escape_xml( $p->{id} ) . q`" name="products"`; if( grep( $_ eq $p->{id}, @{ $params->{products} } ) ) { $_buf .= q` checked="checked"`; } $_buf .= q`>
+                <a href="` . escape_xml( $p->{images}->{slides}->[0]->{url} ) . q`" data-lightbox="prod-` . escape_xml( $p->{id} ) . q`" data-title="` . escape_xml( $p->{images}->{slides}->[0]->{name} ) . q`">` . escape_xml( $p->{name} ) . q`</a>
+`;               }
+ $_buf .= q`              <div class="image-slides">
+`;               for( my $i = $slide_st; $i < scalar @{ $p->{images}->{slides} }; $i ++ ) {
+ $_buf .= q`                <a href="` . escape_xml( $p->{images}->{slides}->[$i]->{url} ) . q`" data-lightbox="prod-` . escape_xml( $p->{id} ) . q`" data-title="` . escape_xml( $p->{images}->{slides}->[$i]->{name} ) . q`">` . escape_xml( $p->{name} ) . q`</a>
 `;               }
  $_buf .= q`              </div>
 `;             }
