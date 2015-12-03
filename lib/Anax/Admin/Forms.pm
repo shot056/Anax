@@ -27,7 +27,7 @@ sub index {
         or die DBIx::Simple->error;
     $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
     $dbis->begin_work or die $dbis->error;
-    my $rslt = $dbis->select( 'forms', ['*'], { is_deleted => 0 }, { order_by => 'name' } )
+    my $rslt = $self->db_select( $dbis, 'forms', ['*'], { is_deleted => 0 }, { order_by => 'name' } )
         or die $dbis->error;
     $self->stash( datas => $rslt );
     $self->render();
@@ -43,7 +43,7 @@ sub input {
             or die DBIx::Simple->error;
         $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
         $dbis->begin_work or die $dbis->error;
-        my $rslt = $dbis->select('forms', ['*'], { id => $id, is_deleted => 0 } )
+        my $rslt = $self->db_select( $dbis,'forms', ['*'], { id => $id, is_deleted => 0 } )
             or die $dbis->error;
         return $self->render_not_found unless( $rslt->rows );
         $params = $rslt->hash;
@@ -99,13 +99,11 @@ sub register {
                    };
         if( defined $id and $id =~ /^\d+$/ ) {
             $hash->{date_updated} = 'now';
-            $dbis->update( 'forms', $self->v_decode( $hash ), { id => $id } )
-                or die $dbis->error;
+            $self->db_update( $dbis, 'forms', $hash, { id => $id } ) or die $dbis->error;
         }
         else {
             $self->dumper( { hash => $hash, v_hash => $self->v_decode( $hash ) } );
-            $dbis->insert( 'forms', $self->v_decode( $hash ) )
-                or die $dbis->error;
+            $self->db_insert( $dbis, 'forms', $hash ) or die $dbis->error;
         }
         $dbis->commit or die $dbis->error;
         $dbis->disconnect or die $dbis->error;
@@ -122,24 +120,24 @@ sub view {
     $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
     $dbis->begin_work or die $dbis->error;
 
-    my $it = $dbis->select( 'forms', ['*'], { is_deleted => 0, id => $id } )
+    my $it = $self->db_select( $dbis, 'forms', ['*'], { is_deleted => 0, id => $id } )
         or die $dbis->error;
     return $self->render_not_found unless( $it->rows );
     my $data = $it->hash;
-#    my $fields_it = $dbis->select( 'form_fields', ['*'],
+#    my $fields_it = $self->db_select( $dbis, 'form_fields', ['*'],
 #                                   { is_deleted => 0, forms_id => $data->{id} },
 #                                   { order_by => 'sortorder, id' } )
 #        or die $dbis->error;
-    my $fields_it = $dbis->query( "SELECT f.*, ff.sortorder AS p_sortorder FROM fields AS f, form_fields AS ff WHERE ff.is_deleted = FALSE AND f.is_deleted = FALSE AND ff.fields_id = f.id AND ff.forms_id = ? ORDER BY ff.sortorder,f.sortorder,ff.id,f.id;",
+    my $fields_it = $self->db_query_select( $dbis, "SELECT f.*, ff.sortorder AS p_sortorder FROM fields AS f, form_fields AS ff WHERE ff.is_deleted = FALSE AND f.is_deleted = FALSE AND ff.fields_id = f.id AND ff.forms_id = ? ORDER BY ff.sortorder,f.sortorder,ff.id,f.id;",
                                   $data->{id} )
         or die $dbis->error;
 
-    my $products_it = $dbis->query( "SELECT p.* FROM products AS p, form_products AS fp WHERE p.is_deleted = FALSE AND fp.is_deleted = FALSE AND fp.products_id = p.id AND fp.forms_id = ? ORDER BY fp.sortorder, fp.id, p.id",
+    my $products_it = $self->db_query_select( $dbis, "SELECT p.* FROM products AS p, form_products AS fp WHERE p.is_deleted = FALSE AND fp.is_deleted = FALSE AND fp.products_id = p.id AND fp.forms_id = ? ORDER BY fp.sortorder, fp.id, p.id",
                                     $data->{id} )
         or die $dbis->error;
     
     my $mail_template = undef;
-    my $mail_templates_it = $dbis->select( 'mail_templates', ['*'], { is_deleted => 0, forms_id => $id } )
+    my $mail_templates_it = $self->db_select( $dbis, 'mail_templates', ['*'], { is_deleted => 0, forms_id => $id } )
         or die $dbis->error;
     $mail_template = $mail_templates_it->hash if( $mail_templates_it->rows );
     
@@ -158,12 +156,12 @@ sub disable {
         or die DBIx::Simple->error;
     $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
     $dbis->begin_work or die $dbis->error;
-    my $it = $dbis->select( 'forms', ['*'], { is_deleted => 0, id => $id } )
+    my $it = $self->db_select( $dbis, 'forms', ['*'], { is_deleted => 0, id => $id } )
         or die $dbis->error;
     return $self->render_not_found unless( $it->rows );
     my $data = $it->hash;
 
-    my $fields_it = $dbis->query( "SELECT f.*, ff.sortorder AS p_sortorder FROM fields AS f, form_fields AS ff WHERE ff.is_deleted = FALSE AND f.is_deleted = FALSE AND ff.fields_id = f.id AND ff.forms_id = ? ORDER BY ff.sortorder,f.sortorder;",
+    my $fields_it = $self->db_query_select( $dbis, "SELECT f.*, ff.sortorder AS p_sortorder FROM fields AS f, form_fields AS ff WHERE ff.is_deleted = FALSE AND f.is_deleted = FALSE AND ff.fields_id = f.id AND ff.forms_id = ? ORDER BY ff.sortorder,f.sortorder;",
                                   $data->{id} )
         or die $dbis->error;
     $self->stash( hash => $data, fields => $fields_it );
@@ -183,10 +181,8 @@ sub do_disable {
     $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
     $dbis->begin_work or die $dbis->error;
     
-    $dbis->update( 'forms', { is_deleted => 1, date_deleted => 'now' }, { id => $id } )
-        or die $dbis->error;
-    $dbis->update( 'form_fields', { is_deleted => 1, date_deleted => 'now' }, { forms_id => $id } )
-        or die $dbis->error;
+    $self->db_update( $dbis, 'forms', { is_deleted => 1, date_deleted => 'now' }, { id => $id } ) or die $dbis->error;
+    $self->db_update( $dbis, 'form_fields', { is_deleted => 1, date_deleted => 'now' }, { forms_id => $id } ) or die $dbis->error;
     $dbis->query( "UPDATE fields SET is_deleted = TRUE, date_deleted = 'now' WHERE is_global = FALSE AND id IN ( SELECT fields_id FROM form_fields WHERE forms_id = ? )", $id )
         or die $dbis->error;
     $dbis->query( "UPDATE field_options SET is_deleted = TRUE, date_deleted = 'now' WHERE fields_id IN ( SELECT fields_id FROM form_fields WHERE forms_id = ? )", $id )
@@ -207,8 +203,7 @@ sub change_status {
     $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
     $dbis->begin_work or die $dbis->error;
     
-    $dbis->update( 'forms', { is_published => ( $type eq 'private' ? 0 : 1 ), date_published => 'now' }, { id => $id } )
-         or die $dbis->error;
+    $self->db_update( $dbis, 'forms', { is_published => ( $type eq 'private' ? 0 : 1 ), date_published => 'now' }, { id => $id } ) or die $dbis->error;
     
     $dbis->commit or die $dbis->error;
     $dbis->disconnect or die $dbis->error;
@@ -237,13 +232,13 @@ sub get_form_setting {
         my $wheres = { is_deleted => 0, id => $id_or_key, is_published => 1 };
         delete $wheres->{is_published} if( $is_admin );
         
-        my $it = $dbis->select('forms', ['*'], $wheres ) or die $dbis->error;
+        my $it = $app->db_select( $dbis,'forms', ['*'], $wheres ) or die $dbis->error;
         $form = $it->hash if( $it->rows );
     }
     unless( defined $form ) {
         my $wheres = { is_deleted => 0, key => $id_or_key, is_published => 1 };
         delete $wheres->{is_published} if( $is_admin );
-        my $it = $dbis->select('forms', ['*'], $wheres ) or die $dbis->error;
+        my $it = $app->db_select( $dbis,'forms', ['*'], $wheres ) or die $dbis->error;
         $form = $it->hash if( $it->rows );
     }
     return undef unless( defined $form );
@@ -289,7 +284,7 @@ sub get_form_setting {
 #                              $setting->{fields}->{email}
                              ];
     
-    my $fields_it = $dbis->query( "SELECT f.*, ff.sortorder AS p_sortorder FROM fields AS f, form_fields AS ff WHERE ff.is_deleted = FALSE AND f.is_deleted = FALSE AND ff.fields_id = f.id AND ff.forms_id = ? ORDER BY ff.sortorder, f.sortorder, ff.id, f.id;",
+    my $fields_it = $app->db_query_select( $dbis, "SELECT f.*, ff.sortorder AS p_sortorder FROM fields AS f, form_fields AS ff WHERE ff.is_deleted = FALSE AND f.is_deleted = FALSE AND ff.fields_id = f.id AND ff.forms_id = ? ORDER BY ff.sortorder, f.sortorder, ff.id, f.id;",
                                   $form->{id} )
         or die $dbis->error;
     while( my $fline = $fields_it->hash ) {
@@ -338,7 +333,7 @@ sub get_field_options {
     my $field_id = shift;
     
     
-    my $it = $dbis->select('field_options', ['*'], { is_deleted => 0, fields_id => $field_id }, { order_by => 'sortorder, id' } )
+    my $it = $self->db_select( $dbis,'field_options', ['*'], { is_deleted => 0, fields_id => $field_id }, { order_by => 'sortorder, id' } )
         or die $dbis->error;
     
     my $options = [];
@@ -374,7 +369,7 @@ sub get_fields {
         $stmt->add_group_by( "fields_id" );
         $self->app->log->debug( "[SQL] " . $stmt->as_sql . "; ( " . join(", ", $stmt->bind ) . " )" );
         
-        my $rslt = $dbis->query( $stmt->as_sql, $stmt->bind ) or die $dbis->error;
+        my $rslt = $self->db_query_select( $dbis, $stmt->as_sql, $stmt->bind ) or die $dbis->error;
         while( my $line = $rslt->hash ) {
             next if( $common_only and !$line->{is_common} );
             $tmp_fields->{ $line->{fields_id} } = { is_common => $line->{is_common} };
@@ -382,7 +377,7 @@ sub get_fields {
     }
 
     my $fields = {};
-    my $it = $dbis->select( 'fields', ["*"],{ is_deleted => 0, id => { IN => [ keys( %{ $tmp_fields } ) ] } }, { order_by => 'name, id' } )
+    my $it = $self->db_select( $dbis, 'fields', ["*"],{ is_deleted => 0, id => { IN => [ keys( %{ $tmp_fields } ) ] } }, { order_by => 'name, id' } )
         or die $dbis->error;
     while( my $line = $it->hash ) {
         my $field = $self->get_field_data( $dbis, $line );

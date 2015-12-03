@@ -43,10 +43,9 @@ sub register {
     $dbis->begin_work or die $dbis->error;
 
     for( my $i = 0; $i < scalar @options; $i ++ ) {
-        $dbis->insert( 'field_options', { fields_id => $field_id,
-                                          sortorder => $i + 1,
-                                          name      => $self->decode( $options[ $i ] ) } )
-            or die $dbis->error;
+        $self->db_insert( $dbis, 'field_options', { fields_id => $field_id,
+                                                 sortorder => $i + 1,
+                                                 name      => $options[ $i ] } ) or die $dbis->error;
     }
     
     $dbis->commit or die $dbis->error;

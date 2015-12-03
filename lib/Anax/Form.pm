@@ -61,7 +61,7 @@ sub input {
                   html_br => sub { return $self->app->html_br( @_ ) }
                 };
     $self->app->log->debug( Dumper( $datas ) );
-    $self->render( text => $self->render_template( $key, 'input', $self->app->v_decode( $datas ) ) );
+    $self->render( text => $self->render_template( $key, 'input', $datas ) );
 }
 
 sub confirm {
@@ -183,22 +183,19 @@ sub complete {
             or die DBIx::Simple->error;
         $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
         $dbis->begin_work or die $dbis->error;
-        $dbis->insert('applicants', { email => $params->{email} } )
-            or die $dbis->error;
+        $self->db_insert( $dbis,'applicants', { email => $params->{email} } ) or die $dbis->error;
         my $applicant_id = $dbis->last_insert_id( undef, 'public', 'applicants', 'id' );
-        $dbis->insert('applicant_form', { applicants_id => $applicant_id, forms_id => $form_setting->{id} } )
-            or die $dbis->error;
+        $self->db_insert( $dbis,'applicant_form', { applicants_id => $applicant_id, forms_id => $form_setting->{id} } ) or die $dbis->error;
         my $applicant_form_id = $dbis->last_insert_id( undef, 'public', 'applicant_form', 'id' );
         
         if( $datas->{has_products} ) {
             foreach my $product_id ( @{ $params->{products} } ) {
-                $dbis->insert( 'applicant_form_products', { applicants_id => $applicant_id,
-                                                            forms_id => $form_setting->{id},
-                                                            applicant_form_id => $applicant_form_id,
-                                                            products_id => $product_id,
-                                                            number => exists $params->{'product:' . $product_id} ? $params->{'product:' . $product_id} : 1
-                                                          } )
-                    or die $dbis->error;
+                $self->db_insert( $dbis, 'applicant_form_products', { applicants_id => $applicant_id,
+                                                                   forms_id => $form_setting->{id},
+                                                                   applicant_form_id => $applicant_form_id,
+                                                                   products_id => $product_id,
+                                                                   number => exists $params->{'product:' . $product_id} ? $params->{'product:' . $product_id} : 1
+                                                                  } ) or die $dbis->error;
             }
         }
         foreach my $field ( @{ $form_setting->{field_list} } ) {
@@ -210,20 +207,18 @@ sub complete {
             next unless( exists $params->{ $field->{name} } );
             #$self->app->log->debug( "\$params->{ \$field->{name} } : $field->{name} : \n" . Dumper( $params->{ $field->{name} } ) );
             if( $field->{type} =~ /^text/ ) {
-                $dbis->insert('applicant_data', $self->v_decode( { %hash, text => $params->{ $field->{name} } } ) )
-                    or die $dbis->error;
+                $self->db_insert( $dbis,'applicant_data', { %hash, text => $params->{ $field->{name} } } ) or die $dbis->error;
             }
             else {
                 my $values = $params->{ $field->{name} };
                 $values = [ $values ] unless( ref( $values ) eq 'ARRAY' );
                 foreach my $value ( @{ $values } ) {
                     $self->app->log->debug( Dumper( { %hash, value => $value } ) );
-                    $dbis->insert('applicant_data', { %hash, field_options_id => $value } )
-                        or die $dbis->error;
+                    $self->db_insert( $dbis,'applicant_data', { %hash, field_options_id => $value } ) or die $dbis->error;
                 }
             }
         }
-        my $mail_templates_it = $dbis->select('mail_templates', ['id'], { is_deleted => 0, forms_id => $form_setting->{id} } )
+        my $mail_templates_it = $self->db_select( $dbis,'mail_templates', ['id'], { is_deleted => 0, forms_id => $form_setting->{id} } )
             or die $dbis->error;
         my $mail_parts;
         my $mail_charset;
@@ -258,22 +253,22 @@ sub generate_rule {
     my $fields = shift;
     #$self->app->log->debug( Dumper( $fields ) );
 
-    my %msgs = ( email => b( '正しいメールアドレスを入力してください。' ),
-                 integer => b( '半角数字で入力してください。' ),
-                 ascii => b( '半角英数字で入力してください。' ) );
+    # my %msgs = ( email => b( '正しいメールアドレスを入力してください。' ),
+    #              integer => b( '半角数字で入力してください。' ),
+    #              ascii => b( '半角英数字で入力してください。' ) );
 #    my %msgs = ( email => b( '正しいメールアドレスを入力してください。' )->decode->to_string,
 #                 integer => b( '半角数字で入力してください。' )->decode->to_string,
 #                 ascii => b( '半角英数字で入力してください。' )->decode->to_string );
-#    my %msgs = ( email => '正しいメールアドレスを入力してください。',
-#                 integer => '半角数字で入力してください。',
-#                 ascii => '半角英数字で入力してください。' );
+    my %msgs = ( email => '正しいメールアドレスを入力してください。',
+                 integer => '半角数字で入力してください。',
+                 ascii => '半角英数字で入力してください。' );
     my $rules = [];
     foreach my $f ( @{ $fields } ) {
         my $c = [];
         if( exists $f->{is_required} and defined $f->{is_required} and $f->{is_required} ) {
-            push( @{ $c }, [ 'not_blank', b( '必ず入力してください。' ) ] );
+#            push( @{ $c }, [ 'not_blank', b( '必ず入力してください。' ) ] );
 #            push( @{ $c }, [ 'not_blank', b( '必ず入力してください。' )->decode->to_string ] );
-#            push( @{ $c }, [ 'not_blank', '必ず入力してください。' ] );
+            push( @{ $c }, [ 'not_blank', '必ず入力してください。' ] );
         }
         if( exists $f->{error_check} and defined $f->{error_check} and length( $f->{error_check} ) ) {
             push( @{ $c }, [ $f->{error_check}, $msgs{ $f->{error_check} } ] );

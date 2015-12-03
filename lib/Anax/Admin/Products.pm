@@ -26,7 +26,7 @@ sub index {
     $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
     $dbis->begin_work or die $dbis->error;
     
-    my $rslt = $dbis->select( 'products', ['*'], { is_deleted => 0 }, { order_by => 'sortorder, id ASC' } )
+    my $rslt = $self->db_select( $dbis, 'products', ['*'], { is_deleted => 0 }, { order_by => 'sortorder, id ASC' } )
         or die $dbis->error;
     
     $self->stash( datas => $rslt );
@@ -47,7 +47,7 @@ sub input {
         $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
         $dbis->begin_work or die $dbis->error;
         
-        my $rslt = $dbis->select('products', ['*'], { id => $id, is_deleted => 0 } )
+        my $rslt = $self->db_select( $dbis,'products', ['*'], { id => $id, is_deleted => 0 } )
             or die $dbis->error;
         return $self->render_not_found unless( $rslt->rows );
         $params = $rslt->hash;
@@ -94,16 +94,13 @@ sub register {
                    };
         if( defined $id and $id =~ /^\d+$/ ) {
             $hash->{date_updated} = 'now';
-            $dbis->update( 'products', $self->v_decode( $hash ), { id => $id } )
-                or die $dbis->error;
+            $self->db_update( $dbis, 'products', $hash, { id => $id } ) or die $dbis->error;
         }
         else {
-            $dbis->insert( 'products', $self->v_decode( $hash ) )
-                or die $dbis->error;
+            $self->db_insert( $dbis, 'products', $hash ) or die $dbis->error;
             if( exists $params->{forms_id} and $params->{forms_id} =~ /^\d+$/ ) {
                 my $products_id = $dbis->last_insert_id( undef, 'public', 'products', 'id' ) or die $dbis->error;
-                $dbis->insert( 'form_products', { forms_id => $params->{forms_id}, products_id => $products_id } )
-                    or die $dbis->error;
+                $self->db_insert( $dbis, 'form_products', { forms_id => $params->{forms_id}, products_id => $products_id } ) or die $dbis->error;
             }
         }
         $dbis->commit or die $dbis->error;
@@ -121,12 +118,12 @@ sub view {
     $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
     $dbis->begin_work or die $dbis->error;
     
-    my $it = $dbis->select( 'products', ['*'], { is_deleted => 0, id => $id } )
+    my $it = $self->db_select( $dbis, 'products', ['*'], { is_deleted => 0, id => $id } )
         or die $dbis->error;
     return $self->render_not_found unless( $it->rows );
     my $data = $it->hash;
 
-    my $images_it = $dbis->select( 'product_images', ['*'], { is_deleted => 0, products_id => $id }, { order_by => 'sortorder, id' } )
+    my $images_it = $self->db_select( $dbis, 'product_images', ['*'], { is_deleted => 0, products_id => $id }, { order_by => 'sortorder, id' } )
         or die $dbis->error;
     $self->stash( hash => $data, images => $images_it );
     $self->render;
@@ -142,13 +139,13 @@ sub associate {
     $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
     $dbis->begin_work or die $dbis->error;
 
-    my $now_used_it = $dbis->select( 'form_products', [ qw/id products_id/ ], { is_deleted => 0, forms_id => $self->stash('form_id') } )
+    my $now_used_it = $self->db_select( $dbis, 'form_products', [ qw/id products_id/ ], { is_deleted => 0, forms_id => $self->stash('form_id') } )
         or die $dbis->error;
     my $used_ids = {};
     while( my $line = $now_used_it->hash ) {
         $used_ids->{ $line->{products_id} } = 1;
     }
-    my $it = $dbis->select( 'products', [ '*' ], { is_deleted => 0 }, { order_by => 'sortorder, id' } )
+    my $it = $self->db_select( $dbis, 'products', [ '*' ], { is_deleted => 0 }, { order_by => 'sortorder, id' } )
         or die $dbis->error;
 
     $self->stash( datas => $it, used_ids => $used_ids );
@@ -171,10 +168,9 @@ sub do_associate {
     $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
     $dbis->begin_work or die $dbis->error;
     
-    $dbis->update( 'form_products',
+    $self->db_update( $dbis, 'form_products',
                    { is_deleted => 1, date_deleted => 'now' },
-                   { forms_id => $form_id } )
-        or die $dbis->error;
+                   { forms_id => $form_id } ) or die $dbis->error;
     
     if( exists $params->{product_ids} ) {
         $params->{product_ids} = [ $params->{product_ids} ]
@@ -182,17 +178,15 @@ sub do_associate {
         
         foreach my $product_id ( @{ $params->{product_ids} } ) {
             
-            my $it = $dbis->select('form_products', ['id'], { forms_id => $form_id, products_id => $product_id } )
+            my $it = $self->db_select( $dbis,'form_products', ['id'], { forms_id => $form_id, products_id => $product_id } )
                 or die $dbis->error;
             if( $it->rows ) {
-                $dbis->update( 'form_products',
+                $self->db_update( $dbis, 'form_products',
                                { is_deleted => 0, date_updated => 'now', date_deleted => undef },
-                               { id => $it->hash->{id} } )
-                    or die $dbis->error;
+                               { id => $it->hash->{id} } ) or die $dbis->error;
             }
             else {
-                $dbis->insert('form_products', { forms_id => $form_id, products_id => $product_id } )
-                    or die $dbis->error;
+                $self->db_insert( $dbis,'form_products', { forms_id => $form_id, products_id => $product_id } ) or die $dbis->error;
             }
         }
     }
@@ -212,12 +206,12 @@ sub get_form_products {
     $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
     $dbis->begin_work or die $dbis->error;
 
-    my $it = $dbis->query( "SELECT p.*, fp.sortorder AS fp_sortorder FROM products AS p, form_products AS fp WHERE p.is_deleted = FALSE AND fp.is_deleted = FALSE AND fp.products_id = p.id AND fp.forms_id = ? ORDER BY fp.sortorder, p.sortorder, p.id",
+    my $it = $app->db_query_select( $dbis, "SELECT p.*, fp.sortorder AS fp_sortorder FROM products AS p, form_products AS fp WHERE p.is_deleted = FALSE AND fp.is_deleted = FALSE AND fp.products_id = p.id AND fp.forms_id = ? ORDER BY fp.sortorder, p.sortorder, p.id",
                            $form_id )
         or die $dbis->error;
     my $products = { hash => {}, list => [] };
     while( my $line = $it->hash ) {
-        my $img_it = $dbis->select( 'product_images', [ '*' ], { products_id => $line->{id}, is_deleted => 0 }, { order_by => 'sortorder, id' } );
+        my $img_it = $app->db_select( $dbis, 'product_images', [ '*' ], { products_id => $line->{id}, is_deleted => 0 }, { order_by => 'sortorder, id' } );
         my $images = { has_image => 0, has_thumb => 0, has_slides => 0, slides => [] };
         while( my $img_line = $img_it->hash ) {
 #            $app->log->debug( Dumper( $img_line ) );

@@ -35,7 +35,7 @@ sub select_target {
             unless( exists $self->stash->{messages} );
     
     my $stmt = Anax::Admin::Applicants->new( $self )->get_stmt( $self->app, $dbis, $params );
-    my $rslt = $dbis->query( $stmt->as_sql, $stmt->bind ) or die $dbis->error;
+    my $rslt = $self->db_query_select( $dbis, $stmt->as_sql, $stmt->bind ) or die $dbis->error;
     my $applicants = [];
     my $applicants_data = {};
     while( my $line = $rslt->hash ) {
@@ -79,7 +79,7 @@ sub template_input {
         $dbis->query( "SET timezone TO 'Asia/Tokyo';" ) or die $dbis->error;
 
         # SELECT forms_id FROM applicant_form WHERE applicants_id IN ( 1,2,3,4,5,6 ) GROUP BY forms_id;
-        my $forms_it = $dbis->select( 'applicant_form', [ 'forms_id' ], { is_deleted => 0, applicants_id => { IN => $params->{target_ids} } }, { group_by => 'forms_id' } )
+        my $forms_it = $self->db_select( $dbis, 'applicant_form', [ 'forms_id' ], { is_deleted => 0, applicants_id => { IN => $params->{target_ids} } }, { group_by => 'forms_id' } )
             or die $dbis->error;
         my $forms_id = [];
         while( my $fline = $forms_it->hash ) {
@@ -128,7 +128,7 @@ sub confirm {
         $dbis->query( "SET timezone TO 'Asia/Tokyo';" ) or die $dbis->error;
 
         my $target_stmt = Anax::Admin::Applicants->new( $self )->get_stmt( $self->app, $dbis, { id => $params->{target_ids} } );
-        my $target_rslt = $dbis->query( $target_stmt->as_sql, $target_stmt->bind ) or die $dbis->error;
+        my $target_rslt = $self->db_query_select( $dbis, $target_stmt->as_sql, $target_stmt->bind ) or die $dbis->error;
         my $applicants = [];
         my $applicants_data = {};
         while( my $line = $target_rslt->hash ) {
@@ -157,7 +157,7 @@ sub send_mail {
     $dbis->query( "SET timezone TO 'Asia/Tokyo';" ) or die $dbis->error;
     
     my $stmt = Anax::Admin::Applicants->new( $self )->get_stmt( $self->app, $dbis, { id => $params->{target_ids} } );
-    my $rslt = $dbis->query( $stmt->as_sql, $stmt->bind ) or die $dbis->error;
+    my $rslt = $self->db_query_select( $dbis, $stmt->as_sql, $stmt->bind ) or die $dbis->error;
 
     my $applicants = [];
     my $applicants_data = {};
@@ -187,9 +187,9 @@ sub send_mail {
 
         foreach my $field_id ( keys( %{ $applicants_data->{ $applicant->{id} } } ) ) {
             my $val = $applicants_data->{ $applicant->{id} }->{ $field_id };
-            unless( ref( $val ) eq 'ARRAY' ) {
-                $val = &{$self->app->renderer->helpers->{decode}}( $self, $val ) . "";
-            }
+#            unless( ref( $val ) eq 'ARRAY' ) {
+#                $val = &{$self->app->renderer->helpers->{decode}}( $self, $val ) . "";
+#            }
             $params->{"field_" . $field_id} = $val;
         }
         $datas->{params} = $params;

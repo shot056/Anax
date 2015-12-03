@@ -35,7 +35,7 @@ sub edit {
     }
     if( $stmt ) {
         $self->app->log->debug( "[SQL] " . $stmt->as_sql . "; ( " . join( ", ", $stmt->bind ) . " )" );
-        my $rslt = $dbis->query( $stmt->as_sql, $stmt->bind ) or die $dbis->error;
+        my $rslt = $self->db_query_select( $dbis, $stmt->as_sql, $stmt->bind ) or die $dbis->error;
         $self->stash( result => $rslt );
         $self->stash( from => $self->req->params->to_hash->{from} || '' );
         $self->render();
@@ -138,7 +138,7 @@ sub _common_save {
         my $wheres = { id => $ids->[ $i ] };
         $wheres->{ $link_field } = $id
             if( defined $link_field and length( $link_field ) );
-        $dbis->update( $table, { sortorder => $i + 1 }, $wheres );
+        $self->db_update( $dbis, $table, { sortorder => $i + 1 }, $wheres ) or die $dbis->error;
     }
     return 1;
 }

@@ -14,6 +14,8 @@ use SQL::Maker;
 
 use Data::Dumper;
 
+use Anax::DBResultWrap;
+
 sub mkrandstr {
     my @s = ( "a" .. "z", "A" .. "Z", 0 .. 9, "!", "|" );
     my $r = "";
@@ -80,7 +82,6 @@ sub startup {
                        return ( ( defined $ret and length( $ret ) ) ? $ret : $str );
                    } );
     my $v_decode = Data::Visitor::Callback->new(
-                                                scalar => sub {},
                                                 plain_value => sub {
                                                     my $str = shift;
                                                     my $ret = &{$self->renderer->helpers->{decode}}( $self, $_ );
@@ -101,7 +102,6 @@ sub startup {
                        return ( ( defined $ret and length( $ret ) ) ? $ret : $str );
                    } );
     my $v_encode = Data::Visitor::Callback->new(
-                                                scalar => sub {},
                                                 plain_value => sub {
                                                     my $str = shift;
                                                     my $ret = &{$self->renderer->helpers->{encode}}( $self, $_ );
@@ -114,7 +114,6 @@ sub startup {
                        return $v_encode->visit( $data );
                    } );
     my $v_b = Data::Visitor::Callback->new(
-                                           scalar => sub {},
                                            plain_value => sub {
                                                my $str = shift;
                                                return &{$self->renderer->helpers->{b}}( $self, $_ );
@@ -195,6 +194,41 @@ sub startup {
                            $path = $path->trailing_slash( 1 )->merge( Mojo::Path->new( $p )->leading_slash( 0 ) )
                        }
                        return $path->to_abs_string;
+                   } );
+    $self->helper( db_insert => sub {
+                       my $self  = shift;
+                       my $dbis  = shift;
+                       my $table = shift;
+                       my $data  = shift;
+                       return $dbis->insert( $table, $self->v_encode( $data ) )
+                   } );
+    $self->helper( db_update => sub {
+                       my $self   = shift;
+                       my $dbis   = shift;
+                       my $table  = shift;
+                       my $data   = shift;
+                       my $wheres = shift;
+                       return $dbis->update( $table, $self->v_encode( $data ), $self->v_encode( $wheres ) );
+                   } );
+    $self->helper( db_select => sub {
+                       my $self    = shift;
+                       my $dbis    = shift;
+                       my $table   = shift;
+                       my $columns = shift;
+                       my $wheres  = shift || {};
+                       my $options = shift || {};
+
+                       my $it = $dbis->select( $table, $columns, $wheres, $options ) or return undef;
+                       return Anax::DBResultWrap->new( $self->app, $it );
+                   } );
+    $self->helper( db_query_select => sub {
+                       my $self = shift;
+                       my $dbis = shift;
+                       my $sql  = shift;
+                       my @bind = @_;
+
+                       my $it = $dbis->query( $sql, @bind ) or return undef;
+                       return Anax::DBResultWrap->new( $self->app, $it );
                    } );
     $self->app->sessions->secure( 1 )
         unless( $self->app->config->{unsecure_session} );

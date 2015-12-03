@@ -24,7 +24,7 @@ sub index {
         or die DBIx::Simple->error;
     $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
     $dbis->begin_work or die $dbis->error;
-    my $rslt = $dbis->select('fields', ['*'], { is_deleted => 0, is_global => 1 }, { order_by => 'id' } )
+    my $rslt = $self->db_select( $dbis,'fields', ['*'], { is_deleted => 0, is_global => 1 }, { order_by => 'id' } )
         or die $dbis->error;
     $self->stash( datas => $rslt );
     $self->render();
@@ -40,7 +40,7 @@ sub input {
             or die DBIx::Simple->error;
         $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
         $dbis->begin_work or die $dbis->error;
-        my $rslt = $dbis->select('fields', ['*'], { id => $id, is_deleted => 0 } )
+        my $rslt = $self->db_select( $dbis,'fields', ['*'], { id => $id, is_deleted => 0 } )
             or die $dbis->error;
         return $self->render_not_found unless( $rslt->rows );
         $params = $rslt->hash;
@@ -90,16 +90,13 @@ sub register {
                    };
         if( defined $id and $id =~ /^\d+$/ ) {
             $hash->{date_updated} = 'now';
-            $dbis->update( 'fields', $self->v_decode( $hash ), { id => $id } )
-                or die $dbis->error;
+            $self->db_update( $dbis, 'fields', $hash, { id => $id } ) or die $dbis->error;
         }
         else {
-            $dbis->insert( 'fields', $self->v_decode( $hash ) )
-                or die $dbis->error;
+            $self->db_insert( $dbis, 'fields', $hash ) or die $dbis->error;
             if( exists $params->{forms_id} and $params->{forms_id} =~ /^\d+$/ ) {
                 my $fields_id = $dbis->last_insert_id( undef, 'public', 'fields', 'id' ) or die $dbis->error;
-                $dbis->insert( 'form_fields', { forms_id => $params->{forms_id}, fields_id => $fields_id } )
-                    or die $dbis->error;
+                $self->db_insert( $dbis, 'form_fields', { forms_id => $params->{forms_id}, fields_id => $fields_id } ) or die $dbis->error;
             }
         }
         $dbis->commit or die $dbis->error;
@@ -116,13 +113,13 @@ sub view {
         or die DBIx::Simple->error;
     $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
     $dbis->begin_work or die $dbis->error;
-    my $it = $dbis->select( 'fields', ['*'], { is_deleted => 0, id => $id } )
+    my $it = $self->db_select( $dbis, 'fields', ['*'], { is_deleted => 0, id => $id } )
         or die $dbis->error;
     return $self->render_not_found unless( $it->rows );
     my $data = $it->hash;
 
     if( grep( $_ eq $data->{type}, qw/checkbox radio popup select/ ) ) {
-        my $options_it = $dbis->select( 'field_options', ['*'], { is_deleted => 0, fields_id => $data->{id} } )
+        my $options_it = $self->db_select( $dbis, 'field_options', ['*'], { is_deleted => 0, fields_id => $data->{id} } )
             or die $dbis->error;
         $self->stash( options => $options_it );
     }
@@ -142,13 +139,13 @@ sub disable {
         or die DBIx::Simple->error;
     $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
     $dbis->begin_work or die $dbis->error;
-    my $it = $dbis->select( 'fields', ['*'], { is_deleted => 0, id => $id } )
+    my $it = $self->db_select( $dbis, 'fields', ['*'], { is_deleted => 0, id => $id } )
         or die $dbis->error;
     return $self->render_not_found unless( $it->rows );
     my $data = $it->hash;
 
     if( grep( $_ eq $data->{type}, qw/checkbox radio popup select/ ) ) {
-        my $options_it = $dbis->select( 'field_options', ['*'], { is_deleted => 0, fields_id => $data->{id} } )
+        my $options_it = $self->db_select( $dbis, 'field_options', ['*'], { is_deleted => 0, fields_id => $data->{id} } )
             or die $dbis->error;
         $self->stash( options => $options_it );
     }
@@ -172,10 +169,8 @@ sub do_disable {
     $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
     $dbis->begin_work or die $dbis->error;
     
-    $dbis->update( 'fields', { is_deleted => 1, date_deleted => 'now' }, { id => $id } )
-        or die $dbis->error;
-    $dbis->update( 'field_options', { is_deleted => 1, date_deleted => 'now' }, { fields_id => $id } )
-        or die $dbis->error;
+    $self->db_update( $dbis, 'fields', { is_deleted => 1, date_deleted => 'now' }, { id => $id } ) or die $dbis->error;
+    $self->db_update( $dbis, 'field_options', { is_deleted => 1, date_deleted => 'now' }, { fields_id => $id } ) or die $dbis->error;
     
     $dbis->commit or die $dbis->error;
     $dbis->disconnect or die $dbis->error;
@@ -190,15 +185,15 @@ sub associate {
     $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
     $dbis->begin_work or die $dbis->error;
 
-    #my $it = $dbis->query( "SELECT * FROM fields WHERE is_delted = FALSE AND is_global = TRUE AND id
-    my $now_used_it = $dbis->select( 'form_fields', [ qw/id fields_id/ ], { is_deleted => 0, forms_id => $self->stash('form_id') } )
+    #my $it = $self->db_query_select( $dbis, "SELECT * FROM fields WHERE is_delted = FALSE AND is_global = TRUE AND id
+    my $now_used_it = $self->db_select( $dbis, 'form_fields', [ qw/id fields_id/ ], { is_deleted => 0, forms_id => $self->stash('form_id') } )
         or die $dbis->error;
     my $used_ids = {};
 
     while( my $line = $now_used_it->hash ) {
         $used_ids->{ $line->{fields_id} } = 1;
     }
-    my $it = $dbis->select( 'fields', [ '*' ], { is_deleted => 0, is_global => 1 }, { order_by => 'sortorder, id' } )
+    my $it = $self->db_select( $dbis, 'fields', [ '*' ], { is_deleted => 0, is_global => 1 }, { order_by => 'sortorder, id' } )
         or die $dbis->error;
     $self->stash( datas => $it, used_ids => $used_ids );
     $self->render;
@@ -218,32 +213,30 @@ sub do_associate {
     $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
     $dbis->begin_work or die $dbis->error;
     
-    my $global_fields_it = $dbis->select( 'fields', ['id'], { is_deleted => 0, is_global => 1 } )
+    my $global_fields_it = $self->db_select( $dbis, 'fields', ['id'], { is_deleted => 0, is_global => 1 } )
         or die $dbis->error;
     if( $global_fields_it->rows ) {
-        $dbis->update( 'form_fields',
-                       { is_deleted => 1, date_deleted => 'now' },
-                       { forms_id => $form_id,
-                         fields_id => [ map { $_->{id} } $global_fields_it->hashes ]
-                       } )
-            or die $dbis->error;
+        $self->db_update( $dbis, 'form_fields',
+                          { is_deleted => 1, date_deleted => 'now' },
+                          { forms_id => $form_id,
+                            fields_id => [ map { $_->{id} } $global_fields_it->hashes ]
+                           }
+                         ) or die $dbis->error;
         
         if( exists $params->{field_ids} ) {
             $params->{field_ids} = [ $params->{field_ids} ]
                 unless( ref( $params->{field_ids} ) eq 'ARRAY' );
             
             foreach my $field_id ( @{ $params->{field_ids} } ) {
-                my $it = $dbis->select('form_fields', ['id'], { forms_id => $form_id, fields_id => $field_id } )
+                my $it = $self->db_select( $dbis,'form_fields', ['id'], { forms_id => $form_id, fields_id => $field_id } )
                     or die $dbis->error;
                 if( $it->rows ) {
-                    $dbis->update( 'form_fields',
-                                   { is_deleted => 0, date_updated => 'now', date_deleted => undef },
-                                   { id => $it->hash->{id} } )
-                        or die $dbis->error;
+                    $self->db_update( $dbis, 'form_fields',
+                                      { is_deleted => 0, date_updated => 'now', date_deleted => \"NULL" },
+                                      { id => $it->hash->{id} } ) or die $dbis->error;
                 }
                 else {
-                    $dbis->insert('form_fields', { forms_id => $form_id, fields_id => $field_id } )
-                        or die $dbis->error;
+                    $self->db_insert( $dbis,'form_fields', { forms_id => $form_id, fields_id => $field_id } ) or die $dbis->error;
                 }
             }
         }

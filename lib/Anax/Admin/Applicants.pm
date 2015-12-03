@@ -25,7 +25,7 @@ sub index {
 
     $self->stash( forms => $self->get_forms( $dbis ) );
     {
-        my $products_rslt = $dbis->query( "SELECT * FROM products WHERE is_deleted = FALSE ORDER BY id" )
+        my $products_rslt = $self->db_query_select( $dbis, "SELECT * FROM products WHERE is_deleted = FALSE ORDER BY id" )
             or die $dbis->error;
         my $values = [];
         my $labels = {};
@@ -41,7 +41,7 @@ sub index {
     my $data = [];
     if( $self->req->method eq 'POST' ) {
         my $stmt = $self->get_stmt( $self->app, $dbis, $params );
-        my $rslt = $dbis->query( $stmt->as_sql, $stmt->bind ) or die $dbis->error;
+        my $rslt = $self->db_query_select( $dbis, $stmt->as_sql, $stmt->bind ) or die $dbis->error;
         {
             my $afp_stmt = SQL::Maker::Select->new;
             $afp_stmt->{new_line} = ' ';
@@ -56,7 +56,7 @@ sub index {
             $afp_stmt->add_where( "applicants_id" => { IN => \$stmt_sql } );
             $afp_stmt->add_group_by( "products_id" );
             $self->app->log->debug( "[SQL] " . $afp_stmt->as_sql . "; ( " . join(", ", $afp_stmt->bind, $stmt->bind ) . " )" );
-            my $pn_rslt = $dbis->query( $afp_stmt->as_sql, $afp_stmt->bind, $stmt->bind )
+            my $pn_rslt = $self->db_query_select( $dbis, $afp_stmt->as_sql, $afp_stmt->bind, $stmt->bind )
                 or die $dbis->error;
             my $product_numbers = {};
             while( my $line = $pn_rslt->hash ) {
@@ -76,10 +76,13 @@ sub index {
     else {
         $self->stash( product_numbers => {} );
     }
-    my $fields = [ map { $self->v_decode( $_ ) } @{ $self->get_fields( $dbis ) } ];
-    my $field_options = $self->v_decode( $self->get_field_options( $dbis ) );
+    # my $fields = [ map { $self->v_decode( $_ ) } @{ $self->get_fields( $dbis ) } ];
+    # my $field_options = $self->v_decode( $self->get_field_options( $dbis ) );
+    my $fields = $self->get_fields( $dbis );
+    my $field_options = $self->get_field_options( $dbis );
     $self->app->log->debug( Data::Dumper->new( [ { data => $data, fields => $fields, field_options => $field_options } ] )->Sortkeys( 1 )->Dump );
-    $self->render( template => 'admin/applicants/index', datas => [ map { $self->v_decode( $_ ) } @{ $data } ], fields => $fields, field_options => $field_options );
+    # $self->render( template => 'admin/applicants/index', datas => [ map { $self->v_decode( $_ ) } @{ $data } ], fields => $fields, field_options => $field_options );
+    $self->render( template => 'admin/applicants/index', datas => $data, fields => $fields, field_options => $field_options );
     $dbis->commit;
     $dbis->disconnect or die $dbis->error;
 }
@@ -88,7 +91,7 @@ sub get_fields {
     my $self = shift;
     my $dbis = shift;
 
-    my $rslt = $dbis->select( 'fields', [ qw/id name type/ ],
+    my $rslt = $self->db_select( $dbis, 'fields', [ qw/id name type/ ],
                               { is_deleted => 0,
                                 show_in_list => 1 },
                               { order_by => 'sortorder' } ) or die b( $dbis->error );
@@ -99,7 +102,7 @@ sub get_field_options {
     my $self = shift;
     my $dbis = shift;
 
-    my $rslt = $dbis->query( "SELECT id, fields_id, name FROM field_options WHERE is_deleted = FALSE AND fields_id IN ( SELECT id FROM fields WHERE show_in_list = TRUE AND is_deleted = FALSE ) ORDER BY fields_id, sortorder;" ) or die b( $dbis->error );
+    my $rslt = $self->db_query_select( $dbis, "SELECT id, fields_id, name FROM field_options WHERE is_deleted = FALSE AND fields_id IN ( SELECT id FROM fields WHERE show_in_list = TRUE AND is_deleted = FALSE ) ORDER BY fields_id, sortorder;" ) or die b( $dbis->error );
     my %fos;
     while( my $line = $rslt->hash ) {
         $fos{ $line->{fields_id} } = {}
@@ -142,9 +145,9 @@ sub get_field_data {
     
     $self->app->log->debug( "[SQL] " . $stmt->as_sql . "; ( " . join( ', ', $stmt->bind, $tf_stmt->bind ) . " )" );
 #    $self->app->log->debug( "[SQL] " . $stmt->as_sql . "; ( " . join( ', ', $stmt->bind ) . " )" );
-    my $rslt = $dbis->query( $stmt->as_sql, $stmt->bind, $tf_stmt->bind );
-#    my $rslt = $dbis->query( $stmt->as_sql, $stmt->bind );
-#    my $rslt = $dbis->select( 'applicant_data', [ qw/id applicants_id forms_id fields_id text field_options_id/ ],
+    my $rslt = $self->db_query_select( $dbis, $stmt->as_sql, $stmt->bind, $tf_stmt->bind );
+#    my $rslt = $self->db_query_select( $dbis, $stmt->as_sql, $stmt->bind );
+#    my $rslt = $self->db_select( $dbis, 'applicant_data', [ qw/id applicants_id forms_id fields_id text field_options_id/ ],
 #                              { is_deleted => 0,
 #                                forms_id => { IN => \@forms_id },
 #                                applicants_id => { IN => \@target_ids }
@@ -170,7 +173,7 @@ sub get_forms {
     my $self = shift;
     my $dbis = shift;
     
-    my $forms_rslt = $dbis->query( "SELECT * FROM forms WHERE is_deleted = FALSE ORDER BY id" )
+    my $forms_rslt = $self->db_query_select( $dbis, "SELECT * FROM forms WHERE is_deleted = FALSE ORDER BY id" )
         or die $dbis->error;
     my $values = [];
     my $labels = {};
@@ -242,22 +245,23 @@ sub load_view_data_to_stash {
     my $form_id = shift;
 
 
-    my $applicants_it = $dbis->select('applicants', ['*'], { is_deleted => 0, id => $id } )
+    my $applicants_it = $self->db_select( $dbis,'applicants', ['*'], { is_deleted => 0, id => $id } )
         or die $dbis->error;
     return 0 unless( $applicants_it->rows );
     my $applicant = $applicants_it->hash;
 
-    my $forms_it = $dbis->select('forms', ['*'], { is_deleted => 0, id => $form_id } )
+    my $forms_it = $self->db_select( $dbis,'forms', ['*'], { is_deleted => 0, id => $form_id } )
         or die $dbis->error;
     return 0 unless( $forms_it->rows );
     my $form = $forms_it->hash;
 
     my $datas = $self->get_applicant_data( $dbis, $id, $form_id );
     $datas->{products} = {};
-    my $applicant_products_it = $dbis->query("SELECT afp.id, afp.number, p.id AS product_id, p.name, p.price, p.description FROM applicant_form_products AS afp, products AS p WHERE afp.is_deleted = FALSE AND p.is_deleted = FALSE AND afp.products_id=p.id AND afp.applicants_id=? AND afp.forms_id=?;", $id, $form_id )
+    my $applicant_products_it = $self->db_query_select( $dbis,"SELECT afp.id, afp.number, p.id AS product_id, p.name, p.price, p.description FROM applicant_form_products AS afp, products AS p WHERE afp.is_deleted = FALSE AND p.is_deleted = FALSE AND afp.products_id=p.id AND afp.applicants_id=? AND afp.forms_id=?;", $id, $form_id )
         or die $dbis->error;
 
-    my $form_setting = $self->v_decode( Anax::Admin::Forms->new( $self )->get_form_setting( $self->app, $form_id, 1 ) );
+    # my $form_setting = $self->v_decode( Anax::Admin::Forms->new( $self )->get_form_setting( $self->app, $form_id, 1 ) );
+    my $form_setting = Anax::Admin::Forms->new( $self )->get_form_setting( $self->app, $form_id, 1 );
 
     $self->stash( hash => $applicant );
     $self->stash( datas => $datas );
@@ -273,7 +277,7 @@ sub get_applicant_data {
     my $id      = shift;
     my $form_id = shift;
     
-    my $applicant_datas_it = $dbis->query("SELECT ad.id, ad.fields_id, f.type, ad.field_options_id, ad.text FROM applicant_data AS ad, fields AS f WHERE ad.applicants_id = ? AND ad.forms_id = ? AND ad.fields_id=f.id;", $id, $form_id )
+    my $applicant_datas_it = $self->db_query_select( $dbis,"SELECT ad.id, ad.fields_id, f.type, ad.field_options_id, ad.text FROM applicant_data AS ad, fields AS f WHERE ad.applicants_id = ? AND ad.forms_id = ? AND ad.fields_id=f.id;", $id, $form_id )
         or die $dbis->error;
     my $datas = {};
     while( my $line = $applicant_datas_it->hash ) {
@@ -319,10 +323,10 @@ sub do_disable {
     my $dbis = $self->dbis;
     $dbis->begin_work or die $dbis->error;
 
-    $dbis->update( 'applicant_data', { is_deleted => 1 }, { applicants_id => $id, forms_id => $form_id } ) or die $dbis->error;
-    $dbis->update( 'applicant_form_products', { is_deleted => 1 }, { applicants_id => $id, forms_id => $form_id } ) or die $dbis->error;
-    $dbis->update( 'applicant_form', { is_deleted => 1 }, { applicants_id => $id, forms_id => $form_id } ) or die $dbis->error;
-    $dbis->update( 'applicants', { is_deleted => 1 }, { id => $id } ) or die $dbis->error;
+    $self->db_update( $dbis, 'applicant_data', { is_deleted => 1 }, { applicants_id => $id, forms_id => $form_id } ) or die $dbis->error;
+    $self->db_update( $dbis, 'applicant_form_products', { is_deleted => 1 }, { applicants_id => $id, forms_id => $form_id } ) or die $dbis->error;
+    $self->db_update( $dbis, 'applicant_form', { is_deleted => 1 }, { applicants_id => $id, forms_id => $form_id } ) or die $dbis->error;
+    $self->db_update( $dbis, 'applicants', { is_deleted => 1 }, { id => $id } ) or die $dbis->error;
 
     $self->redirect_to( $self->get_path( '/admin/applicants' ) );
     $dbis->commit or die $dbis->error;

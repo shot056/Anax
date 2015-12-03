@@ -26,7 +26,7 @@ sub input {
     $dbis->query( "SET timezone TO 'Asia/Tokyo';" ) or die $dbis->error;
 
     if( my $id = $self->stash('id') ) {
-        my $rslt = $dbis->select('mail_templates', ['*'], { id => $id, is_deleted => 0 } )
+        my $rslt = $self->db_select( $dbis,'mail_templates', ['*'], { id => $id, is_deleted => 0 } )
             or die $dbis->error;
         return $self->render_not_found unless( $rslt->rows );
         $params = $rslt->hash;
@@ -77,12 +77,10 @@ sub register {
                    };
         if( defined $id and $id =~ /^\d+$/ ) {
             $hash->{date_updated} = 'now';
-            $dbis->update( 'mail_templates', $self->v_decode( $hash), { id => $id } )
-                or die $dbis->error;
+            $self->db_update( $dbis, 'mail_templates', $hash, { id => $id } ) or die $dbis->error;
         }
         else {
-            $dbis->insert( 'mail_templates', $self->v_decode( $hash ) )
-                or die $dbis->error;
+            $self->db_insert( $dbis, 'mail_templates', $hash ) or die $dbis->error;
         }
         $dbis->commit or die $dbis->error;
         $dbis->disconnect or die $dbis->error;

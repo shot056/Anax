@@ -159,7 +159,7 @@ sub load {
         or die DBIx::Simple->error;
     $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
     $dbis->begin_work or die $dbis->error;
-    my $rslt = $dbis->select( 'mail_templates', ['*'], { is_deleted => 0, id => $id } )
+    my $rslt = $self->app->db_select( $dbis, 'mail_templates', ['*'], { is_deleted => 0, id => $id } )
         or die $dbis->error;
     return undef unless( $rslt->rows );
     my $hash = $rslt->hash;
@@ -174,7 +174,7 @@ sub load {
 #     my $data = shift;
 #
 #     $dbis->begin_work or die $dbis->error;
-#     $dbis->insert( 'mail_templates', { forms_id => $data->{forms_id},
+#     $dbis->db_insert( 'mail_templates', { forms_id => $data->{forms_id},
 #                                        to => $data->{to} || '',
 #                                        cc => $data->{cc} || '',
 #                                        bcc => $data->{bcc} || '',

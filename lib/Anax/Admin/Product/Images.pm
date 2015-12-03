@@ -32,7 +32,7 @@ sub input {
         $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
         $dbis->begin_work or die $dbis->error;
         
-        my $rslt = $dbis->select('product_images', ['*'], { id => $id, is_deleted => 0 } )
+        my $rslt = $self->db_select( $dbis,'product_images', ['*'], { id => $id, is_deleted => 0 } )
             or die $dbis->error;
         return $self->render_not_found unless( $rslt->rows );
         $params = $rslt->hash;
@@ -97,12 +97,10 @@ sub register {
                    };
         if( defined $id and $id =~ /^\d+$/ ) {
             $hash->{date_updated} = 'now';
-            $dbis->update( 'product_images', $self->v_decode( $hash ), { id => $id } )
-                or die $dbis->error;
+            $self->db_update( $dbis, 'product_images', $hash, { id => $id } ) or die $dbis->error;
         }
         else {
-            $dbis->insert( 'product_images', $self->v_decode( $hash ) )
-                or die $dbis->error;
+            $self->db_insert( $dbis, 'product_images', $hash ) or die $dbis->error;
             $id = $dbis->last_insert_id( undef, 'public', 'product_images', 'id' ) or die $dbis->error;
         }
 
@@ -118,14 +116,13 @@ sub register {
         }
         if( defined $obj ) {
             my $params = $obj->save( $self->param('file'), $id, $ext );
-            $dbis->update( 'product_images',
+            $self->db_update( $dbis, 'product_images',
                            { url => $params->{base_url},
                              thumb_url => $params->{thumb_url},
                              width => $params->{width},
                              height => $params->{height},
                              public_id => $params->{public_id} },
-                           { id => $id } )
-                or die $dbis->error;
+                           { id => $id } ) or die $dbis->error;
         }
         $dbis->commit or die $dbis->error;
         $dbis->disconnect or die $dbis->error;
@@ -143,7 +140,7 @@ sub disable {
     $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
     $dbis->begin_work or die $dbis->error;
     
-    my $rslt = $dbis->select('product_images', ['*'], { id => $id, is_deleted => 0 } )
+    my $rslt = $self->db_select( $dbis,'product_images', ['*'], { id => $id, is_deleted => 0 } )
         or die $dbis->error;
     return $self->render_not_found unless( $rslt->rows );
     my $data = $rslt->hash;
@@ -163,7 +160,7 @@ sub do_disable {
         or die DBIx::Simple->error;
     $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
     $dbis->begin_work or die $dbis->error;
-    my $it = $dbis->select('product_images', ['*'], { id => $id } )
+    my $it = $self->db_select( $dbis,'product_images', ['*'], { id => $id } )
         or die $dbis->error;
     return $self->render_not_found unless( $it->rows );
     
@@ -227,10 +224,8 @@ sub to_thumbnail {
 
     my $dbis = $self->dbis;
     $dbis->begin_work or die $dbis->error;
-    $dbis->update( 'product_images', { is_thumbnail => 0 }, { products_id => $product_id } )
-        or die $dbis->error;
-    $dbis->update( 'product_images', { is_thumbnail => 1 }, { id => $id } )
-        or die $dbis->error;
+    $self->db_update( $dbis, 'product_images', { is_thumbnail => 0 }, { products_id => $product_id } ) or die $dbis->error;
+    $self->db_update( $dbis, 'product_images', { is_thumbnail => 1 }, { id => $id } ) or die $dbis->error;
     $dbis->commit or die $dbis->error;
     $dbis->disconnect or die $dbis->error;
     $self->redirect_to( $self->get_path( "/admin/products/view/$product_id" ) );
@@ -244,8 +239,7 @@ sub not_thumbnail {
 
     my $dbis = $self->dbis;
     $dbis->begin_work or die $dbis->error;
-    $dbis->update( 'product_images', { is_thumbnail => 0 }, { products_id => $product_id, id => $id } )
-        or die $dbis->error;
+    $self->db_update( $dbis, 'product_images', { is_thumbnail => 0 }, { products_id => $product_id, id => $id } ) or die $dbis->error;
     $dbis->commit or die $dbis->error;
     $dbis->disconnect or die $dbis->error;
     $self->redirect_to( $self->get_path( "/admin/products/view/$product_id" ) );
