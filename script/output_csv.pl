@@ -2,9 +2,13 @@
 
 use strict;
 use warnings;
+
+use Jcode::CP932;
 use Data::Dumper;
 use DBIx::Simple;
-use Encode qw/encode/;
+use Encode qw/encode_utf8 decode_utf8/;
+use Encode::Guess;
+use Mojo::ByteStream;
 
 # DBHOST:              ec2-54-243-62-232.compute-1.amazonaws.com
 # DBNAME:              d92f5ur0t6i0qb
@@ -20,15 +24,51 @@ sub exec_sql {
 
 #    print STDERR "$sql; (" . join(",", @bind) . ")\n";
     return $dbis->query( $sql, @bind )
-        or die $dbis->error;
+        || die $dbis->error;
 }
 
+sub encode {
+  my $str = shift;
+  return '' unless( length( $str ) );
+  my $nstr;
+  if( Encode::is_utf8( Mojo::ByteStream->new( $str )->decode->to_string ) ) {
+    $nstr = Mojo::ByteStream->new( $str )->decode->to_string;
+  }
+  else {
+    $nstr = encode_utf8( $str );
+  }
+  return $nstr;
+##  return sprintf( "%s", $str );
+#  printf( "[ %s : %s : %s ] : ( %s : %s : %s )\n",
+#          Encode::is_utf8( $str ),
+#          Encode::is_utf8( Mojo::ByteStream->new( $str )->encode->to_string ),
+#          Encode::is_utf8( Mojo::ByteStream->new( $str )->decode->to_string ),
+##          $str,
+##          Mojo::ByteStream->new( $str )->encode,
+##          Mojo::ByteStream->new( $str )->decode,
+#          '', encode_utf8( Jcode::CP932->new( $nstr )->utf8 ), ''
+#  ) if( Encode::is_utf8( Mojo::ByteStream->new( $str )->decode->to_string ) );
+#  return Mojo::ByteStream->new( $str )->encode->to_string;
+#  return Jcode::CP932->new( $str )->utf8;
+#  return encode_utf8( $str ) if( Encode::is_utf8( $str ) );
+#  return $str;
+}
+#sub encode_utf8 {
+#    return shift;
+#    return encode( 'utf-8', shift );
+#}
+#sub decode_utf8 {
+#    return decode( 'utf-8', shift );
+#}
 sub main {
     my $forms_id = $ARGV[0];
 
     my $dbis = DBIx::Simple->new( "dbi:Pg:dbname=$ENV{DBNAME};host=$ENV{DBHOST}",
                                   "$ENV{DBUSER}",
-                                  "$ENV{DBPASS}" ) or die DBIx::Simple->error;
+                                  "$ENV{DBPASS}",
+                                  { AutoCommit => 1,
+                                    RaiseError => 1,
+                                    pg_enable_utf8 => 1 } ) or die DBIx::Simple->error;
 
     my @products;
     {
@@ -74,18 +114,18 @@ sub main {
     my $rslt = exec_sql( $dbis, "SELECT a.id, a.email, af.date_created FROM applicants AS a, applicant_form AS af WHERE af.forms_id = ? AND a.is_deleted = FALSE AND af.is_deleted = FALSE AND af.applicants_id = a.id ORDER BY af.date_created;", $forms_id );
     printf('"id","email","date_created"');
     foreach my $f ( @fields ) {
-        printf(',"%s"', encode( 'utf-8', $f->{name} ) );
+        printf(',"%s"', encode( $f->{name} || '' ) || '' );
     }
     foreach my $p ( @products ) {
-        printf(',"%s"', encode( 'utf-8', $p->{name} ) );
+        printf(',"%s"', encode( $p->{name} || '' ) || '' );
     }
     print "\n";
     while( my $line = $rslt->hash ) {
         printf('%d,"%s","%s"', $line->{id}, $line->{email} || '', $line->{date_created} || '' );
         foreach my $f ( @fields ) {
             printf(',"%s"', ( exists $applicants_data{ $line->{id} } and exists $applicants_data{ $line->{id} }->{ $f->{id} } )
-                            ? ( ( $f->{type} =~ /^text/ ? ( encode( 'utf-8', $applicants_data{ $line->{id} }->{ $f->{id} }->{text} ) || '' )
-                                                      : encode( 'utf-8', $f->{options}->{ $applicants_data{ $line->{id} }->{ $f->{id} }->{field_options_id} }->{name} ) || undef ) )
+                            ? ( ( $f->{type} =~ /^text/ ? ( encode( $applicants_data{ $line->{id} }->{ $f->{id} }->{text} ) || '' )
+                                                      : encode($f->{options}->{ $applicants_data{ $line->{id} }->{ $f->{id} }->{field_options_id} }->{name} ) || '' ) )
                             : '' );
         }
         foreach my $p ( @products ) {

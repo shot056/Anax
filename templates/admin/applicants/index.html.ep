@@ -36,7 +36,7 @@ $(function() {
         <tr>
           <th>フォーム</th>
           <td>
-            <%== cgi('checkbox_group', { -name => 'forms_id', -values => $forms->{values}, -labels => $forms->{labels}, -default => [ param('forms_id') ] } ) %>
+            <%== cgi('checkbox_group', { -name => 'forms_id', -values => $forms->{values}, -labels => $forms->{labels}, -default => every_param('forms_id') } ) %>
           </td>
         </tr>
         <tr>

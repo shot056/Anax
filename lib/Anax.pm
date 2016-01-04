@@ -173,6 +173,11 @@ sub startup {
                       my $opts = $v_decode->visit( $options );
                       return $self->stash( '__cgi_object' )->$method( %{ $opts } );
                   } );
+    $self->helper( every_param => sub {
+                       my $self = shift;
+                       my $name = shift;
+                       return $self->every_param( $name )
+                   } );
     $self->helper( dbis => sub {
                        my $self = shift;
 
