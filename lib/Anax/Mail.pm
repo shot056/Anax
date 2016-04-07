@@ -70,7 +70,7 @@ sub sendmail {
     }
     $header{'X-AnaxWebForm-Key'} = $key if ( defined $key );
     
-    {
+    if( 0 ) {
         my @encoded_subjects;
         foreach my $splited_str ( Jcode::CP932->new( $charset eq 'utf8' ? $parts->{subject} : Jcode::CP932->new( $parts->{subject} )->$charset )->jfold(20) ) {
             my $str = b( $splited_str || '' )->b64_encode;
@@ -78,11 +78,23 @@ sub sendmail {
             $str =~ s/\r/\n/g;
             chomp($str);
             push( @encoded_subjects, $str );
-        }
+          }
+        $self->app->dumper( { encoded_subjects => \@encoded_subjects } );
         $header{Subject} = join( "\n       ", map { sprintf( '=?%s?B?%s?=', ( $charset eq 'utf8' ? 'UTF-8' : 'ISO-2022-JP' ), $_ ) } @encoded_subjects );
         $header{Subject} =~ s/\r\n/\n/g;
         $header{Subject} =~ s/\r/\n/g;
         $header{Subject} =~ s/\n\n/\n/g;
+    }
+    else {
+      my $subject = ( $charset eq 'utf8' ? $parts->{subject} : Jcode::CP932->new( $parts->{subject} )->$charset );
+      $self->app->dumper( { subject => $subject } );
+      my $b64 = b( $self->app->encode( $subject ) )->b64_encode;
+      $b64 =~ s/(\n|\r|\s)//g;
+      $self->app->dumper( { b64 => $b64 } );
+      $header{Subject} = sprintf( "=?%s?B?%s?=",
+                                  ( $charset eq 'utf8' ? 'UTF-8' : 'ISO-2022-JP' ),
+                                  $b64
+                                 );
     }
     $parts->{body} =~ s/\r\n/\n/g;
     $parts->{body} =~ s/\r/\n/g;
