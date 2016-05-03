@@ -63,7 +63,7 @@ sub register {
                 name => [ [ 'not_blank', '必ず入力してください' ],
                         ],
                 key  => [ [ 'not_blank', '必ず入力してください' ],
-                          [ { length => [ 3, 8 ] }, '3文字以上、8文字以下で入力してください' ],
+                          [ { length => [ 3, 16 ] }, '3文字以上、16文字以下で入力してください' ],
                           [ 'ascii', '半角英数字で入力してください' ]
                         ],
                ];
@@ -122,27 +122,30 @@ sub view {
 
     my $it = $self->db_select( $dbis, 'forms', ['*'], { is_deleted => 0, id => $id } )
         or die $dbis->error;
-    return $self->render_not_found unless( $it->rows );
-    my $data = $it->hash;
-#    my $fields_it = $self->db_select( $dbis, 'form_fields', ['*'],
-#                                   { is_deleted => 0, forms_id => $data->{id} },
-#                                   { order_by => 'sortorder, id' } )
-#        or die $dbis->error;
-    my $fields_it = $self->db_query_select( $dbis, "SELECT f.*, ff.sortorder AS p_sortorder FROM fields AS f, form_fields AS ff WHERE ff.is_deleted = FALSE AND f.is_deleted = FALSE AND ff.fields_id = f.id AND ff.forms_id = ? ORDER BY ff.sortorder,f.sortorder,ff.id,f.id;",
-                                  $data->{id} )
-        or die $dbis->error;
+    unless( $it->rows ) {
+        $self->render_not_found;
+    } else {
+        my $data = $it->hash;
+#        my $fields_it = $self->db_select( $dbis, 'form_fields', ['*'],
+#                                       { is_deleted => 0, forms_id => $data->{id} },
+#                                       { order_by => 'sortorder, id' } )
+#            or die $dbis->error;
+        my $fields_it = $self->db_query_select( $dbis, "SELECT f.*, ff.sortorder AS p_sortorder FROM fields AS f, form_fields AS ff WHERE ff.is_deleted = FALSE AND f.is_deleted = FALSE AND ff.fields_id = f.id AND ff.forms_id = ? ORDER BY ff.sortorder,f.sortorder,ff.id,f.id;",
+                                                $data->{id} )
+            or die $dbis->error;
 
-    my $products_it = $self->db_query_select( $dbis, "SELECT p.* FROM products AS p, form_products AS fp WHERE p.is_deleted = FALSE AND fp.is_deleted = FALSE AND fp.products_id = p.id AND fp.forms_id = ? ORDER BY fp.sortorder, fp.id, p.id",
-                                    $data->{id} )
-        or die $dbis->error;
+        my $products_it = $self->db_query_select( $dbis, "SELECT p.* FROM products AS p, form_products AS fp WHERE p.is_deleted = FALSE AND fp.is_deleted = FALSE AND fp.products_id = p.id AND fp.forms_id = ? ORDER BY fp.sortorder, fp.id, p.id",
+                                                  $data->{id} )
+            or die $dbis->error;
     
-    my $mail_template = undef;
-    my $mail_templates_it = $self->db_select( $dbis, 'mail_templates', ['*'], { is_deleted => 0, forms_id => $id } )
-        or die $dbis->error;
-    $mail_template = $mail_templates_it->hash if( $mail_templates_it->rows );
-    
-    $self->stash( hash => $data, fields => $fields_it, products => $products_it, mail_template => $mail_template );
-    $self->render;
+        my $mail_template = undef;
+        my $mail_templates_it = $self->db_select( $dbis, 'mail_templates', ['*'], { is_deleted => 0, forms_id => $id } )
+            or die $dbis->error;
+        $mail_template = $mail_templates_it->hash if( $mail_templates_it->rows );
+        
+        $self->stash( hash => $data, fields => $fields_it, products => $products_it, mail_template => $mail_template );
+        $self->render;
+    }
     $dbis->commit;
     $dbis->disconnect or die $dbis->error;
 }
@@ -158,14 +161,17 @@ sub disable {
     $dbis->begin_work or die $dbis->error;
     my $it = $self->db_select( $dbis, 'forms', ['*'], { is_deleted => 0, id => $id } )
         or die $dbis->error;
-    return $self->render_not_found unless( $it->rows );
-    my $data = $it->hash;
-
-    my $fields_it = $self->db_query_select( $dbis, "SELECT f.*, ff.sortorder AS p_sortorder FROM fields AS f, form_fields AS ff WHERE ff.is_deleted = FALSE AND f.is_deleted = FALSE AND ff.fields_id = f.id AND ff.forms_id = ? ORDER BY ff.sortorder,f.sortorder;",
-                                  $data->{id} )
-        or die $dbis->error;
-    $self->stash( hash => $data, fields => $fields_it );
-    $self->render();
+    unless( $it->rows ) {
+        $self->render_not_found;
+    } else {
+        my $data = $it->hash;
+        
+        my $fields_it = $self->db_query_select( $dbis, "SELECT f.*, ff.sortorder AS p_sortorder FROM fields AS f, form_fields AS ff WHERE ff.is_deleted = FALSE AND f.is_deleted = FALSE AND ff.fields_id = f.id AND ff.forms_id = ? ORDER BY ff.sortorder,f.sortorder;",
+                                                $data->{id} )
+            or die $dbis->error;
+        $self->stash( hash => $data, fields => $fields_it );
+        $self->render();
+    }
     $dbis->commit;
     $dbis->disconnect or die $dbis->error;
 }
@@ -192,6 +198,143 @@ sub do_disable {
     $self->redirect_to( $self->get_path( '/admin/forms' ) );
 }
 
+sub copy {
+    my $self = shift;
+    my $id   = $self->stash('id');
+
+    my $dbis = DBIx::Simple->new( @{ $self->app->config->{dsn} } )
+        or die DBIx::Simple->error;
+    $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
+    $dbis->begin_work or die $dbis->error;
+    my $it = $self->db_select( $dbis, 'forms', ['*'], { is_deleted => 0, id => $id } )
+        or die $dbis->error;
+    unless( $it->rows ) {
+        $self->render_not_found;
+    } else {
+        my $data = $it->hash;
+        $self->stash( messages => {} );
+        $self->render( template => 'admin/forms/copy', params => { id => $id, key => $data->{key} . '_copy', name => $data->{name} . '_copy' } );
+    }
+    $dbis->commit;
+    $dbis->disconnect or die $dbis->error;
+}
+
+sub do_copy {
+    my $self = shift;
+    my $id   = $self->stash( 'id' );
+
+    my $params = $self->req->params->to_hash;
+    my $rule = [
+                name => [ [ 'not_blank', '必ず入力してください' ] ],
+                key  => [ [ 'not_blank', '必ず入力してください' ],
+                          [ { length => [ 3, 16 ] }, '3文字以上、16文字以下で入力してください' ],
+                          [ 'ascii', '半角英数字で入力してください' ]
+                        ],
+               ];
+    my $vrslt = $vc->validate( $params, $rule );
+    $self->app->log->debug( Dumper( { vrslt => $vrslt, is_ok => $vrslt->is_ok } ) );
+    unless( $vrslt->is_ok ) {
+        $self->stash( missing => 1 ) if( $vrslt->has_missing );
+        $self->stash( messages => $vrslt->messages_to_hash )
+            if( $vrslt->has_invalid );
+        $self->app->log->debug( Dumper( $self->stash ) );
+        $self->render( template => 'admin/forms/copy', params => $params );
+    }
+    else {
+        my $dbis = DBIx::Simple->new( @{ $self->app->config->{dsn} } )
+            or die DBIx::Simple->error;
+        $dbis->abstract = SQL::Maker->new( driver => $dbis->dbh->{Driver}->{Name} );
+        $dbis->begin_work or die $dbis->error;
+        
+        my $form_rslt = $self->db_select( $dbis, 'forms', [ '*' ], { id => $id, is_deleted => 0 } )
+            or die $dbis->error;
+        unless( $form_rslt->rows ) {
+            $self->render_not_found;
+        } else {
+            {
+                my $hash = $form_rslt->hash;
+                foreach my $key ( qw/id is_deleted date_created date_updated date_deleted key name is_published date_published / ) {
+                    delete $hash->{$key};
+                }
+                foreach my $key ( qw/name key/ ) {
+                    $hash->{$key} = $params->{ $key };
+                }
+                $self->dumper( { hash => $hash, v_hash => $self->v_decode( $hash ) } );
+                my $rslt = $self->db_insert( $dbis, 'forms', $hash ) or die $dbis->error;
+            }
+            my ( $dbname ) = $self->app->config->{dsn}->[0] =~ m!dbname=([a-zA-Z0-9_]+)!;
+            my $form_id = $dbis->last_insert_id( $dbname, 'public', 'forms', 'id' );
+            
+            my %copy_target = ( 'form_products'  => { delcol => [ qw/id is_deleted date_created date_updated date_deleted forms_id/ ], order => 'sortorder' },
+                                'mail_templates' => { delcol => [ qw/id is_deleted date_created date_updated date_deleted forms_id/ ], order => 'id' } );
+            foreach my $table ( keys( %copy_target ) ) {
+                my $rslt = $self->db_select( $dbis, $table, [ '*' ], { forms_id => $id, is_deleted => 0 }, { order_by => $copy_target{ $table }->{order} } )
+                    or die $dbis->error;
+                my $sortorder = 1;
+                while( my $hash = $rslt->hash ) {
+                    foreach my $col ( @{ $copy_target{ $table }->{delcol} } ) {
+                        delete $hash->{ $col };
+                    }
+                    $hash->{forms_id} = $form_id;
+                    $hash->{sortorder} = $sortorder
+                        if( $table eq 'form_products' );
+                    $self->dumper( { hash => $hash, v_hash => $self->v_decode( $hash ) } );
+                    $self->db_insert( $dbis, $table, $hash );
+                    $sortorder ++;
+                }
+            }
+            {
+                my $rslt = $self->db_select( $dbis, 'form_fields', [ '*' ], { forms_id => $id, is_deleted => 0 }, { order_by => 'sortorder' } )
+                    or die $dbis->error;
+                my $sortorder = 1;
+                while( my $hash = $rslt->hash ) {
+                    foreach my $col ( qw/id is_deleted date_created date_updated date_deleted forms_id/ ) {
+                        delete $hash->{ $col };
+                    }
+                    $hash->{forms_id} = $form_id;
+                    $hash->{sortorder} = $sortorder;
+                    my $field_rslt = $self->db_select( $dbis, 'fields', [ '*' ], { id => $hash->{fields_id}, is_deleted => 0 } )
+                        or die $dbis->error;
+                    if( $field_rslt->rows > 0 ) {
+                        my $field = $field_rslt->hash;
+                        unless( $field->{is_global} ) {
+                            foreach my $key ( qw/id is_delete d date_created date_updated date_deleted sortorder/ ) {
+                                delete $field->{$key};
+                            }
+                            $self->dumper( { hash => $field, v_hash => $self->v_decode( $field ) } );
+                            $self->db_insert( $dbis, 'fields', $field )
+                                or die $dbis->error;
+                            my $fields_id = $dbis->last_insert_id( $dbname, 'public', 'fields', 'id' );
+                            unless( $field->{type} =~ /text/ ) {
+                                my $opt_rslt = $self->db_select( $dbis, 'field_options', [ '*' ], { fields_id => $hash->{fields_id}, is_deleted => 0 }, { order_by => 'sortorder' } )
+                                    or die $dbis->error;
+                                my $opt_sortorder = 1;
+                                while( my $opthash = $opt_rslt->hash ) {
+                                    foreach my $key ( qw/id is_delete d date_created date_updated date_deleted fields_id/ ) {
+                                        delete $opthash->{ $key };
+                                    }
+                                    $opthash->{fields_id} = $fields_id;
+                                    $opthash->{sortorder} = $opt_sortorder;
+                                    $self->dumper( { hash => $opthash, v_hash => $self->v_decode( $opthash ) } );
+                                    $self->db_insert( $dbis, 'field_options', $opthash )
+                                        or die $dbis->error;
+                                    $opt_sortorder ++;
+                                }
+                            }
+                            $hash->{fields_id} = $fields_id;
+                        }
+                        $self->dumper( { hash => $hash, v_hash => $self->v_decode( $hash ) } );
+                        $self->db_insert( $dbis, 'form_fields', $hash );
+                        $sortorder ++;
+                    }
+                }
+            }
+            $self->redirect_to( $self->get_path( '/admin/forms/view/' . $form_id ) );
+        }
+        $dbis->commit or die $dbis->error;
+        $dbis->disconnect or die $dbis->error;
+    }
+}
 
 sub change_status {
     my $self = shift;

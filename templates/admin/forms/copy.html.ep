@@ -1,0 +1,39 @@
+% layout 'admin';
+% title 'フォーム登録';
+
+  <ul class="breadcrumb">
+    <li><a href="<%= get_path('/admin/forms') %>">フォーム</a><span class="divider">/</span></li>
+    <li class="active">コピー</li>
+  </ul><%= dumper( $params )  %>
+  <form method="POST" name="admin_forms_copy" action="<%= get_path('/admin/forms/copy/', $params->{id} ) %>" class="form-input form-horizontal" role="form">
+    <div class="form-group">
+      <label class="col-sm-2 control-label" for="field_key">フォームID</label>
+      <div class="col-sm-8">
+        <input class="form-control" type="text" id="field_key" name="key" placeholder="myform" value="<%= $params->{key} %>" />
+        <span class="help-inline">
+          フォームのURLとなる文字列を入力してください。
+          % if( exists $messages->{key} ) {
+          <p class="text-danger"><%= decode( $messages->{key} ) %></p>
+          % }
+        </span>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label" for="field_name">名称</label>
+      <div class="col-sm-8">
+        <input class="form-control" type="text" id="field_name" name="name" placeholder="私の登録フォーム" value="<%= decode( $params->{name} ) %>"  />
+        <span class="help-inline">
+          管理用のフォーム名です。好きな名前をつけてください。
+          % if( exists $messages->{name} ) {
+          <p class="text-danger"><%= decode( $messages->{name} ) %></p>
+          % }
+        </span>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-4">
+        <a href="<%= get_path('/admin/forms') %>" class="btn btn-default">キャンセル</a>
+        <button type="submit" class="btn btn-primary">登録</button>
+      </div>
+    </div>
+  </form>

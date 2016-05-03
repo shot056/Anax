@@ -21,6 +21,7 @@
           <th>フォーム名</th>
           <th>状態</th>
           <th>公開日時</th>
+          <th>コピー</th>
           <th>編集</th>
           <th>削除</th>
           <th>表示</th>
@@ -35,6 +36,7 @@
           <td><a href="<%= get_path('/admin/forms/view/', $line->{id} ) %>"><%= decode( $line->{name} ) %></a></td>
           <td><% if( $line->{is_published} ) { %>公開済み<% } else { %>未公開<% } %></td>
           <td><%= date( $line->{date_published} ) %></td>
+          <td><a href="<%= get_path('/admin/forms/copy/', $line->{id} ) %>">コピー</a></td>
           <td><a href="<%= get_path('/admin/forms/edit/', $line->{id} ) %>">編集</a></td>
           <td><a href="<%= get_path('/admin/forms/disable/', $line->{id} ) %>">削除</a></td>
           <td><a href="<%= get_path('/form/', $line->{key} ) %>?is_admin=1" target="_blank">表示</a></td>

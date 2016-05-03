@@ -283,6 +283,8 @@ sub startup {
     $r->route('/admin/forms/view/:id',    id => qr/\d+/ )->via('GET' )->to( controller => 'Admin::Forms', action => 'view' );
     $r->route('/admin/forms/disable/:id', id => qr/\d+/ )->via('GET' )->to( controller => 'Admin::Forms', action => 'disable' );
     $r->route('/admin/forms/disable/:id', id => qr/\d+/ )->via('POSt')->to( controller => 'Admin::Forms', action => 'do_disable' );
+    $r->route('/admin/forms/copy/:id',    id => qr/\d+/ )->via('GET' )->to( controller => 'Admin::Forms', action => 'copy' );
+    $r->route('/admin/forms/copy/:id',    id => qr/\d+/ )->via('POST')->to( controller => 'Admin::Forms', action => 'do_copy' );
     
     $r->route('/admin/forms/changestatus/:id/:type', id => qr/\d+/, type => qr/(publish|private)/ )
         ->via('GET')->to( controller => 'Admin::Forms', action => 'change_status' );
