@@ -205,7 +205,7 @@ sub startup {
                        my $dbis  = shift;
                        my $table = shift;
                        my $data  = shift;
-                       $self->app->log->info( "[SQL][INSERT] $table (" . $self->dumper( { data => $self->v_encode( $data ) } ) . ")" );
+                       $self->app->log->info( "[SQL][INSERT] $table (" . Data::Dumper->new( [ { data => $self->v_encode( $data ) } ] )->Sortkeys( 1 )->Dump . ")" );
                        return $dbis->insert( $table, $self->v_encode( $data ) )
                    } );
     $self->helper( db_update => sub {
@@ -214,7 +214,7 @@ sub startup {
                        my $table  = shift;
                        my $data   = shift;
                        my $wheres = shift;
-                       $self->app->log->info( "[SQL][UPDATE] $table (" . $self->dumper( { wheres => $self->v_encode( $wheres ), data => $self->v_encode( $data ) } ) . ")" );
+                       $self->app->log->info( "[SQL][UPDATE] $table (" . Data::Dumper->new( [ { wheres => $self->v_encode( $wheres ), data => $self->v_encode( $data ) } ] )->Sortkeys( 1 )->Dump . ")" );
                        return $dbis->update( $table, $self->v_encode( $data ), $self->v_encode( $wheres ) );
                    } );
     $self->helper( db_select => sub {
