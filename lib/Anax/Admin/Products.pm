@@ -182,7 +182,7 @@ sub do_associate {
                 or die $dbis->error;
             if( $it->rows ) {
                 $self->db_update( $dbis, 'form_products',
-                               { is_deleted => 0, date_updated => 'now', date_deleted => undef },
+                               { is_deleted => 0, date_updated => 'now', date_deleted => \"NULL" },
                                { id => $it->hash->{id} } ) or die $dbis->error;
             }
             else {
