@@ -3,6 +3,8 @@
 use strict;
 use warnings;
 
+use utf8;
+
 use Jcode::CP932;
 use Data::Dumper;
 use DBIx::Simple;
@@ -31,8 +33,15 @@ sub encode {
   my $str = shift;
   return '' unless( length( $str ) );
   my $nstr;
+  print Data::Dumper->new( [ { 
+    str => $str, 
+    mbdt => Mojo::ByteStream->new( $str )->decode->to_string,
+    mbet => encode_utf8( Mojo::ByteStream->new( $str )->decode->to_string ),
+    Eisoutf => Encode::is_utf8( Mojo::ByteStream->new( $str )->decode->to_string ),
+    isu => Encode::is_utf8( $str )
+  } ] )->Sortkeys( 1 )->Dump if( 0 );
   if( Encode::is_utf8( Mojo::ByteStream->new( $str )->decode->to_string ) ) {
-    $nstr = Mojo::ByteStream->new( $str )->decode->to_string;
+    $nstr = encode_utf8( Mojo::ByteStream->new( $str )->decode->to_string );
   }
   else {
     $nstr = encode_utf8( $str );

@@ -105,7 +105,7 @@ sub main {
             }
 #            print dumper( { org => $hash, vvvevd => vv( ve( vd( $hash ) ) ) } );
             if( scalar keys( %{ $hash } ) > 0 ) {
-                $dbis_nonutf8->update( $table->{tablename}, ve( vd( vv( ve( vd( $hash ) ) ) ) ), { id => $line->{id} } )
+                $dbis_nonutf8->update( $table->{tablename}, vd( vv( ve( vd( $hash ) ) ) ), { id => $line->{id} } )
                     or die $dbis_nonutf8->error;
             }
         }
