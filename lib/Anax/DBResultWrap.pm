@@ -29,7 +29,8 @@ sub hash {
 
 sub hashes {
     my $self = shift;
-    return $self->app->v_decode( wantarray ? ( $self->it->hashes ) : [ $self->it->hashes ] );
+    my $result = $self->app->v_decode( [ $self->it->hashes ] );
+    return wantarray ? @{ $result } : $result;
 }
 
 1;
